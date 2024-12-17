@@ -12,7 +12,7 @@ import {
     LogOut
 } from "lucide-react"
 
-export default function Sidebar() {
+export default function SideBar() {
     const location = useLocation();
 
 

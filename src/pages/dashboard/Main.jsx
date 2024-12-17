@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react"
-import  Sidebar  from "@/components/dashboard/Sidebar"
+import  Sidebar  from "@/components/dashboard/SideBar"
 import {Outlet} from "react-router-dom";
 
 
