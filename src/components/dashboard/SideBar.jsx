@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import {Link, NavLink, useLocation} from 'react-router-dom';
 import {
     LayoutDashboard,
     Gift,
@@ -13,6 +13,9 @@ import {
 } from "lucide-react"
 
 export default function Sidebar() {
+    const location = useLocation();
+
+
     return (
         <div className="fixed left-0 top-0 h-full w-64 bg-blue-500 text-white p-4">
             <div className="mb-8">
@@ -22,7 +25,7 @@ export default function Sidebar() {
             </div>
 
             <nav className="space-y-2">
-                <NavItem href="/dashboard" icon={<LayoutDashboard size={20} />}>
+                <NavItem to="/dashboard/overview" icon={<LayoutDashboard size={20} />}>
                     DASHBOARD
                 </NavItem>
                 <NavItem href="/tributes" icon={<Gift size={20} />}>
@@ -65,14 +68,16 @@ export default function Sidebar() {
     )
 }
 
-function NavItem({ to, icon, children }) { // Change 'href' to 'to'
+function NavItem({ to, icon, children }) {
+    const location = useLocation();
+    const isActive = location.pathname === to;
     return (
-        <Link
-            to={to} // Use 'to' instead of 'href'
-            className="flex items-center gap-3 px-4 py-2 text-sm font-medium hover:bg-blue-600 rounded-lg transition-colors"
+        <NavLink
+            to={to}
+            className={`flex items-center gap-3 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${isActive ? 'bg-blue-600' : 'hover:bg-blue-600'}`} // Conditional styling
         >
             {icon}
             {children}
-        </Link>
+        </NavLink>
     );
 }

@@ -16,7 +16,8 @@ import {SignupPage} from "@/pages/auth/SignupPage.jsx";
 import {NotFoundPage} from "@/pages/NotFoundPage.jsx";
 import SideBar from "@/components/dashboard/SideBar.jsx"
 import {LoginPage} from "@/pages/auth/LoginPage.jsx";
-import Overview from "@/pages/dashboard/Overview.jsx";
+import Main from "@/pages/dashboard/Main.jsx";
+import {Overview} from "@/pages/dashboard/Overview.jsx";
 
 function App() {
     return (
@@ -46,7 +47,8 @@ function App() {
                     <Route path="conclusions" element={<Conclusions />} />
                 </Route>
 
-                <Route path="/dashboard" element={<Overview />}>
+                <Route path="/dashboard" element={<Main />}>
+                    <Route path="overview" element={<Overview />} />
 
                 </Route>
 
