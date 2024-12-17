@@ -13,6 +13,10 @@ import {Posts} from "@/pages/tribute/Posts.jsx";
 import {Donations} from "@/pages/tribute/Donations.jsx";
 import {Conclusions} from "@/pages/tribute/Conclusions.jsx";
 import {SignupPage} from "@/pages/auth/SignupPage.jsx";
+import {NotFoundPage} from "@/pages/NotFoundPage.jsx";
+import SideBar from "@/components/dashboard/SideBar.jsx"
+import {LoginPage} from "@/pages/auth/LoginPage.jsx";
+import Overview from "@/pages/dashboard/Overview.jsx";
 
 function App() {
     return (
@@ -28,9 +32,10 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/landing" element={<LandingTributePage />} />
                 <Route path="/signup" element={<SignupPage />} />
+                <Route path="/login" element={<LoginPage />} />
 
                 <Route path="/tribute" element={<TributeNavigation />}>
-                    <Route path="tribute" element={<Tribute />} />
+                    <Route path="overview" element={<Tribute />} />
                     <Route path="life" element={<Life />} />
                     <Route path="events" element={<Events />} />
                     <Route path="memories" element={<Memories />} />
@@ -40,6 +45,14 @@ function App() {
                     <Route path="donations" element={<Donations />} />
                     <Route path="conclusions" element={<Conclusions />} />
                 </Route>
+
+                <Route path="/dashboard" element={<Overview />}>
+
+                </Route>
+
+
+
+                <Route path="*" element={<NotFoundPage />} />
 
             </Routes>
         </BrowserRouter>

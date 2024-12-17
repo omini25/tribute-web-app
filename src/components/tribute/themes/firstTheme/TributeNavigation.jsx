@@ -16,7 +16,7 @@ import Header from "@/components/tribute/themes/Header.jsx";
 export default function TributeNavigation() {
 
     const navLinks = [
-        { text: "TRIBUTE", path: "tribute" , element: <Tribute/>},
+        { text: "TRIBUTE", path: "overview" , element: <Tribute/>},
         { text: "LIFE", path: "life", element: <Life/> },
         { text: "EVENTS", path: "events", element: <Events/> },
         {text: "MEMORIES", path:"memories", element: <Memories/>},

@@ -8,7 +8,7 @@ const navigation = [
     // { name: 'Company', href: '#' },
 ]
 
-export default function Header() {
+export default function AuthHeader() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
     return (

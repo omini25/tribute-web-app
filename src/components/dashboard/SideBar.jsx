@@ -1,4 +1,4 @@
-import Link from "next/link"
+import { Link } from 'react-router-dom';
 import {
     LayoutDashboard,
     Gift,
@@ -12,7 +12,7 @@ import {
     LogOut
 } from "lucide-react"
 
-export function Sidebar() {
+export default function Sidebar() {
     return (
         <div className="fixed left-0 top-0 h-full w-64 bg-blue-500 text-white p-4">
             <div className="mb-8">
@@ -65,14 +65,14 @@ export function Sidebar() {
     )
 }
 
-function NavItem({ href, icon, children }) {
+function NavItem({ to, icon, children }) { // Change 'href' to 'to'
     return (
         <Link
-            href={href}
+            to={to} // Use 'to' instead of 'href'
             className="flex items-center gap-3 px-4 py-2 text-sm font-medium hover:bg-blue-600 rounded-lg transition-colors"
         >
             {icon}
             {children}
         </Link>
-    )
+    );
 }

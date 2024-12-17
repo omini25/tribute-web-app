@@ -1,11 +1,11 @@
-"use client"
-
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
+import { Link } from "react-router-dom"
 
-export default function Signup2() {
+
+
+export default function Signup2({ onPrevious }) {
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -21,7 +21,7 @@ export default function Signup2() {
     }
 
     return (
-        <div className="max-w-3xl mx-auto p-6">
+        <div className="max-w-3xl mx-auto p-6 mt-28">
             {/* Progress Tracker */}
             <div className="flex justify-between items-center mb-12">
                 <div className="flex-1 flex items-center">
@@ -146,9 +146,9 @@ export default function Signup2() {
                         GOOGLE
                     </Button>
 
-                    <Link href="/login" className="text-blue-500 text-sm">
+                    <a href="/login" className="text-blue-500 text-sm">
                         Or Login
-                    </Link>
+                    </a>
                 </div>
 
                 <div className="flex justify-between pt-4">
@@ -156,15 +156,21 @@ export default function Signup2() {
                         type="button"
                         variant="outline"
                         className="border-blue-500 text-blue-500 hover:bg-blue-50"
+                        onClick={onPrevious}
                     >
                         BACK
                     </Button>
-                    <Button
-                        type="submit"
-                        className="border-blue-500 text-blue-500 hover:bg-blue-50 bg-white"
-                    >
-                        NEXT
-                    </Button>
+
+                    <Link to="/dashboard">
+                        <Button
+                            type="submit"
+                            className="border-blue-500 text-blue-500 hover:bg-blue-50 bg-white"
+                        >
+                            NEXT
+                        </Button>
+                    </Link>
+
+
                 </div>
             </form>
         </div>
