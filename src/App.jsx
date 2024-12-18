@@ -14,10 +14,15 @@ import {Donations} from "@/pages/tribute/Donations.jsx";
 import {Conclusions} from "@/pages/tribute/Conclusions.jsx";
 import {SignupPage} from "@/pages/auth/SignupPage.jsx";
 import {NotFoundPage} from "@/pages/NotFoundPage.jsx";
-import SideBar from "@/components/dashboard/SideBar.jsx"
 import {LoginPage} from "@/pages/auth/LoginPage.jsx";
 import Main from "@/pages/dashboard/Main.jsx";
 import {Overview} from "@/pages/dashboard/Overview.jsx";
+import DashboardGallery from "@/components/dashboard/DashboardGallery.jsx";
+import TributeFormOverview from "@/components/dashboard/TributeFormOverview.jsx";
+import TributeLife from "@/components/dashboard/TributeLife.jsx";
+import EventsForm from "@/components/dashboard/EventsForm.jsx"
+import FamilyTreeForm from "@/components/dashboard/FamilyTree.jsx";
+
 
 function App() {
     return (
@@ -49,6 +54,11 @@ function App() {
 
                 <Route path="/dashboard" element={<Main />}>
                     <Route path="overview" element={<Overview />} />
+                    <Route path="gallery" element={<DashboardGallery />} />
+                    <Route path="create-tribute" element={<TributeFormOverview />} />
+                    <Route path="tribute-life" element={<TributeLife />} />
+                    <Route path={"family-tree"} element={<FamilyTreeForm />} />
+                    <Route path={`events`} element={<EventsForm />}/>
 
                 </Route>
 

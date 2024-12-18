@@ -1,79 +1,35 @@
-import { useState, useRef, useEffect } from 'react';
-import video1 from '../../assets/Landing/Videos/5383080_Coll_wavebreak_Family_1280x720.mp4';
-import video2 from '../../assets/Landing/Videos/5341119_Coll_wavebreak_Home_1280x720.mp4';
-import video3 from '../../assets/Landing/Videos/4924507_Memory_Photo_1280x720.mp4';
-
+import { useState, useRef, useEffect } from "react";
+import video1 from "../../assets/Landing/Videos/5383080_Coll_wavebreak_Family_1280x720.mp4";
+import video2 from "../../assets/Landing/Videos/5341119_Coll_wavebreak_Home_1280x720.mp4";
+import video3 from "../../assets/Landing/Videos/4924507_Memory_Photo_1280x720.mp4";
 
 export default function Hero() {
-
     const videoRefs = useRef([]);
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-    const videos = [video1, video2, video3]; // Array of video sources
-
-    function handlePlay() {
-        const currentVideo = videoRefs.current[currentVideoIndex];
-        currentVideo.play();
-    }
+    const videos = [video1, video2, video3];
 
     useEffect(() => {
-        let nextVideoIndex = (currentVideoIndex + 1) % videos.length;
-        let nextVideo = videoRefs.current[nextVideoIndex];
-        let currentVideo = videoRefs.current[currentVideoIndex];
+        const currentVideo = videoRefs.current[currentVideoIndex];
 
-        const playNextVideo = async () => {
-            if (nextVideo && currentVideo) {
-                nextVideo.load();
-
-
-                const handleCanPlay = async () => {
-                    currentVideo.classList.add("fade-out");
-                    await new Promise(resolve => setTimeout(resolve, 500));
-
-                    currentVideo.pause();
-                    currentVideo.currentTime = 0;
-                    currentVideo.classList.remove("fade-out");
-
-                    setCurrentVideoIndex(nextVideoIndex);
-                    nextVideo.removeEventListener("canplaythrough", handleCanPlay);
-                };
-
-                nextVideo.addEventListener("canplaythrough", handleCanPlay);
-            }
-
-
+        const handleVideoEnd = () => {
+            currentVideo.classList.add("fade-out");
+            setTimeout(() => {
+                currentVideo.classList.remove("fade-out");
+                setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
+            }, 500); // Adjust for your transition duration
         };
 
         if (currentVideo) {
-
-
-            const handlePlay = () => {
-                currentVideo.onended = playNextVideo;
-            }
-            currentVideo.addEventListener("playing", handlePlay, { once: true }); // Use once: true
-
-
-            currentVideo.play().catch(error => {
-                console.error("Error playing video:", error);
-            });
-
-
-
+            currentVideo.play();
+            currentVideo.addEventListener("ended", handleVideoEnd);
         }
 
         return () => {
             if (currentVideo) {
-                currentVideo.onended = null;
-                currentVideo.removeEventListener("playing", handlePlay);
-
+                currentVideo.removeEventListener("ended", handleVideoEnd);
             }
-
-
         };
-
-
     }, [currentVideoIndex, videos]);
-
-
 
     return (
         <div className="bg-white">
@@ -82,21 +38,17 @@ export default function Hero() {
                     {videos.map((videoSrc, index) => (
                         <video
                             key={index}
-                            ref={el => (videoRefs.current[index] = el)}
-                            autoPlay={index === currentVideoIndex}
+                            ref={(el) => (videoRefs.current[index] = el)}
                             muted
-                            loop
                             playsInline
-                            className={`w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-500 ${index === currentVideoIndex ? 'opacity-100' : 'opacity-0'}`}
-
-
+                            className={`w-full h-full object-cover absolute top-0 left-0 transition-opacity duration-500 ${
+                                index === currentVideoIndex ? "opacity-100" : "opacity-0"
+                            }`}
                         >
-                            <source src={videoSrc} type="video/mp4"/>
-
+                            <source src={videoSrc} type="video/mp4" />
                         </video>
                     ))}
-
-                    <div className="absolute inset-0 bg-black opacity-30"/>
+                    <div className="absolute inset-0 bg-black opacity-30" />
                     {/* Overlay */}
                 </div>
 
@@ -123,6 +75,5 @@ export default function Hero() {
                 </div>
             </div>
         </div>
-    )
+    );
 }
-

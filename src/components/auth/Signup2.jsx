@@ -5,7 +5,7 @@ import { Link } from "react-router-dom"
 
 
 
-export default function Signup2({ onPrevious }) {
+export default function Signup2({ onPrevious, onNext }) {
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -161,14 +161,13 @@ export default function Signup2({ onPrevious }) {
                         BACK
                     </Button>
 
-                    <Link to="/dashboard">
-                        <Button
-                            type="submit"
-                            className="border-blue-500 text-blue-500 hover:bg-blue-50 bg-white"
-                        >
-                            NEXT
-                        </Button>
-                    </Link>
+                    <Button
+                        type="button"
+                        className="border-blue-500 text-blue-500 hover:bg-blue-50 bg-white"
+                        onClick={onNext}
+                    >
+                        NEXT
+                    </Button>
 
 
                 </div>

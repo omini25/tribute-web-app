@@ -28,31 +28,31 @@ export default function SideBar() {
                 <NavItem to="/dashboard/overview" icon={<LayoutDashboard size={20} />}>
                     DASHBOARD
                 </NavItem>
-                <NavItem href="/tributes" icon={<Gift size={20} />}>
-                    TRIBUTES
-                </NavItem>
-                <NavItem href="/gallery" icon={<ImageIcon size={20} />}>
+                {/*<NavItem to="/tributes" icon={<Gift size={20} />}>*/}
+                {/*    TRIBUTES*/}
+                {/*</NavItem>*/}
+                <NavItem to="/dashboard/gallery" icon={<ImageIcon size={20} />}>
                     GALLERY
                 </NavItem>
-                <NavItem href="/events" icon={<Calendar size={20} />}>
+                <NavItem to="/events" icon={<Calendar size={20} />}>
                     EVENTS
                 </NavItem>
-                <NavItem href="/users" icon={<Users size={20} />}>
+                <NavItem to="/users" icon={<Users size={20} />}>
                     USERS
                 </NavItem>
-                <NavItem href="/donations" icon={<DollarSign size={20} />}>
+                <NavItem to="/donations" icon={<DollarSign size={20} />}>
                     DONATIONS
                 </NavItem>
-                <NavItem href="/messages" icon={<MessageSquare size={20} />}>
+                <NavItem to="/messages" icon={<MessageSquare size={20} />}>
                     MESSAGES
                 </NavItem>
-                <NavItem href="/settings" icon={<Settings size={20} />}>
+                <NavItem to="/settings" icon={<Settings size={20} />}>
                     SETTINGS
                 </NavItem>
-                <NavItem href="/help" icon={<HelpCircle size={20} />}>
+                <NavItem to="/help" icon={<HelpCircle size={20} />}>
                     HELP CENTER
                 </NavItem>
-                <NavItem href="/logout" icon={<LogOut size={20} />}>
+                <NavItem to="/logout" icon={<LogOut size={20} />}>
                     LOG OUT
                 </NavItem>
             </nav>
