@@ -1,12 +1,11 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Upload } from "lucide-react"
+import {Link} from "react-router-dom";
 
-export default function MusicPage() {
+export default function MusicTheme() {
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             <div className="space-y-2 mb-8">
@@ -17,13 +16,13 @@ export default function MusicPage() {
             {/* Music Options */}
             <div className="flex flex-wrap gap-6 mb-8">
                 <div className="flex items-center space-x-2">
-                    <Checkbox id="noMusic" />
+                    <Checkbox id="noMusic"/>
                     <Label htmlFor="noMusic" className="text-blue-500">
                         No Music
                     </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                    <Checkbox id="defaultMusic" />
+                    <Checkbox id="defaultMusic"/>
                     <Label htmlFor="defaultMusic" className="text-blue-500">
                         Default Music
                     </Label>
@@ -36,7 +35,7 @@ export default function MusicPage() {
                     variant="outline"
                     className="h-16 w-full md:w-auto border-2 border-dashed border-blue-300 text-blue-500 hover:bg-blue-50"
                 >
-                    <Upload className="w-4 h-4 mr-2" />
+                    <Upload className="w-4 h-4 mr-2"/>
                     UPLOAD MUSIC
                 </Button>
             </div>
@@ -54,7 +53,7 @@ export default function MusicPage() {
                             </div>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <div className="aspect-square bg-blue-50" />
+                            <div className="aspect-square bg-blue-50"/>
                         </CardContent>
                     </Card>
 
@@ -67,7 +66,7 @@ export default function MusicPage() {
                             </div>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <div className="aspect-square bg-blue-50" />
+                            <div className="aspect-square bg-blue-50"/>
                         </CardContent>
                     </Card>
 
@@ -80,20 +79,24 @@ export default function MusicPage() {
                             </div>
                         </CardHeader>
                         <CardContent className="p-0">
-                            <div className="aspect-square bg-blue-50" />
+                            <div className="aspect-square bg-blue-50"/>
                         </CardContent>
                     </Card>
                 </div>
             </div>
 
             {/* Navigation */}
-            <div className="flex justify-between">
-                <Button className="bg-blue-500 hover:bg-blue-600 min-w-[120px]">
-                    MEMORIES
-                </Button>
-                <Button className="bg-blue-500 hover:bg-blue-600 min-w-[120px]">
-                    DONATIONS
-                </Button>
+            <div className="flex justify-between mt-16">
+                <Link to={`/dashboard/donations-form`}>
+                    <Button className="bg-blue-500 hover:bg-blue-600 min-w-[120px]">
+                        DONATIONS
+                    </Button>
+                </Link>
+                <Link to={`/dashboard/preview`}>
+                    <Button className="bg-blue-500 hover:bg-blue-600 min-w-[120px]">
+                        PREVIEW
+                    </Button>
+                </Link>
             </div>
         </div>
     )

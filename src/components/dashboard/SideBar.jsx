@@ -17,7 +17,7 @@ export default function SideBar() {
 
 
     return (
-        <div className="fixed left-0 top-0 h-full w-64 bg-blue-500 text-white p-4">
+        <div className="fixed left-0 top-0 h-full w-64 bg-primary text-white p-4">
             <div className="mb-8">
                 <div className="h-12 w-12 bg-white rounded-full flex items-center justify-center text-blue-500">
                     LOGO

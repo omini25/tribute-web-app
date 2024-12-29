@@ -130,9 +130,9 @@ export default function EventsForm() {
                         LIFE
                     </Button>
                 </Link>
-                <Link to={`/dashboard/events`}>
+                <Link to={`/dashboard/memories-form`}>
                     <Button className="bg-blue-500 hover:bg-blue-600 min-w-[120px]">
-                        EVENTS
+                       MEMORIES
                     </Button>
                 </Link>
             </div>

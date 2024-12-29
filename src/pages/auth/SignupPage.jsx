@@ -1,36 +1,75 @@
-import { useState } from "react";
-import Signup1 from "@/components/auth/Signup1.jsx";
-import Signup2 from "@/components/auth/Signup2.jsx";
-import AuthHeader from "@/components/auth/AuthHeader.jsx";
-import Pricing from "@/components/auth/Pricing.jsx";
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Progress } from "@/components/ui/progress"
+import DeceasedInfoForm from "@/components/auth/DeceasedInfoForm.jsx"
+import UserInfoForm from "@/components/auth/UserInfoForm.jsx"
+import PlanSelection from "@/components/auth/PlanSelection.jsx"
+import Header from "@/components/landing/Header.jsx";
 
 export const SignupPage = () => {
-    const [currentStep, setCurrentStep] = useState(1);
-    const [showPricing, setShowPricing] = useState(false);
+    const [step, setStep] = useState(1)
+    const [formData, setFormData] = useState({
+        deceased: {},
+        user: {},
+        plan: null,
+        theme: null
+    })
 
-    const handleNext = () => {
-        if (currentStep === 1) {
-            setCurrentStep(2);
-        } else if (currentStep === 2) {
-            setShowPricing(true);
-        }
-    };
+    const updateFormData = (section, data) => {
+        setFormData(prev => ({ ...prev, [section]: { ...prev[section], ...data } }))
+    }
 
-    const handlePrevious = () => {
-        if (currentStep === 2) {
-            setCurrentStep(1);
-        } else if (showPricing) {
-            setShowPricing(false);
-            setCurrentStep(2); // Go back to Signup2 from Pricing
-        }
-    };
+    const nextStep = () => setStep(prev => Math.min(prev + 1, 3))
+    const prevStep = () => setStep(prev => Math.max(prev - 1, 1))
 
     return (
-        <>
-            <AuthHeader />
-            {currentStep === 1 && <Signup1 onNext={handleNext} />}
-            {currentStep === 2 && <Signup2 onNext={handleNext} onPrevious={handlePrevious} />}
-            {showPricing && <Pricing onPrevious={handlePrevious} />}
-        </>
-    );
-};
+        <div className="min-h-screen bg-gray-50 py-12">
+            <Header />
+
+
+            <div className="container mx-auto max-w-3xl mt-10">
+                <h1 className="mb-8 text-center text-3xl font-bold">
+                    Create a Memorial
+                </h1>
+                <Progress value={step * 33.33} className="mb-8" />
+
+                {step === 1 && (
+                    <DeceasedInfoForm
+                        onSubmit={data => {
+                            updateFormData("deceased", data)
+                            nextStep()
+                        }}
+                    />
+                )}
+                {step === 2 && (
+                    <UserInfoForm
+                        onSubmit={data => {
+                            updateFormData("user", data)
+                            nextStep()
+                        }}
+                    />
+                )}
+                {step === 3 && (
+                    <PlanSelection
+                        onSubmit={data => {
+                            updateFormData("plan", data) /* Proceed to payment */
+                        }}
+                    />
+                )}
+
+                <div className="mt-8 flex justify-between">
+                    {step > 1 && (
+                        <Button onClick={prevStep} variant="outline">
+                            Previous
+                        </Button>
+                    )}
+                    {step < 3 && (
+                        <Button onClick={nextStep} className="ml-auto">
+                            Next
+                        </Button>
+                    )}
+                </div>
+            </div>
+        </div>
+    )
+}

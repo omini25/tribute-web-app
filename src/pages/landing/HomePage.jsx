@@ -1,118 +1,276 @@
-import Testimonial from "@/components/landing/Testimonial.jsx";
-import Recent from "@/components/landing/Recent.jsx";
-import {Footer} from "@/components/landing/Footer.jsx";
-import Hero from "@/components/landing/Hero.jsx";
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { VideoSlider } from "@/components/landing/VideoSlider.jsx"
+import { Heart, Users, ImageIcon, Shield, Star } from "lucide-react"
+import {Link} from "react-router-dom";
 import Header from "@/components/landing/Header.jsx";
 
-
-
-function HomePage() {
+export default function  HomePage() {
     return (
-        <div className="bg-gray-100">
-            <Header/>
+        <div className="flex min-h-screen flex-col">
+            {/* Header */}
+            <Header />
 
-            <Hero />
-
-            <section id="works" className="relative bg-gray-900 py-10 sm:py-16 lg:py-24 dark:bg-neutral-950">
-                <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                    <div className="max-w-2xl mx-auto text-center">
-                        <h2 className="text-4xl text-white font-extrabold mx-auto md:text-6xl lg:text-5xl">
-                            Create an Online Memorial Site in Minutes
-                        </h2>
-                        <p className="max-w-2xl mx-auto mt-4 text-base text-gray-400 leading-relaxed md:text-2xl">
-                            Simple to use, customizable and designed to help you celebrate your loved one's life story
-                        </p>
+            <main className="flex-1">
+                {/* Hero Section with Video Slider */}
+                <section className="relative h-screen">
+                    <VideoSlider />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="container px-4 md:px-6">
+                            <div className="max-w-2xl space-y-4 text-center text-white">
+                                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
+                                    Preserve Their Legacy Forever
+                                </h1>
+                                <p className="mx-auto max-w-[700px] text-lg text-gray-200 md:text-xl">
+                                    Create beautiful online memorials to celebrate and remember
+                                    your loved ones. Share memories, photos, and stories with
+                                    family and friends.
+                                </p>
+                                <div className="flex justify-center space-x-4">
+                                    <Button
+                                        size="lg"
+                                        className="bg-white text-gray-900 hover:bg-gray-100"
+                                    >
+                                        Create Memorial
+                                    </Button>
+                                    <Link to="/tribute">
+                                        <Button
+                                            size="lg"
+                                            variant="outline"
+                                            className="border-white text-white hover:bg-white/20"
+                                        >
+                                            View Examples
+                                        </Button>
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div className="relative mt-12 lg:mt-20">
-                        <div className="absolute inset-x-0 hidden xl:px-44 top-2 md:block md:px-20 lg:px-28">
+                </section>
+
+                {/* Features Section */}
+                <section id="features" className="bg-gray-50 py-24">
+                    <div className="container px-4 md:px-6">
+                        <div className="text-center">
+                            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                                Everything You Need to Honor Their Memory
+                            </h2>
+                            <p className="mx-auto mt-4 max-w-[700px] text-gray-500 md:text-lg">
+                                Our platform provides all the tools you need to create a lasting
+                                tribute
+                            </p>
+                        </div>
+                        <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            {[
+                                {
+                                    icon: Heart,
+                                    title: "Personalized Tributes",
+                                    description:
+                                        "Create beautiful, customized memorial pages that truly reflect their life and legacy."
+                                },
+                                {
+                                    icon: Users,
+                                    title: "Collaborative Memories",
+                                    description:
+                                        "Invite family and friends to share their own stories, photos, and memories."
+                                },
+                                {
+                                    icon: ImageIcon,
+                                    title: "Unlimited Media",
+                                    description:
+                                        "Upload unlimited photos and videos to create a rich visual history."
+                                },
+                                {
+                                    icon: Shield,
+                                    title: "Private & Secure",
+                                    description:
+                                        "Control who can view and contribute to the memorial with advanced privacy settings."
+                                },
+                                {
+                                    icon: Star,
+                                    title: "Premium Features",
+                                    description:
+                                        "Access advanced features like virtual ceremonies and memory books."
+                                }
+                            ].map(feature => (
+                                <Card key={feature.title} className="border-none">
+                                    <CardContent className="pt-6">
+                                        <feature.icon className="h-12 w-12 text-primary" />
+                                        <h3 className="mt-4 text-xl font-bold">{feature.title}</h3>
+                                        <p className="mt-2 text-gray-500">{feature.description}</p>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Featured Memorials */}
+                <section className="py-24">
+                    <div className="container px-4 md:px-6">
+                        <div className="text-center">
+                            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                                Featured Memorials
+                            </h2>
+                            <p className="mx-auto mt-4 max-w-[700px] text-gray-500 md:text-lg">
+                                Explore some of our beautiful memorial pages
+                            </p>
+                        </div>
+                        <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+                            {[1, 2, 3].map(i => (
+                                <Card key={i} className="overflow-hidden">
+                                    <img
+                                        src="/placeholder.svg"
+                                        alt={`Featured Memorial ${i}`}
+                                        width={400}
+                                        height={300}
+                                        className="h-48 w-full object-cover"
+                                    />
+                                    <CardContent className="p-6">
+                                        <h3 className="text-xl font-bold">In Memory of John Doe</h3>
+                                        <p className="mt-2 text-sm text-gray-500">1945 - 2023</p>
+                                        <p className="mt-4 text-gray-600">
+                                            A beloved father, grandfather, and friend who touched
+                                            countless lives...
+                                        </p>
+                                        <Button className="mt-4" variant="outline">
+                                            View Memorial
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Testimonials */}
+                <section id="testimonials" className="bg-gray-50 py-24">
+                    <div className="container px-4 md:px-6">
+                        <div className="text-center">
+                            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                                What Families Say
+                            </h2>
+                            <p className="mx-auto mt-4 max-w-[700px] text-gray-500 md:text-lg">
+                                Hear from families who have created memorials with us
+                            </p>
+                        </div>
+                        <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            {[1, 2, 3].map(i => (
+                                <Card key={i}>
+                                    <CardContent className="p-6">
+                                        <div className="flex items-center space-x-4">
+                                            <img
+                                                src="/placeholder.svg"
+                                                alt={`Testimonial ${i}`}
+                                                width={48}
+                                                height={48}
+                                                className="rounded-full"
+                                            />
+                                            <div>
+                                                <p className="font-semibold">Sarah Johnson</p>
+                                                <p className="text-sm text-gray-500">
+                                                    Created memorial in 2023
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <p className="mt-4 text-gray-600">
+                                            "Creating a memorial helped our family come together and
+                                            share our memories. It's become a precious space for us to
+                                            remember and celebrate..."
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* CTA Section */}
+                <section className="relative overflow-hidden py-24">
+                    <div className="container relative z-10 px-4 md:px-6">
+                        <div className="mx-auto max-w-4xl text-center">
+                            <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                                Ready to Create a Lasting Tribute?
+                            </h2>
+                            <p className="mx-auto mt-4 max-w-[700px] text-gray-500 md:text-lg">
+                                Join thousands of families who have created beautiful online
+                                memorials
+                            </p>
+                            <div className="mt-8 flex justify-center space-x-4">
+                                <Button size="lg">Create Memorial</Button>
+                                <Button size="lg" variant="outline">
+                                    Learn More
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            {/* Footer */}
+            <footer className="border-t bg-background">
+                <div className="container px-4 py-12 md:px-6">
+                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                        <div>
                             <img
-                                alt=""
-                                loading="lazy"
-                                width={1000}
-                                height={500}
-                                decoding="async"
-                                data-nimg={1}
-                                className="w-full"
-                                style={{color: "transparent"}}
-                                src="https://cdn.rareblocks.xyz/collection/celebration/images/steps/2/curved-dotted-line.svg"
+                                src="/placeholder.svg"
+                                alt="Memories Logo"
+                                width={150}
+                                height={40}
+                                className="h-10 w-auto"
                             />
+                            <p className="mt-4 text-sm text-gray-500">
+                                Helping families preserve and share memories since 2010
+                            </p>
                         </div>
-                        <div className="relative grid grid-cols-1 text-center gap-y-12 md:grid-cols-3 gap-x-12">
-                            <div>
-                                <div
-                                    className="flex items-center justify-center w-16 h-16 mx-auto bg-white border-2 border-gray-200 rounded-full shadow">
-                                    <span className="text-xl font-semibold text-gray-700">1</span>
-                                </div>
-                                <h3 className="mt-6 text-xl  text-white font-semibold leading-tight md:mt-10">
-                                    Select template
-                                </h3>
-                                <p className="mt-4 text-base text-gray-400 md:text-lg">
-                                    Select template accourding to your requirement
-                                </p>
-                            </div>
-                            <div>
-                                <div
-                                    className="flex items-center justify-center w-16 h-16 mx-auto bg-white border-2 border-gray-200 rounded-full shadow">
-                                    <span className="text-xl font-semibold text-gray-700">2</span>
-                                </div>
-                                <h3 className="mt-6 text-xl text-white font-semibold leading-tight md:mt-10">
-                                    Enter Your Details
-                                </h3>
-                                <p className="mt-4 text-base text-gray-400 md:text-lg">
-                                    Put in your personalized details and let the AI do the rest.
-                                </p>
-                            </div>
-                            <div>
-                                <div
-                                    className="flex items-center justify-center w-16 h-16 mx-auto bg-white border-2 border-gray-200 rounded-full shadow">
-                                    <span className="text-xl font-semibold text-gray-700">3</span>
-                                </div>
-                                <h3 className="mt-6 text-xl text-white font-semibold leading-tight md:mt-10">
-                                    Publish it
-                                </h3>
-                                <p className="mt-4 text-base text-gray-400 md:text-lg">
-                                    Use output as you like
-                                </p>
-                            </div>
+                        <div>
+                            <h3 className="mb-4 text-sm font-semibold">Product</h3>
+                            <ul className="space-y-2 text-sm text-gray-500">
+                                <li>
+                                    <Link to="#">Features</Link>
+                                </li>
+                                <li>
+                                    <Link to="#">Pricing</Link>
+                                </li>
+                                <li>
+                                    <Link to="#">Examples</Link>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 className="mb-4 text-sm font-semibold">Company</h3>
+                            <ul className="space-y-2 text-sm text-gray-500">
+                                <li>
+                                    <Link to="#">About</Link>
+                                </li>
+                                <li>
+                                    <Link to="#">Blog</Link>
+                                </li>
+                                <li>
+                                    <Link to="#">Contact</Link>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 className="mb-4 text-sm font-semibold">Legal</h3>
+                            <ul className="space-y-2 text-sm text-gray-500">
+                                <li>
+                                    <Link to="#">Privacy</Link>
+                                </li>
+                                <li>
+                                    <Link to="#">Terms</Link>
+                                </li>
+                                <li>
+                                    <Link to="#">Cookie Policy</Link>
+                                </li>
+                            </ul>
                         </div>
                     </div>
-                </div>
-                <div
-                    className="absolute inset-0 m-auto max-w-xs h-[357px] blur-[118px] sm:max-w-md md:max-w-lg"
-                    style={{
-                        background:
-                            "radial-gradient(1.89deg, rgba(34, 78, 95, 0.4) -1000%, rgba(191, 227, 205, 0.26) 1500.74%, rgba(34, 140, 165, 0.41) 56.49%, rgba(28, 47, 99, 0.11) 1150.91%)"
-                    }}
-                ></div>
-            </section>
-
-
-            {/* Image Slider */}
-            <Recent/>
-
-
-            <Testimonial/>
-
-            <section className="bg-gray-50">
-                <div className="p-8 md:p-12 lg:px-16 lg:py-24">
-                    <div className="mx-auto max-w-lg text-center">
-                        <h2 className="text-2xl font-bold text-gray-900 md:text-3xl">
-                            Lorem, ipsum dolor sit amet consectetur adipisicing elit
-                        </h2>
-
-                        <p className="hidden text-gray-500 sm:mt-4 sm:block">
-                            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quae dolor officia blanditiis
-                            repellat in, vero, aperiam porro ipsum laboriosam consequuntur exercitationem incidunt
-                            tempora nisi?
-                        </p>
+                    <div className="mt-8 border-t pt-8 text-center text-sm text-gray-500">
+                        © {new Date().getFullYear()} Memories. All rights reserved.
                     </div>
-
                 </div>
-            </section>
-
-            <Footer/>
+            </footer>
         </div>
-    );
+    )
 }
-
-export default HomePage;

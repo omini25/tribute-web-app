@@ -4,7 +4,6 @@ import { AboutSection } from "@/components/tribute/themes/sections/AboutSection.
 import { FamilySection } from "@/components/tribute/themes/sections/FamilySection.jsx"
 import { TimelineSection } from "@/components/tribute/themes/sections/TimelineSection.jsx"
 import { Sidebar } from "@/components/tribute/themes/sections/Sidebar.jsx"
-import Header from "@/components/landing/Header.jsx";
 
 // This would normally come from your database
 const MEMORIAL_DATA = {
@@ -64,47 +63,42 @@ const MEMORIAL_DATA = {
 
 export const LandingTributePage = () => {
     return (
-        <>
-            <Header />
-            <div className="min-h-screen bg-background mx-auto max-w-7xl mt-20">
-                <HeroBanner
-                    name={MEMORIAL_DATA.name}
-                    dates={MEMORIAL_DATA.dates}
-                    profileImage={MEMORIAL_DATA.profileImage}
-                    bannerImage={MEMORIAL_DATA.bannerImage}
-                />
-                <div className="h-16"/>
-                {/* Spacing for profile image overflow */}
-                <MemorialNav/>
-                <main className="container mx-auto px-4 py-8">
-                    <div className="grid gap-8 md:grid-cols-[1fr_300px]">
-                        <div className="space-y-8">
-                            <AboutSection
-                                biography={MEMORIAL_DATA.biography}
-                                birthDate={MEMORIAL_DATA.birthDate}
-                                birthPlace={MEMORIAL_DATA.birthPlace}
-                                deathDate={MEMORIAL_DATA.deathDate}
-                                deathPlace={MEMORIAL_DATA.deathPlace}
-                            />
-
-                            <FamilySection
-                                immediateFamily={MEMORIAL_DATA.immediateFamily}
-                                extendedFamily={MEMORIAL_DATA.extendedFamily}
-                            />
-
-                            <TimelineSection events={MEMORIAL_DATA.timeline}/>
-                        </div>
-
-                        <Sidebar
-                            photoCount={MEMORIAL_DATA.stats.photoCount}
-                            viewCount={MEMORIAL_DATA.stats.viewCount}
-                            contributorCount={MEMORIAL_DATA.stats.contributorCount}
-                            recentUpdates={MEMORIAL_DATA.recentUpdates}
+        <div className="min-h-screen bg-background">
+            <HeroBanner
+                name={MEMORIAL_DATA.name}
+                dates={MEMORIAL_DATA.dates}
+                profileImage={MEMORIAL_DATA.profileImage}
+                bannerImage={MEMORIAL_DATA.bannerImage}
+            />
+            <div className="h-16" /> {/* Spacing for profile image overflow */}
+            <MemorialNav />
+            <main className="container mx-auto px-4 py-8">
+                <div className="grid gap-8 md:grid-cols-[1fr_300px]">
+                    <div className="space-y-8">
+                        <AboutSection
+                            biography={MEMORIAL_DATA.biography}
+                            birthDate={MEMORIAL_DATA.birthDate}
+                            birthPlace={MEMORIAL_DATA.birthPlace}
+                            deathDate={MEMORIAL_DATA.deathDate}
+                            deathPlace={MEMORIAL_DATA.deathPlace}
                         />
-                    </div>
-                </main>
-            </div>
 
-        </>
+                        <FamilySection
+                            immediateFamily={MEMORIAL_DATA.immediateFamily}
+                            extendedFamily={MEMORIAL_DATA.extendedFamily}
+                        />
+
+                        <TimelineSection events={MEMORIAL_DATA.timeline} />
+                    </div>
+
+                    <Sidebar
+                        photoCount={MEMORIAL_DATA.stats.photoCount}
+                        viewCount={MEMORIAL_DATA.stats.viewCount}
+                        contributorCount={MEMORIAL_DATA.stats.contributorCount}
+                        recentUpdates={MEMORIAL_DATA.recentUpdates}
+                    />
+                </div>
+            </main>
+        </div>
     )
 }
