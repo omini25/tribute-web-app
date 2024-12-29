@@ -1,6 +1,5 @@
 import { ContactForm } from "@/components/ContactForm.jsx"
 import { ContactInfo } from "@/components/ContactInfo.jsx"
-import { Map } from "@/components/map"
 import { Toaster } from "@/components/ui/toaster"
 import {Footer} from "@/components/landing/Footer.jsx";
 import Header from "@/components/landing/Header.jsx";
@@ -23,7 +22,6 @@ export default function ContactPage() {
                     </div>
                     <div className="space-y-8">
                         <ContactInfo/>
-                        {/*<Map />*/}
                     </div>
                 </div>
                 <Toaster/>
