@@ -103,9 +103,14 @@ export const LoginPage = () => {
                             </div>
                         </div>
 
-                        <Button type="submit" className="w-full">
-                            Log in
-                        </Button>
+
+                        <Link to="/dashboard">
+                            <Button type="submit" className="w-full mt-10">
+                                Log in
+                            </Button>
+                        </Link>
+
+
                     </form>
 
                     <div className="mt-6">
@@ -144,7 +149,7 @@ export const LoginPage = () => {
 
                     <p className="mt-8 text-center text-sm text-gray-500">
                         Don't have an account?{" "}
-                        <Link href="/signup" className="text-primary hover:text-primary/90">
+                        <Link to="/signup" className="text-primary hover:text-primary/90">
                             Create an account
                         </Link>
                     </p>

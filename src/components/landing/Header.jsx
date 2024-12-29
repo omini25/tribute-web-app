@@ -47,7 +47,7 @@ export default function Header() {
                 </Link>
                 <nav className="hidden space-x-6 md:flex">
                     <Link
-                        to="#features"
+                        to="/features"
                         className="text-sm font-medium text-muted-foreground hover:text-primary"
                     >
                         Features
@@ -59,10 +59,17 @@ export default function Header() {
                         Testimonials
                     </Link>
                     <Link
-                        to="#pricing"
+                        to="/pricing"
                         className="text-sm font-medium text-muted-foreground hover:text-primary"
                     >
                         Pricing
+                    </Link>
+
+                    <Link
+                        to="/contact"
+                        className="text-sm font-medium text-muted-foreground hover:text-primary"
+                    >
+                        Contact
                     </Link>
                 </nav>
                 <div className="flex items-center space-x-4">

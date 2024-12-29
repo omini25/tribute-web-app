@@ -33,11 +33,11 @@ export default {
   	}
   },
 	plugins: [
-		require('@tailwindcss/typography'),
-		require('@tailwindcss/forms'),
-		require('@tailwindcss/aspect-ratio'),
-		// require('@tailwindcss/container-queries'),
-		require('tailwindcss-bg-patterns'),
+		'@tailwindcss/typography',
+		'@tailwindcss/forms',
+		'@tailwindcss/aspect-ratio',
+		// '@tailwindcss/container-queries',  // If using, ensure proper setup for container queries
+		'tailwindcss-bg-patterns',
 	],
 }
 

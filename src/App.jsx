@@ -28,6 +28,9 @@ import Preview from "@/components/dashboard/Preview.jsx";
 import DonationForm from "@/components/dashboard/DonationForm.jsx";
 import {ClassicTheme} from "@/components/tribute/themes/ClassicTheme.jsx";
 import DashboardPage from "@/pages/DashboadPage.jsx";
+import PricingPage from "@/pages/landing/PricingPage.jsx";
+import FeaturesPage from "@/pages/landing/FeaturesPage.jsx";
+import ContactPage from "@/pages/landing/ContactPage.jsx";
 
 
 function App() {
@@ -44,6 +47,9 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/tribute" element={<LandingTributePage />} />
                 <Route path="/tribute/classic" element={<ClassicTheme />} />
+                <Route path="/pricing" element={<PricingPage />} />
+                <Route path="/features" element={<FeaturesPage />} />
+                <Route path="/contact" element={<ContactPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={<LoginPage />} />
 
