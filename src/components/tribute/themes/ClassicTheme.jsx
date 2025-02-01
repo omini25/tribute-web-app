@@ -11,10 +11,10 @@ export function ClassicTheme({ memorialData }) {
     return (
         <div className="min-h-screen bg-stone-100 text-stone-800 font-serif">
             <HeroBanner
-                name={memorialData.name}
-                dates={memorialData.dates}
-                profileImage={memorialData.profileImage}
-                bannerImage={memorialData.bannerImage}
+                name={memorialData?.name}
+                dates={memorialData?.dates}
+                profileImage={memorialData?.profileImage}
+                bannerImage={memorialData?.bannerImage}
                 theme="classic"
             />
 
@@ -26,19 +26,19 @@ export function ClassicTheme({ memorialData }) {
                 <div className="grid gap-8 md:grid-cols-[1fr_300px]">
                     <div className="space-y-8">
                         <AboutSection
-                            biography={memorialData.biography}
-                            birthDate={memorialData.birthDate}
-                            birthPlace={memorialData.birthPlace}
-                            deathDate={memorialData.deathDate}
-                            deathPlace={memorialData.deathPlace}
+                            biography={memorialData?.biography}
+                            birthDate={memorialData?.birthDate}
+                            birthPlace={memorialData?.birthPlace}
+                            deathDate={memorialData?.deathDate}
+                            deathPlace={memorialData?.deathPlace}
                         />
 
                         <FamilySection
-                            immediateFamily={memorialData.immediateFamily}
-                            extendedFamily={memorialData.extendedFamily}
+                            immediateFamily={memorialData?.immediateFamily}
+                            extendedFamily={memorialData?.extendedFamily}
                         />
 
-                        <TimelineSection events={memorialData.timeline} />
+                        <TimelineSection events={memorialData?.timeline} />
 
                         <Card className="bg-white shadow-md">
                             <CardHeader>
@@ -47,12 +47,12 @@ export function ClassicTheme({ memorialData }) {
                             <CardContent>
                                 <p className="mb-4">
                                     In lieu of flowers, please consider donating to the following
-                                    organization in memory of {memorialData.name}:
+                                    organization in memory of {memorialData?.name}:
                                 </p>
                                 <h3 className="text-lg font-semibold mb-2">
-                                    {memorialData.donationOrg}
+                                    {memorialData?.donationOrg}
                                 </h3>
-                                <p className="mb-4">{memorialData.donationDescription}</p>
+                                <p className="mb-4">{memorialData?.donationDescription}</p>
                                 <Button className="bg-stone-800 hover:bg-stone-700 text-white">
                                     Make a Donation
                                 </Button>
@@ -61,10 +61,10 @@ export function ClassicTheme({ memorialData }) {
                     </div>
 
                     <Sidebar
-                        photoCount={memorialData.stats.photoCount}
-                        viewCount={memorialData.stats.viewCount}
-                        contributorCount={memorialData.stats.contributorCount}
-                        recentUpdates={memorialData.recentUpdates}
+                        photoCount={memorialData?.stats.photoCount}
+                        viewCount={memorialData?.stats.viewCount}
+                        contributorCount={memorialData?.stats.contributorCount}
+                        recentUpdates={memorialData?.recentUpdates}
                     />
                 </div>
             </main>

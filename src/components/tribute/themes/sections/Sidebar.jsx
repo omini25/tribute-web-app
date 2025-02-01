@@ -60,7 +60,7 @@ export function Sidebar({
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
-                        {recentUpdates.map(update => (
+                        {recentUpdates && recentUpdates.map(update => (
                             <div key={update.id} className="flex items-start gap-4">
                                 <Avatar className="h-8 w-8">
                                     <AvatarImage src={update.user.image} />

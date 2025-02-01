@@ -1,12 +1,59 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Check } from "lucide-react"
-import {Link} from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Check } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { server } from "@/server.js";
+import { useDispatch } from 'react-redux';
+import { loginSuccess } from '@/redux/slices/authSlice';
+import { toast } from 'react-hot-toast';
 
 export const LoginPage = () => {
-    const [showPassword, setShowPassword] = useState(false)
+    const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/dashboard');
+            toast.error('You are already logged in');
+        }
+    }, [navigate]);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        try {
+            const response = await axios.post(`${server}/login`, {
+                email,
+                password,
+            });
+            if (response.data.access_token) {
+                dispatch(loginSuccess({
+                    user: response.data.user,
+                    token: response.data.access_token,
+                }));
+                navigate('/dashboard');
+                toast.success('Login successful');
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+                localStorage.setItem('token', response.data.access_token);
+            } else {
+                console.error('Login error', response);
+                toast.error(response.data.message || 'Login failed');
+            }
+        } catch (error) {
+            console.error('Login error', error);
+            alert('An error occurred. Please try again.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="flex min-h-screen flex-col lg:flex-row">
@@ -43,16 +90,6 @@ export const LoginPage = () => {
                             </li>
                         ))}
                     </ul>
-
-                    {/*<div className="mt-12">*/}
-                    {/*    <img*/}
-                    {/*        src="/placeholder.svg"*/}
-                    {/*        alt="Memorial Preview"*/}
-                    {/*        width={600}*/}
-                    {/*        height={400}*/}
-                    {/*        className="rounded-lg shadow-xl"*/}
-                    {/*    />*/}
-                    {/*</div>*/}
                 </div>
             </div>
 
@@ -63,7 +100,7 @@ export const LoginPage = () => {
                         Log in to Memories
                     </h2>
 
-                    <form className="mt-8 space-y-6">
+                    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                         <div className="space-y-2">
                             <Label htmlFor="email">Email address</Label>
                             <Input
@@ -72,6 +109,8 @@ export const LoginPage = () => {
                                 placeholder="Enter your email address"
                                 required
                                 className="w-full"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
 
@@ -79,7 +118,7 @@ export const LoginPage = () => {
                             <div className="flex items-center justify-between">
                                 <Label htmlFor="password">Password</Label>
                                 <Link
-                                    href="/forgot-password"
+                                    to="/forgot-password"
                                     className="text-sm text-primary hover:text-primary/90"
                                 >
                                     Forgot your password?
@@ -92,6 +131,8 @@ export const LoginPage = () => {
                                     placeholder="Enter your password"
                                     required
                                     className="w-full"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
                                 />
                                 <button
                                     type="button"
@@ -103,52 +144,13 @@ export const LoginPage = () => {
                             </div>
                         </div>
 
-
-                        <Link to="/dashboard">
-                            <Button type="submit" className="w-full mt-10">
-                                Log in
-                            </Button>
-                        </Link>
-
-
+                        <Button type="submit" className="w-full mt-10" disabled={loading}>
+                            {loading ? 'Loading...' : 'Log in'}
+                        </Button>
                     </form>
 
-                    <div className="mt-6">
-                        <div className="relative">
-                            <div className="absolute inset-0 flex items-center">
-                                <div className="w-full border-t border-gray-300" />
-                            </div>
-                            <div className="relative flex justify-center text-sm">
-                                <span className="bg-gray-50 px-2 text-gray-500">OR</span>
-                            </div>
-                        </div>
-
-                        <div className="mt-6 space-y-4">
-                            <Button variant="outline" className="w-full">
-                                <img
-                                    src="/placeholder.svg"
-                                    alt="Google"
-                                    width={20}
-                                    height={20}
-                                    className="mr-2 h-5 w-5"
-                                />
-                                Login with Google
-                            </Button>
-                            <Button variant="outline" className="w-full">
-                                <img
-                                    src="/placeholder.svg"
-                                    alt="Apple"
-                                    width={20}
-                                    height={20}
-                                    className="mr-2 h-5 w-5"
-                                />
-                                Login with Apple
-                            </Button>
-                        </div>
-                    </div>
-
                     <p className="mt-8 text-center text-sm text-gray-500">
-                        Don't have an account?{" "}
+                        Don&#39;t have an account?{" "}
                         <Link to="/signup" className="text-primary hover:text-primary/90">
                             Create an account
                         </Link>
@@ -156,5 +158,5 @@ export const LoginPage = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};

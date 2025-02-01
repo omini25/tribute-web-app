@@ -186,7 +186,7 @@ export default function TributeFormOverview() {
                 {/* Submit Button */}
                 <div className="flex justify-center">
                     <Link to="/dashboard/tribute-life">  {/* Wrap the button in a Link */}
-                        <Button className="bg-blue-500 hover:bg-blue-600 text-white px-8">
+                        <Button className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8">
                             LIFE OF PERSON
                         </Button>
                     </Link>

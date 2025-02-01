@@ -1,13 +1,14 @@
 import { Bell } from "lucide-react"
 import  Sidebar  from "@/components/dashboard/SideBar"
 import {Outlet} from "react-router-dom";
+import {SidebarMenu} from "@/components/main-dashboard/SidebarMenu.jsx";
 
 
 export default function Main() {
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="flex"> {/* Added flex container */}
-                <Sidebar />
+                <SidebarMenu />
                 <div className="flex-grow"> {/* Ensures content takes remaining space */}
                     <div className="p-4 bg-blue-500 w-full"> {/* Adjusted width */}
                         <div className="flex justify-end">

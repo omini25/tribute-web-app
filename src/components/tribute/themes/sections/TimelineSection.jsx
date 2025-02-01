@@ -4,7 +4,7 @@ import { format } from "date-fns"
 export function TimelineSection({ events }) {
     return (
         <div className="relative space-y-8">
-            {events.map((event, index) => (
+            {events && events.map((event, index) => (
                 <div key={index} className="relative pl-8">
                     <div className="absolute left-0 top-0 h-full w-px bg-border">
                         <div className="absolute left-[-4px] top-6 h-2 w-2 rounded-full bg-primary" />

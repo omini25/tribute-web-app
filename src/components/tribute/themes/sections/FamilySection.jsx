@@ -9,7 +9,7 @@ function FamilyGroup({ title, members }) {
             </CardHeader>
             <CardContent>
                 <div className="grid gap-4">
-                    {members.map((member, index) => (
+                    {members && members.map((member, index) => (
                         <div key={index} className="flex items-center gap-4">
                             <Avatar>
                                 <AvatarImage src={member.image} />

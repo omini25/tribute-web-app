@@ -1,19 +1,31 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { VideoSlider } from "@/components/landing/VideoSlider.jsx"
-import { Heart, Users, ImageIcon, Shield, Star } from "lucide-react"
-import {Link} from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { VideoSlider } from "@/components/landing/VideoSlider.jsx";
+import { Heart, Users, ImageIcon, Shield, Star } from "lucide-react";
+import { Link } from "react-router-dom";
 import Header from "@/components/landing/Header.jsx";
-import {Footer} from "@/components/landing/Footer.jsx";
+import { Footer } from "@/components/landing/Footer.jsx";
+import { server } from "@/server.js";
 
-export default function  HomePage() {
+export default function HomePage() {
+    const [memorials, setMemorials] = useState([]);
+
+    useEffect(() => {
+        axios.get(`${server}/tributesing`)
+            .then(response => {
+                setMemorials(response.data);
+            })
+            .catch(error => {
+                console.error("Error fetching memorials:", error);
+            });
+    }, []);
+
     return (
         <div className="flex min-h-screen flex-col">
-            {/* Header */}
             <Header />
-
-            <main className="flex-1">
-                {/* Hero Section with Video Slider */}
+            <main className="flex-1 overflow-x-hidden">
                 <section className="relative h-screen">
                     <VideoSlider />
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -28,18 +40,11 @@ export default function  HomePage() {
                                     family and friends.
                                 </p>
                                 <div className="flex justify-center space-x-4">
-                                    <Button
-                                        size="lg"
-                                        className="bg-white text-gray-900 hover:bg-gray-100"
-                                    >
+                                    <Button size="lg" className="bg-white text-gray-900 hover:bg-gray-100">
                                         Create Memorial
                                     </Button>
                                     <Link to="/tribute">
-                                        <Button
-                                            size="lg"
-                                            variant="outline"
-                                            className="border-white text-white hover:bg-white/20"
-                                        >
+                                        <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/20">
                                             View Examples
                                         </Button>
                                     </Link>
@@ -49,50 +54,23 @@ export default function  HomePage() {
                     </div>
                 </section>
 
-                {/* Features Section */}
-                <section id="features" className="bg-gray-50 py-24">
-                    <div className="container px-4 md:px-6">
+                <section id="features" className="bg-gray-50 py-24 ">
+                    <div className="container px-4 md:px-6 max-w-7xl mx-auto">
                         <div className="text-center">
                             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                                 Everything You Need to Honor Their Memory
                             </h2>
                             <p className="mx-auto mt-4 max-w-[700px] text-gray-500 md:text-lg">
-                                Our platform provides all the tools you need to create a lasting
-                                tribute
+                                Our platform provides all the tools you need to create a lasting tribute
                             </p>
                         </div>
                         <div className="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                             {[
-                                {
-                                    icon: Heart,
-                                    title: "Personalized Tributes",
-                                    description:
-                                        "Create beautiful, customized memorial pages that truly reflect their life and legacy."
-                                },
-                                {
-                                    icon: Users,
-                                    title: "Collaborative Memories",
-                                    description:
-                                        "Invite family and friends to share their own stories, photos, and memories."
-                                },
-                                {
-                                    icon: ImageIcon,
-                                    title: "Unlimited Media",
-                                    description:
-                                        "Upload unlimited photos and videos to create a rich visual history."
-                                },
-                                {
-                                    icon: Shield,
-                                    title: "Private & Secure",
-                                    description:
-                                        "Control who can view and contribute to the memorial with advanced privacy settings."
-                                },
-                                {
-                                    icon: Star,
-                                    title: "Premium Features",
-                                    description:
-                                        "Access advanced features like virtual ceremonies and memory books."
-                                }
+                                { icon: Heart, title: "Personalized Tributes", description: "Create beautiful, customized memorial pages that truly reflect their life and legacy." },
+                                { icon: Users, title: "Collaborative Memories", description: "Invite family and friends to share their own stories, photos, and memories." },
+                                { icon: ImageIcon, title: "Unlimited Media", description: "Upload unlimited photos and videos to create a rich visual history." },
+                                { icon: Shield, title: "Private & Secure", description: "Control who can view and contribute to the memorial with advanced privacy settings." },
+                                { icon: Star, title: "Premium Features", description: "Access advanced features like virtual ceremonies and memory books." }
                             ].map(feature => (
                                 <Card key={feature.title} className="border-none">
                                     <CardContent className="pt-6">
@@ -106,9 +84,8 @@ export default function  HomePage() {
                     </div>
                 </section>
 
-                {/* Featured Memorials */}
                 <section className="py-24">
-                    <div className="container px-4 md:px-6">
+                    <div className="container px-4 md:px-6 max-w-7xl mx-auto">
                         <div className="text-center">
                             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                                 Featured Memorials
@@ -118,25 +95,27 @@ export default function  HomePage() {
                             </p>
                         </div>
                         <div className="mt-16 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                            {[1, 2, 3].map(i => (
-                                <Card key={i} className="overflow-hidden">
+                            {memorials.map(memorial => (
+                                <Card key={memorial.id} className="overflow-hidden">
                                     <img
-                                        src="/placeholder.svg"
-                                        alt={`Featured Memorial ${i}`}
+                                        src={memorial.image || "/placeholder.svg"}
+                                        alt={`Featured Memorial ${memorial.id}`}
                                         width={400}
                                         height={300}
                                         className="h-48 w-full object-cover"
                                     />
                                     <CardContent className="p-6">
-                                        <h3 className="text-xl font-bold">In Memory of John Doe</h3>
-                                        <p className="mt-2 text-sm text-gray-500">1945 - 2023</p>
-                                        <p className="mt-4 text-gray-600">
-                                            A beloved father, grandfather, and friend who touched
-                                            countless lives...
+                                        <h3 className="text-xl font-bold">{memorial.first_name} {memorial.last_name}</h3>
+                                        <p className="mt-2 text-sm text-gray-500">
+                                            {new Date(memorial.date_of_death).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} -
+                                            {new Date(memorial.date_of_birth).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                                         </p>
-                                        <Button className="mt-4" variant="outline">
-                                            View Memorial
-                                        </Button>
+                                        <p className="mt-4 text-gray-600">{memorial.quote}</p>
+                                        <Link to={memorial.theme === 'Warm' ? `/theme-warm/${memorial.id}/${memorial.title}` : '#'}>
+                                            <Button className="mt-4" variant="outline">
+                                                View Memorial
+                                            </Button>
+                                        </Link>
                                     </CardContent>
                                 </Card>
                             ))}
@@ -144,9 +123,8 @@ export default function  HomePage() {
                     </div>
                 </section>
 
-                {/* Testimonials */}
                 <section id="testimonials" className="bg-gray-50 py-24">
-                    <div className="container px-4 md:px-6">
+                    <div className="container px-4 md:px-6 max-w-7xl mx-auto">
                         <div className="text-center">
                             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                                 What Families Say
@@ -175,9 +153,7 @@ export default function  HomePage() {
                                             </div>
                                         </div>
                                         <p className="mt-4 text-gray-600">
-                                            "Creating a memorial helped our family come together and
-                                            share our memories. It's become a precious space for us to
-                                            remember and celebrate..."
+                                            &quot;Creating a memorial helped our family come together and share our memories. It&apos;s become a precious space for us to remember and celebrate...&quot;
                                         </p>
                                     </CardContent>
                                 </Card>
@@ -186,30 +162,24 @@ export default function  HomePage() {
                     </div>
                 </section>
 
-                {/* CTA Section */}
                 <section className="relative overflow-hidden py-24">
-                    <div className="container relative z-10 px-4 md:px-6">
+                    <div className="container relative z-10 px-4 md:px-6 max-w-7xl mx-auto">
                         <div className="mx-auto max-w-4xl text-center">
                             <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
                                 Ready to Create a Lasting Tribute?
                             </h2>
                             <p className="mx-auto mt-4 max-w-[700px] text-gray-500 md:text-lg">
-                                Join thousands of families who have created beautiful online
-                                memorials
+                                Join thousands of families who have created beautiful online memorials
                             </p>
                             <div className="mt-8 flex justify-center space-x-4">
                                 <Button size="lg">Create Memorial</Button>
-                                <Button size="lg" variant="outline">
-                                    Learn More
-                                </Button>
+                                <Button size="lg" variant="outline">Learn More</Button>
                             </div>
                         </div>
                     </div>
                 </section>
             </main>
-
-            {/* Footer */}
             <Footer />
         </div>
-    )
+    );
 }

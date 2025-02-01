@@ -12,10 +12,10 @@ export function ModernTheme({ memorialData }) {
     return (
         <div className="min-h-screen bg-gray-100 text-gray-900 font-sans">
             <HeroBanner
-                name={memorialData.name}
-                dates={memorialData.dates}
-                profileImage={memorialData.profileImage}
-                bannerImage={memorialData.bannerImage}
+                name={memorialData?.name}
+                dates={memorialData?.dates}
+                profileImage={memorialData?.profileImage}
+                bannerImage={memorialData?.bannerImage}
                 theme="modern"
             />
 
@@ -37,11 +37,11 @@ export function ModernTheme({ memorialData }) {
                                 <Card>
                                     <CardContent className="pt-6">
                                         <AboutSection
-                                            biography={memorialData.biography}
-                                            birthDate={memorialData.birthDate}
-                                            birthPlace={memorialData.birthPlace}
-                                            deathDate={memorialData.deathDate}
-                                            deathPlace={memorialData.deathPlace}
+                                            biography={memorialData?.biography}
+                                            birthDate={memorialData?.birthDate}
+                                            birthPlace={memorialData?.birthPlace}
+                                            deathDate={memorialData?.deathDate}
+                                            deathPlace={memorialData?.deathPlace}
                                         />
                                     </CardContent>
                                 </Card>
@@ -50,8 +50,8 @@ export function ModernTheme({ memorialData }) {
                                 <Card>
                                     <CardContent className="pt-6">
                                         <FamilySection
-                                            immediateFamily={memorialData.immediateFamily}
-                                            extendedFamily={memorialData.extendedFamily}
+                                            immediateFamily={memorialData?.immediateFamily}
+                                            extendedFamily={memorialData?.extendedFamily}
                                         />
                                     </CardContent>
                                 </Card>
@@ -59,7 +59,7 @@ export function ModernTheme({ memorialData }) {
                             <TabsContent value="timeline">
                                 <Card>
                                     <CardContent className="pt-6">
-                                        <TimelineSection events={memorialData.timeline} />
+                                        <TimelineSection events={memorialData?.timeline} />
                                     </CardContent>
                                 </Card>
                             </TabsContent>
@@ -70,12 +70,12 @@ export function ModernTheme({ memorialData }) {
                                     </CardHeader>
                                     <CardContent>
                                         <p className="mb-4">
-                                            Honor {memorialData.name}'s memory by supporting:
+                                            Honor {memorialData?.name}'s memory by supporting:
                                         </p>
                                         <h3 className="text-lg font-semibold mb-2">
-                                            {memorialData.donationOrg}
+                                            {memorialData?.donationOrg}
                                         </h3>
-                                        <p className="mb-4">{memorialData.donationDescription}</p>
+                                        <p className="mb-4">{memorialData?.donationDescription}</p>
                                         <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                                             Donate Now
                                         </Button>
@@ -86,10 +86,10 @@ export function ModernTheme({ memorialData }) {
                     </div>
 
                     <Sidebar
-                        photoCount={memorialData.stats.photoCount}
-                        viewCount={memorialData.stats.viewCount}
-                        contributorCount={memorialData.stats.contributorCount}
-                        recentUpdates={memorialData.recentUpdates}
+                        photoCount={memorialData?.stats.photoCount}
+                        viewCount={memorialData?.stats.viewCount}
+                        contributorCount={memorialData?.stats.contributorCount}
+                        recentUpdates={memorialData?.recentUpdates}
                     />
                 </div>
             </main>

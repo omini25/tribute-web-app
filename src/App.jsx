@@ -2,35 +2,31 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import {Toaster} from "react-hot-toast";
 import HomePage from "./pages/landing/HomePage.jsx";
 import {LandingTributePage} from "./pages/landing/LandingTributePage.jsx";
-import TributeNavigation from "@/components/tribute/themes/firstTheme/TributeNavigation.jsx";
-import {Tribute} from "./pages/tribute/Tribute.jsx";
-import Life from "./pages/tribute/Life.jsx";
-import {Events} from "./pages/tribute/Events.jsx";
-import {Memories} from "./pages/tribute/Memories.jsx";
-import {FamilyTree} from "@/pages/tribute/FamilyTree.jsx";
-import {Gallery} from "@/pages/tribute/Gallery.jsx";
-import {Posts} from "@/pages/tribute/Posts.jsx";
-import {Donations} from "@/pages/tribute/Donations.jsx";
-import {Conclusions} from "@/pages/tribute/Conclusions.jsx";
 import {SignupPage} from "@/pages/auth/SignupPage.jsx";
 import {NotFoundPage} from "@/pages/NotFoundPage.jsx";
 import {LoginPage} from "@/pages/auth/LoginPage.jsx";
-import Main from "@/pages/dashboard/Main.jsx";
-import {Overview} from "@/pages/dashboard/Overview.jsx";
-import DashboardGallery from "@/components/dashboard/DashboardGallery.jsx";
 import TributeFormOverview from "@/components/dashboard/TributeFormOverview.jsx";
-import TributeLife from "@/components/dashboard/TributeLife.jsx";
-import EventsForm from "@/components/dashboard/EventsForm.jsx"
-import FamilyTreeForm from "@/components/dashboard/FamilyTree.jsx";
-import MusicTheme from "@/components/dashboard/MusicTheme.jsx"
-import MemoriesForm from "@/components/dashboard/MemoriesForm.jsx";
-import Preview from "@/components/dashboard/Preview.jsx";
-import DonationForm from "@/components/dashboard/DonationForm.jsx";
+import Preview from "@/components/main-dashboard/Preview.jsx";
 import {ClassicTheme} from "@/components/tribute/themes/ClassicTheme.jsx";
 import DashboardPage from "@/pages/DashboadPage.jsx";
 import PricingPage from "@/pages/landing/PricingPage.jsx";
 import FeaturesPage from "@/pages/landing/FeaturesPage.jsx";
 import ContactPage from "@/pages/landing/ContactPage.jsx";
+import Gallery from "@/components/main-dashboard/Gallery.jsx";
+import MemoriesOverview from "@/components/main-dashboard/MemoriesOverview.jsx";
+import {DashboardLayout} from "@/components/main-dashboard/DashboardLayout.jsx";
+import MemoriesLife from "@/components/main-dashboard/MemoriesLife.jsx";
+import MemoriesFamilyTree from "@/components/main-dashboard/MemoriesFamilyTree.jsx";
+import MemoriesEvents from "@/components/main-dashboard/MemoriesEvents.jsx";
+import MemoriesMemories from "@/components/main-dashboard/MemoriesMemories.jsx";
+import MemoriesDonations from "@/components/main-dashboard/MemoriesDonations.jsx";
+import MemoriesMusicTheme from "@/components/main-dashboard/MemoriesMusicTheme.jsx";
+import Events from "@/components/main-dashboard/Events.jsx";
+import User from "@/components/main-dashboard/User.jsx";
+import Donations from "@/components/dashboard/Donations.jsx";
+import Settings from "@/components/main-dashboard/Settings.jsx";
+import {ModernTheme} from "@/components/tribute/themes/ModernTheme.jsx";
+import {MinimalistTheme} from "@/components/tribute/themes/MinimalistTheme.jsx";
 
 
 function App() {
@@ -52,36 +48,31 @@ function App() {
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/mordern" element={<ModernTheme />} />
+                <Route path="/theme-warm/:id/:title" element={<MinimalistTheme />} />
 
-                <Route path="/dashboard" element={<DashboardPage />} />
 
-                {/*<Route path="/tribute" element={<TributeNavigation />}>*/}
-                {/*    <Route path="overview" element={<Tribute />} />*/}
-                {/*    <Route path="life" element={<Life />} />*/}
-                {/*    <Route path="events" element={<Events />} />*/}
-                {/*    <Route path="memories" element={<Memories />} />*/}
-                {/*    <Route path="family-tree" element={<FamilyTree />} />*/}
-                {/*    <Route path="gallery" element={<Gallery />} />*/}
-                {/*    <Route path="posts" element={<Posts />} />*/}
-                {/*    <Route path="donations" element={<Donations />} />*/}
-                {/*    <Route path="conclusions" element={<Conclusions />} />*/}
-                {/*</Route>*/}
+                <Route path="/dashboard" element={<DashboardLayout />}>
+                    <Route path="main" element={<DashboardPage />} />
+                    <Route path="memories-overview/:id" element={<MemoriesOverview />} />
+                    <Route path="create-tribute" element={<TributeFormOverview />} />
+                    <Route path="tribute-life/:id" element={<MemoriesLife />} />
+                    <Route path={`memories/donations/:id`} element={<MemoriesDonations />}/>
+                    <Route path={"family-tree/:id"} element={<MemoriesFamilyTree />} />
+                    <Route path={`memories/events/:id`} element={<MemoriesEvents />}/>
+                    <Route path={`memories/music-theme/:id`} element={<MemoriesMusicTheme />}/>
+                    <Route path={`memories/memories/:id`} element={<MemoriesMemories />}/>
+                    <Route path={`Preview/:id`} element={<Preview />}/>
 
-                {/*<Route path="/dashboard" element={<Main />}>*/}
-                {/*    <Route path="overview" element={<Overview />} />*/}
-                {/*    <Route path="gallery" element={<DashboardGallery />} />*/}
-                {/*    <Route path="create-tribute" element={<TributeFormOverview />} />*/}
-                {/*    <Route path="tribute-life" element={<TributeLife />} />*/}
-                {/*    <Route path={"family-tree"} element={<FamilyTreeForm />} />*/}
-                {/*    <Route path={`events`} element={<EventsForm />}/>*/}
-                {/*    <Route path={`music-theme`} element={<MusicTheme />}/>*/}
-                {/*    <Route path={`memories-form`} element={<MemoriesForm />}/>*/}
-                {/*    /!*<Route path={`gallery`} element={<GalleryForm />}/>*!/*/}
-                {/*    /!*<Route path={`posts`} element={<PostsForm />}/>*!/*/}
-                {/*    <Route path={`donations-form`} element={<DonationForm />}/>*/}
-                {/*    <Route path={`Preview`} element={<Preview />}/>*/}
+                    {/*Sidebar links*/}
+                    <Route path="gallery" element={<Gallery />} />
+                    <Route path="events" element={<Events />} />
+                    <Route path="users" element={<User />} />
+                    <Route path="donations" element={<Donations />} />
+                    <Route path="settings" element={<Settings />} />
 
-                {/*</Route>*/}
+
+                </Route>
 
 
 

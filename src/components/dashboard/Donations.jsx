@@ -1,6 +1,6 @@
 import { DashboardLayout } from "@/components/main-dashboard/DashboardLayout"
 
-export default function Donations() {
+export default function MemoriesDonations() {
     return (
         <DashboardLayout>
             <h1 className="mb-4 text-2xl font-bold">Donations</h1>
