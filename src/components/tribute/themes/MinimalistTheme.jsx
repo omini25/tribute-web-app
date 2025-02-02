@@ -134,7 +134,7 @@ export function MinimalistTheme() {
                                 <h2 className="text-3xl font-light text-gray-800 mb-4">Donations</h2>
                                 <Card className="p-6 shadow-md bg-white">
                                     <p className="text-gray-600 mb-4">
-                                        To honor their memory, please consider a donation to:
+                                        To honor {memorial?.first_name} {memorial?.last_name} memory, please consider a donation:
                                     </p>
                                     <Button className="bg-gray-200 text-gray-800 hover:bg-gray-300">
                                         Make a Donation

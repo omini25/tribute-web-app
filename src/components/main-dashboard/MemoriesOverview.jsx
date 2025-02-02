@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import axios from "axios"
 import { format } from "date-fns"
 import { toast } from "react-hot-toast"
-import { Upload } from "lucide-react"
+import {Loader2, Upload} from "lucide-react"
 import { server } from "@/server.js"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -79,6 +79,7 @@ export default function MemoriesOverview() {
         setFile(e.target.files[0])
     }
 
+
     const handleSubmit = async () => {
         setIsLoading(true)
         const formData = new FormData()
@@ -143,6 +144,13 @@ export default function MemoriesOverview() {
                             value={tribute.date_of_death}
                             onChange={date => handleDateChange(date, "date_of_death")}
                         />
+
+                        <InputField
+                            label="Country of birth"
+                            id="country_lived"
+                            value={tribute.country_of_birth}
+                            onChange={handleInputChange}
+                        />
                     </div>
 
                     <div className="space-y-6">
@@ -153,9 +161,9 @@ export default function MemoriesOverview() {
                             onChange={date => handleDateChange(date, "date_of_birth")}
                         />
                         <InputField
-                            label="State and country lived"
+                            label="Country died"
                             id="country_lived"
-                            value={tribute.country_lived}
+                            value={tribute.country_died}
                             onChange={handleInputChange}
                         />
                         <InputField
@@ -262,7 +270,7 @@ const DateField = ({ label, value, onChange }) => (
 )
 
 const ImageUpload = ({ file, handleFileChange }) => (
-    <div className="bg-blue-50 p-6 rounded-lg text-center">
+    <div className="bg-blue-50 p-6 rounded-lg text-center relative"> {/* Added relative */}
         <input
             type="file"
             accept="image/*"
@@ -270,27 +278,22 @@ const ImageUpload = ({ file, handleFileChange }) => (
             className="hidden"
             id="image-upload"
         />
-        <label htmlFor="image-upload" className="cursor-pointer">
-            <Button
-                variant="ghost"
-                className="w-full h-full min-h-[200px] flex flex-col items-center justify-center text-blue-700"
-            >
-                {file ? (
-                    <img
-                        src={URL.createObjectURL(file) || "/placeholder.svg"}
-                        alt="Preview"
-                        className="h-full w-full object-cover rounded-lg"
-                    />
-                ) : (
-                    <>
-                        <Upload className="h-8 w-8 mb-2" />
-                        <span>UPLOAD PERSON'S IMAGE</span>
-                    </>
-                )}
-            </Button>
+        <label htmlFor="image-upload" className="cursor-pointer absolute inset-0"> {/* Absolute positioning */}
+            {file ? ( // Conditionally render image preview
+                <img
+                    src={URL.createObjectURL(file)}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-lg"
+                />
+            ) : ( // Render upload button if no file selected
+                <Button variant="ghost" className="w-full h-full flex flex-col items-center justify-center text-blue-700">
+                    <Upload className="h-8 w-8 mb-2" />
+                    <span>Upload Image</span>
+                </Button>
+            )}
         </label>
     </div>
-)
+);
 
 const QuoteSection = ({ quote, handleInputChange }) => (
     <div className="relative max-w-3xl mx-auto text-center py-8">

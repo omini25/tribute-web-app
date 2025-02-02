@@ -33,6 +33,7 @@ export function SidebarMenu() {
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+    const userName = JSON.parse(localStorage.getItem("user")).name
 
     const handleLogout = () => {
         localStorage.removeItem("user")
@@ -57,7 +58,7 @@ export function SidebarMenu() {
                     />
                 </nav>
                 <div className="border-t border-gray-700 px-2 py-4">
-                    <UserProfile name="John Doe" image="/placeholder.svg" />
+                    <UserProfile name={userName} image="/placeholder.svg" />
                 </div>
             </div>
 

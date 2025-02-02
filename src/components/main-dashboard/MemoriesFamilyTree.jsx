@@ -5,7 +5,7 @@ import {Link, useParams} from "react-router-dom"
 import { useState, useEffect } from "react"
 import axios from "axios"
 import { Toaster, toast } from "react-hot-toast"
-import { Spinner } from "@/components/ui/spinner"
+// import { Spinner } from "@/components/ui/spinner"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -182,7 +182,7 @@ export default function MemoriesFamilyTree() {
                             type="submit"
                             disabled={isSubmitting}
                         >
-                            {isSubmitting ? <Spinner className="mr-2" /> : null}
+                            {/*{isSubmitting ? <Spinner className="mr-2" /> : null}*/}
                             Save
                         </Button>
                     </DialogFooter>
@@ -223,7 +223,7 @@ export default function MemoriesFamilyTree() {
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-screen">
-                <Spinner size="lg" />
+                {/*<Spinner size="lg" />*/}
             </div>
         )
     }
