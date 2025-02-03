@@ -35,6 +35,7 @@ export default function MemoriesOverview() {
     })
     const [title, setTitle] = useState("TRIBUTE")
     const user = JSON.parse(localStorage.getItem("user"))
+    const [imagePreview, setImagePreview] = useState(null)
 
     useEffect(() => {
         fetchTributeTitle()
@@ -112,6 +113,39 @@ export default function MemoriesOverview() {
         }
     }
 
+    // Add image upload utility
+    const uploadImage = async (file) => {
+        const formData = new FormData()
+        formData.append('file', file)
+
+        try {
+            // Replace with your image upload API endpoint
+            const response = await fetch('YOUR_UPLOAD_API_ENDPOINT', {
+                method: 'POST',
+                body: formData
+            })
+            const data = await response.json()
+            return data.imageUrl
+        } catch (error) {
+            throw new Error('Image upload failed')
+        }
+    }
+
+    const handleImageChange = async (event) => {
+        const file = event.target.files[0]
+        if (file) {
+            // Preview
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setImagePreview(reader.result)
+            }
+            reader.readAsDataURL(file)
+
+            // Store in form
+            setValue('image', file)
+        }
+    }
+
     return (
         <div className="container mx-auto p-6 max-w-6xl">
             {isLoading && (
@@ -154,7 +188,34 @@ export default function MemoriesOverview() {
                     </div>
 
                     <div className="space-y-6">
-                        <ImageUpload file={file} handleFileChange={handleFileChange} />
+                        <div className="relative bg-blue-100 p-6 rounded-lg text-center">
+                            <input
+                                type="file"
+                                id="image"
+                                accept="image/*"
+                                className="hidden"
+                                onChange={handleImageChange}
+                            />
+                            <label
+                                htmlFor="image"
+                                className="cursor-pointer block w-full h-full min-h-[200px]"
+                            >
+                                {imagePreview ? (
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        className="w-full h-full object-cover rounded-lg"
+                                    />
+                                ) : (
+                                    <div className="flex flex-col items-center justify-center h-full">
+                                        <Upload className="h-8 w-8 mb-2 text-blue-500" />
+                                        <span className="text-blue-500">UPLOAD PERSON'S IMAGE</span>
+                                    </div>
+                                )}
+                            </label>
+                        </div>
+
+
                         <DateField
                             label="Date of Birth"
                             value={tribute.date_of_birth}

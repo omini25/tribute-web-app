@@ -19,8 +19,8 @@ export default function TributeLife() {
     return (
         <div className="container mx-auto px-4 py-8 max-w-4xl">
             <div className="space-y-2 mb-8">
-                <h1 className="text-4xl font-medium text-gray-600">TRIBUTE TITLE</h1>
-                <h2 className="text-2xl text-gray-500">LIFE OF JOHN DOE</h2>
+                <h1 className="text-4xl font-medium text-gray-600">Tribute Life</h1>
+                <h2 className="text-2xl text-gray-500">LIFE of the individual</h2>
             </div>
 
             <div className="space-y-8">

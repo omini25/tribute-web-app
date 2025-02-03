@@ -27,6 +27,8 @@ import Donations from "@/components/dashboard/Donations.jsx";
 import Settings from "@/components/main-dashboard/Settings.jsx";
 import {ModernTheme} from "@/components/tribute/themes/ModernTheme.jsx";
 import {MinimalistTheme} from "@/components/tribute/themes/MinimalistTheme.jsx";
+import HelpCenter from "@/components/dashboard/HelpCenter.jsx";
+import TributeLife from "@/components/dashboard/TributeLife.jsx";
 
 
 function App() {
@@ -55,7 +57,6 @@ function App() {
                 <Route path="/dashboard" element={<DashboardLayout />}>
                     <Route path="main" element={<DashboardPage />} />
                     <Route path="memories-overview/:id" element={<MemoriesOverview />} />
-                    <Route path="create-tribute" element={<TributeFormOverview />} />
                     <Route path="tribute-life/:id" element={<MemoriesLife />} />
                     <Route path={`memories/donations/:id`} element={<MemoriesDonations />}/>
                     <Route path={"family-tree/:id"} element={<MemoriesFamilyTree />} />
@@ -64,13 +65,17 @@ function App() {
                     <Route path={`memories/memories/:id`} element={<MemoriesMemories />}/>
                     <Route path={`Preview/:id`} element={<Preview />}/>
 
+                    {/*Create Tribute Links*/}
+                    <Route path="create-tribute" element={<TributeFormOverview />} />
+                    <Route path="tribute-life" element={<TributeLife />} />
+
                     {/*Sidebar links*/}
                     <Route path="gallery" element={<Gallery />} />
                     <Route path="events" element={<Events />} />
                     <Route path="users" element={<User />} />
                     <Route path="donations" element={<Donations />} />
                     <Route path="settings" element={<Settings />} />
-
+                    <Route path="help" element={<HelpCenter />} />
 
                 </Route>
 

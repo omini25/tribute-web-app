@@ -1,86 +1,75 @@
-import { useState } from "react"
-import { useDispatch } from "react-redux"
-import { useNavigate } from "react-router-dom"
-import { logout } from "@/redux/slices/authSlice"
-import { SidebarMenuItem } from "../SidebarMenuItem"
-import { UserProfile } from "../UserProfile"
-import { MobileSidebarMenu } from "../MobileSidebarMenu"
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "@/redux/slices/authSlice";
+import { SidebarMenuItem } from "../SidebarMenuItem";
+import { UserProfile } from "../UserProfile";
 import {
     LayoutDashboard,
     Image,
     Calendar,
-    Users,
     DollarSign,
-    MessageSquare,
     Settings,
     HelpCircle,
     LogOut,
-    Menu
-} from "lucide-react"
-import { Button } from "@/components/ui/button"
+} from "lucide-react";
+import { Link } from "react-router-dom";
 
-const menuItems = [
-    { icon: LayoutDashboard, title: "Dashboard", href: "/dashboard/main" },
-    { icon: Image, title: "Gallery", href: "/dashboard/gallery" },
-    { icon: Calendar, title: "Events", href: "/dashboard/events" },
-    { icon: Users, title: "Users", href: "/dashboard/users" },
-    { icon: DollarSign, title: "Donations", href: "/dashboard/donations" },
-    { icon: Settings, title: "Settings", href: "/dashboard/settings" },
-    { icon: HelpCircle, title: "Help Center", href: "/dashboard/help" }
-]
 
-export function SidebarMenu() {
-    const dispatch = useDispatch()
-    const navigate = useNavigate()
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-    const userName = JSON.parse(localStorage.getItem("user")).name
+
+export function SidebarMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const userName = JSON.parse(localStorage.getItem("user"))?.name || "User";
+
+    const menuItems = [
+        { icon: LayoutDashboard, title: "Dashboard", href: "/dashboard/main" },
+        { icon: Image, title: "Gallery", href: "/dashboard/gallery" },
+        { icon: Calendar, title: "Events", href: "/dashboard/events" },
+        { icon: DollarSign, title: "Donations", href: "/dashboard/donations" },
+        { icon: Settings, title: "Settings", href: "/dashboard/settings" },
+        { icon: HelpCircle, title: "Help Center", href: "/dashboard/help" },
+    ];
 
     const handleLogout = () => {
-        localStorage.removeItem("user")
-        localStorage.removeItem("token")
-        dispatch(logout())
-        navigate("/")
-    }
+        localStorage.removeItem("user");
+        localStorage.removeItem("token");
+        dispatch(logout());
+        navigate("/");
+    };
 
     return (
-        <>
-            {/* Desktop Sidebar */}
-            <div className="hidden md:flex h-full flex-col justify-between bg-gray-800 text-gray-100">
-                <nav className="flex-1 space-y-1 px-2 py-4">
-                    {menuItems.map(item => (
-                        <SidebarMenuItem key={item.href} {...item} />
-                    ))}
-                    <SidebarMenuItem
-                        icon={LogOut}
-                        title="Log Out"
-                        onClick={handleLogout}
-                        className="mt-auto text-red-400 hover:text-red-300"
-                    />
-                </nav>
-                <div className="border-t border-gray-700 px-2 py-4">
-                    <UserProfile name={userName} image="/placeholder.svg" />
-                </div>
+        <div className="flex h-full flex-col justify-between">
+            {/* Sidebar Header with Image */}
+            <div className="flex flex-col items-center py-6">
+                <img
+                    src="/path/to/your/logo.png" // Replace with your image path
+                    alt="Logo"
+                    className="h-16 w-16 rounded-full"
+                />
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
-                <Button
-                    onClick={() => setMobileMenuOpen(true)}
-                    variant="ghost"
-                    size="icon"
-                    className="text-gray-500 hover:text-gray-600"
-                >
-                    <Menu className="h-6 w-6" />
-                </Button>
-            </div>
+            {/* Menu Items */}
+            <nav className="flex-1 space-y-1 px-2">
+                {menuItems.map((item) => (
+                    <Link to={item.href} key={item.href} onClick={() => setIsMobileMenuOpen(false)}>
+                        <SidebarMenuItem
+                            icon={item.icon}
+                            title={item.title}
+                        />
+                    </Link>
+                ))}
+            </nav>
 
-            {/* Mobile Sidebar */}
-            <MobileSidebarMenu
-                isOpen={mobileMenuOpen}
-                onClose={() => setMobileMenuOpen(false)}
-                menuItems={menuItems}
-                onLogout={handleLogout}
-            />
-        </>
-    )
+            {/* Logout Button and User Profile */}
+            <div className="border-t border-gray-700 px-2 py-4">
+                <SidebarMenuItem
+                    icon={LogOut}
+                    title="Log Out"
+                    onClick={handleLogout}
+                    className="text-red-400 hover:text-red-300"
+                />
+                <UserProfile name={userName} image="/placeholder.svg" className="mt-5 p-4" />
+            </div>
+        </div>
+    );
 }
