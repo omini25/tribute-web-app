@@ -13,6 +13,7 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
+import { server } from "@/server.js"
 
 export default function TributeFormOverview() {
     const navigate = useNavigate()
@@ -32,6 +33,7 @@ export default function TributeFormOverview() {
         quote: "",
         image: null
     })
+    const user = JSON.parse(localStorage.getItem("user") || "{}")
 
     const handleInputChange = (e) => {
         const { id, value } = e.target
@@ -79,15 +81,24 @@ export default function TributeFormOverview() {
                 throw new Error("First name and last name are required")
             }
 
-            // Simulate form submission delay
-            await new Promise(resolve => setTimeout(resolve, 1000))
+            // Submit the form data to the external API
+            const response = await fetch(`${server}/tribute/start/${user.id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
 
-            // Here you would typically send the data to your backend
-            console.log("Form submitted:", formData)
+            if (!response.ok) {
+                throw new Error('Failed to submit form')
+            }
+
+            const data = await response.json()
 
             toast.success("Memory saved successfully!")
-            // Optional: Navigate to next step
-            // navigate(`/dashboard/tribute-life`)
+            // Navigate to next step with the response ID
+            navigate(`/dashboard/tribute-life/${data.id}`)
         } catch (error) {
             toast.error(error.message || "Failed to save memory")
         } finally {
@@ -254,7 +265,7 @@ export default function TributeFormOverview() {
                     </Button>
                     <Button
                         className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8"
-                        onClick={() => navigate('/dashboard/tribute-life')}
+                        onClick={() => navigate(`/dashboard/tribute-life/${data.id}`)}
                         disabled={isLoading}
                     >
                         Next: Life of Person
@@ -289,7 +300,7 @@ const RelationshipField = ({ value, onChange }) => (
             <SelectTrigger className="bg-blue-50 border-blue-100">
                 <SelectValue placeholder="Select relationship" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white border-blue-100">
                 {["Father", "Mother", "Sibling", "Spouse", "Child", "Friend", "Other"].map(relation => (
                     <SelectItem key={relation.toLowerCase()} value={relation.toLowerCase()}>
                         {relation}
