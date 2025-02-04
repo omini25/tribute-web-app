@@ -3,6 +3,7 @@ import { Dialog } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import {Link} from "react-router-dom";
 import {Button} from "@/components/ui/button.jsx";
+import logo from "../../assets/images/remember-me.png";
 
 const navigation = [
     { name: 'About', href: '#' },
@@ -38,7 +39,7 @@ export default function Header() {
             <div className="container h-16 items-center justify-between mx-auto flex max-w-7xl">
                 <Link to="/" className="flex items-center space-x-2">
                     <img
-                        src="/placeholder.svg"
+                        src={logo}
                         alt="Memories Logo"
                         width={150}
                         height={40}

@@ -1,4 +1,5 @@
 import {Link} from "react-router-dom";
+import logo from "../../assets/images/remember-me.png";
 
 export const Footer = () => {
     return (
@@ -8,14 +9,14 @@ export const Footer = () => {
                     <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 ">
                         <div>
                             <img
-                                src="/placeholder.svg"
+                                src={logo}
                                 alt="Memories Logo"
                                 width={150}
                                 height={40}
                                 className="h-10 w-auto"
                             />
                             <p className="mt-4 text-sm text-gray-500">
-                                Helping families preserve and share memories since 2010
+                                Helping families preserve and share memories 
                             </p>
                         </div>
                         <div>

@@ -10,6 +10,7 @@ import { Footer } from "@/components/landing/Footer.jsx";
 import { server } from "@/server.js";
 import { assetServer} from "@/assetServer.js";
 
+
 export default function HomePage() {
     const [memorials, setMemorials] = useState([]);
 
