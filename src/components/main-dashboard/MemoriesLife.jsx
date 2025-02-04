@@ -1,11 +1,18 @@
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
 import axios from "axios"
 import { toast } from "react-hot-toast"
-import { User } from "lucide-react"
+import {
+    User,
+    Plus,
+    Trash2,
+    ChevronLeft,
+    ChevronRight,
+    Loader2
+} from "lucide-react"
 import { server } from "@/server.js"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -16,6 +23,8 @@ import {
     SelectValue
 } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { DashboardLayout } from "@/components/main-dashboard/DashboardLayout"
 
 export default function MemoriesLife() {
     const { id } = useParams()
@@ -26,15 +35,16 @@ export default function MemoriesLife() {
         milestone: []
     })
     const [title, setTitle] = useState("TRIBUTE")
+    const [newMilestone, setNewMilestone] = useState("")
 
     useEffect(() => {
         fetchTributeTitle()
         fetchTributeData()
-    }, []) // Removed unnecessary dependency 'id'
+    }, [])
 
     const fetchTributeTitle = async () => {
         try {
-            const user = JSON.parse(localStorage.getItem("user"))
+            const user = JSON.parse(localStorage.getItem("user") || "{}")
             const response = await axios.get(
                 `${server}/tribute/title/image/${user.id}`
             )
@@ -52,6 +62,11 @@ export default function MemoriesLife() {
             }
         } catch (error) {
             console.error("Error fetching tribute details:", error)
+            toast({
+                title: "Error",
+                description: "Failed to fetch tribute details. Please try again.",
+                variant: "destructive"
+            })
         }
     }
 
@@ -75,6 +90,30 @@ export default function MemoriesLife() {
         }))
     }
 
+    const removeFamilyMember = index => {
+        setTributeData(prev => ({
+            ...prev,
+            family: prev.family.filter((_, i) => i !== index)
+        }))
+    }
+
+    const handleAddMilestone = () => {
+        if (newMilestone.trim()) {
+            setTributeData(prev => ({
+                ...prev,
+                milestone: [...prev.milestone, newMilestone.trim()]
+            }))
+            setNewMilestone("")
+        }
+    }
+
+    const handleRemoveMilestone = index => {
+        setTributeData(prev => ({
+            ...prev,
+            milestone: prev.milestone.filter((_, i) => i !== index)
+        }))
+    }
+
     const handleSubmit = async () => {
         setIsLoading(true)
         try {
@@ -83,134 +122,136 @@ export default function MemoriesLife() {
                 tributeData
             )
             if (response.data.status === "success") {
-                toast.success("Tribute details updated successfully!")
+                toast({
+                    title: "Success",
+                    description: "Tribute details updated successfully!"
+                })
             } else {
-                toast.error("Failed to update tribute details")
+                throw new Error("Failed to update tribute details")
             }
         } catch (error) {
-            toast.error(
-                error.response?.data?.message || "Failed to update tribute details"
-            )
             console.error("Error updating tribute details:", error)
+            toast({
+                title: "Error",
+                description: "Failed to update tribute details. Please try again.",
+                variant: "destructive"
+            })
         } finally {
             setIsLoading(false)
         }
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-            {isLoading && <LoadingOverlay />}
-            <Header title={title} />
-            <div className="space-y-8">
-                <BiographySection
-                    bio={tributeData.bio}
-                    onChange={value => handleInputChange("bio", value)}
-                />
-                <MilestonesSection
-                    milestones={tributeData.milestone}
-                    onChange={value => handleInputChange("milestone", value)}
-                />
-                <FamilySection
-                    family={tributeData.family}
-                    onMemberChange={handleFamilyMemberChange}
-                    onAddMember={addFamilyMember}
-                />
-                <NavigationButtons
-                    id={id}
-                    onSave={handleSubmit}
-                    isLoading={isLoading}
-                />
+        <div>
+            <div className="container mx-auto px-4 py-8 max-w-4xl">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-3xl font-bold text-warm-800 text-center">
+                            {title}
+                        </CardTitle>
+                        <p className="text-xl text-warm-600 text-center">LIFE</p>
+                    </CardHeader>
+                    <CardContent className="space-y-8">
+                        <BiographySection
+                            bio={tributeData.bio}
+                            onChange={value => handleInputChange("bio", value)}
+                        />
+                        <MilestonesSection
+                            milestones={tributeData.milestone}
+                            newMilestone={newMilestone}
+                            setNewMilestone={setNewMilestone}
+                            onAdd={handleAddMilestone}
+                            onRemove={handleRemoveMilestone}
+                        />
+                        <FamilySection
+                            family={tributeData.family}
+                            onMemberChange={handleFamilyMemberChange}
+                            onAddMember={addFamilyMember}
+                            onRemoveMember={removeFamilyMember}
+                        />
+                        <NavigationButtons
+                            id={id}
+                            onSave={handleSubmit}
+                            isLoading={isLoading}
+                        />
+                    </CardContent>
+                </Card>
             </div>
         </div>
     )
 }
 
-const LoadingOverlay = () => (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div className="bg-white p-4 rounded-lg shadow-lg flex items-center space-x-2">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-            <span className="text-gray-700">Saving changes...</span>
-        </div>
-    </div>
-)
-
-const Header = ({ title }) => (
-    <div className="space-y-2 mb-8">
-        <h1 className="text-4xl font-medium text-gray-600">{title}</h1>
-    </div>
-)
-
 const BiographySection = ({ bio, onChange }) => (
     <section>
-        <h3 className="text-xl text-gray-500 mb-4">BIOGRAPHY</h3>
+        <h3 className="text-xl font-semibold text-warm-700 mb-4">BIOGRAPHY</h3>
         <Textarea
             placeholder="Biography of the bereaved"
-            className="min-h-[200px] border-blue-100"
+            className="min-h-[200px] border-warm-200 resize-none"
             value={bio}
             onChange={e => onChange(e.target.value)}
         />
     </section>
 )
 
-const MilestonesSection = ({ milestones, onChange }) => {
-    const handleDelete = (index) => {
-        const updatedMilestones = milestones.filter((_, i) => i !== index);
-        onChange(updatedMilestones);
-    };
-
-    const handleAddMilestone = (e) => {
-        if (e.key === 'Enter' && e.target.value.trim()) {
-            onChange([...milestones, e.target.value.trim()]);
-            e.target.value = '';
-        }
-    };
-
-    return (
-        <section>
-            <h3 className="text-xl text-gray-500 mb-4">MILESTONES</h3>
-            <div className="space-y-2">
+const MilestonesSection = ({
+                               milestones,
+                               newMilestone,
+                               setNewMilestone,
+                               onAdd,
+                               onRemove
+                           }) => (
+    <section>
+        <h3 className="text-xl font-semibold text-warm-700 mb-4">MILESTONES</h3>
+        <div className="space-y-4">
+            <div className="flex space-x-2">
                 <Input
                     type="text"
                     placeholder="Add new milestone"
-                    onKeyDown={handleAddMilestone}
-                    className="flex-1"
+                    value={newMilestone}
+                    onChange={e => setNewMilestone(e.target.value)}
+                    className="flex-1 border-warm-200"
                 />
+                <Button
+                    onClick={onAdd}
+                    className="bg-warm-500 hover:bg-warm-600 text-white"
+                >
+                    <Plus className="h-4 w-4 mr-2" /> Add
+                </Button>
+            </div>
+            <ScrollArea className="h-[200px] border border-warm-200 rounded-md p-4">
                 {milestones.map((milestone, index) => (
-                    <div key={index} className="flex items-center space-x-2">
-                        <Input
-                            type="text"
-                            value={milestone}
-                            onChange={(e) => {
-                                const updatedMilestones = [...milestones];
-                                updatedMilestones[index] = e.target.value;
-                                onChange(updatedMilestones);
-                            }}
-                            className="flex-1"
-                        />
+                    <div key={index} className="flex items-center justify-between py-2">
+                        <span className="text-warm-700">{milestone}</span>
                         <Button
                             variant="ghost"
-                            className="text-red-500"
-                            onClick={() => handleDelete(index)}
+                            onClick={() => onRemove(index)}
+                            className="text-warm-500 hover:text-warm-700"
                         >
-                            Delete
+                            <Trash2 className="h-4 w-4" />
                         </Button>
                     </div>
                 ))}
-            </div>
-        </section>
-    );
-};
+            </ScrollArea>
+        </div>
+    </section>
+)
 
-const FamilySection = ({ family, onMemberChange, onAddMember }) => (
+const FamilySection = ({
+                           family,
+                           onMemberChange,
+                           onAddMember,
+                           onRemoveMember
+                       }) => (
     <section>
-        <h3 className="text-xl text-gray-500 mb-4">FAMILY</h3>
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+        <h3 className="text-xl font-semibold text-warm-700 mb-4">FAMILY</h3>
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {family.map((member, index) => (
                 <FamilyMemberCard
                     key={index}
                     member={member}
                     index={index}
                     onChange={onMemberChange}
+                    onRemove={onRemoveMember}
                 />
             ))}
             <AddFamilyButton onClick={onAddMember} />
@@ -218,11 +259,11 @@ const FamilySection = ({ family, onMemberChange, onAddMember }) => (
     </section>
 )
 
-const FamilyMemberCard = ({ member, index, onChange }) => (
-    <Card className="p-6">
-        <div className="space-y-4">
+const FamilyMemberCard = ({ member, index, onChange, onRemove }) => (
+    <Card>
+        <CardContent className="p-4 space-y-4">
             <div className="space-y-2">
-                <Label htmlFor={`fullName-${index}`}>
+                <Label htmlFor={`fullName-${index}`} className="text-warm-700">
                     <User className="w-4 h-4 inline mr-2" />
                     Full Name
                 </Label>
@@ -230,10 +271,11 @@ const FamilyMemberCard = ({ member, index, onChange }) => (
                     id={`fullName-${index}`}
                     value={member.full_name}
                     onChange={e => onChange(index, "full_name", e.target.value)}
+                    className="border-warm-200"
                 />
             </div>
             <div className="space-y-2">
-                <Label htmlFor={`relationship-${index}`}>
+                <Label htmlFor={`relationship-${index}`} className="text-warm-700">
                     <User className="w-4 h-4 inline mr-2" />
                     Relationship
                 </Label>
@@ -241,7 +283,7 @@ const FamilyMemberCard = ({ member, index, onChange }) => (
                     value={member.relationship}
                     onValueChange={value => onChange(index, "relationship", value)}
                 >
-                    <SelectTrigger>
+                    <SelectTrigger className="border-warm-200">
                         <SelectValue placeholder="Select relationship" />
                     </SelectTrigger>
                     <SelectContent>
@@ -249,7 +291,6 @@ const FamilyMemberCard = ({ member, index, onChange }) => (
                             <SelectItem
                                 key={relation.toLowerCase()}
                                 value={relation.toLowerCase()}
-                                className={`bg-white`}
                             >
                                 {relation}
                             </SelectItem>
@@ -257,38 +298,44 @@ const FamilyMemberCard = ({ member, index, onChange }) => (
                     </SelectContent>
                 </Select>
             </div>
-        </div>
+            <Button
+                variant="ghost"
+                onClick={() => onRemove(index)}
+                className="w-full text-warm-500 hover:text-warm-700"
+            >
+                <Trash2 className="h-4 w-4 mr-2" /> Remove
+            </Button>
+        </CardContent>
     </Card>
 )
 
 const AddFamilyButton = ({ onClick }) => (
     <button
         onClick={onClick}
-        className="border-2 border-dashed border-blue-300 rounded-lg p-8 text-blue-500 hover:bg-blue-50 transition-colors flex items-center justify-center"
+        className="border-2 border-dashed border-warm-300 rounded-lg p-8 text-warm-500 hover:bg-warm-50 transition-colors flex items-center justify-center"
     >
-        ADD FAMILY
+        <Plus className="h-6 w-6 mr-2" /> ADD FAMILY
     </button>
 )
 
 const NavigationButtons = ({ id, onSave, isLoading }) => (
     <div className="flex justify-between pt-8">
         <Link to={`/dashboard/memories-overview/${id}`}>
-            <Button variant="default" className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8">
-                Tribute Overview
+            <Button variant="outline" className="text-warm-700">
+                <ChevronLeft className="h-4 w-4 mr-2" /> Tribute Overview
             </Button>
-
         </Link>
         <Button
-            variant="default"
-            className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8"
             onClick={onSave}
             disabled={isLoading}
+            className="bg-warm-500 hover:bg-warm-600"
         >
+            {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
             {isLoading ? "Saving..." : "Save Changes"}
         </Button>
         <Link to={`/dashboard/memories/events/${id}`}>
-            <Button variant="default" className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8">
-                Events
+            <Button variant="outline" className="text-warm-700">
+                Events <ChevronRight className="h-4 w-4 ml-2" />
             </Button>
         </Link>
     </div>

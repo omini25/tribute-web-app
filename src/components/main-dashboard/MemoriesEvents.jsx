@@ -1,14 +1,25 @@
-import { useState, useEffect } from "react"
-import { Link, useParams } from "react-router-dom"
+import React, { useState, useEffect } from "react"
+import { useParams, Link } from "react-router-dom"
 import axios from "axios"
 import { toast } from "react-hot-toast"
-import { Plus, Loader2, Edit, Save } from "lucide-react"
+import {
+    Plus,
+    Loader2,
+    Edit,
+    Save,
+    Calendar,
+    Clock,
+    MapPin,
+    Users, ChevronLeft, ChevronRight
+} from "lucide-react"
 import { server } from "@/server.js"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { DashboardLayout } from "@/components/main-dashboard/DashboardLayout"
 
 export default function MemoriesEvents() {
     const { id } = useParams()
@@ -16,6 +27,7 @@ export default function MemoriesEvents() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [events, setEvents] = useState([])
     const [newEvent, setNewEvent] = useState({
+        id: "",
         title: "",
         event_location: "",
         event_date: "",
@@ -38,11 +50,11 @@ export default function MemoriesEvents() {
     useEffect(() => {
         fetchTributeTitle()
         fetchEvents()
-    }, []) // Removed unnecessary dependency 'id'
+    }, [])
 
     const fetchTributeTitle = async () => {
         try {
-            const user = JSON.parse(localStorage.getItem("user"))
+            const user = JSON.parse(localStorage.getItem("user") || "{}")
             const response = await axios.get(
                 `${server}/tribute/title/image/${user.id}`
             )
@@ -58,7 +70,11 @@ export default function MemoriesEvents() {
             setEvents(Array.isArray(response.data) ? response.data : [response.data])
             setIsLoading(false)
         } catch (error) {
-            toast.error("Failed to load events")
+            toast({
+                title: "Error",
+                description: "Failed to load events. Please try again.",
+                variant: "destructive"
+            })
             setIsLoading(false)
         }
     }
@@ -113,10 +129,17 @@ export default function MemoriesEvents() {
             }
             const response = await axios.post(`${server}/events/${id}`, payload)
             setEvents([...events, response.data])
-            toast.success("Event added successfully")
+            toast({
+                title: "Success",
+                description: "Event added successfully"
+            })
             resetEventForm()
         } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to add event")
+            toast({
+                title: "Error",
+                description: "Failed to add event. Please try again.",
+                variant: "destructive"
+            })
         } finally {
             setIsSubmitting(false)
         }
@@ -138,6 +161,7 @@ export default function MemoriesEvents() {
         setIsSubmitting(true)
         try {
             const eventToUpdate = events.find(event => event.id === editingEventId)
+            if (!eventToUpdate) throw new Error("Event not found")
             const payload = {
                 trubute_id: id,
                 ...eventToUpdate,
@@ -145,12 +169,19 @@ export default function MemoriesEvents() {
                 guest_option: JSON.stringify(eventToUpdate.guest_option)
             }
             await axios.put(`${server}/events/${editingEventId}`, payload)
-            toast.success("Event updated successfully")
+            toast({
+                title: "Success",
+                description: "Event updated successfully"
+            })
             setEditingEventId(null)
             resetEventForm()
             fetchEvents()
         } catch (error) {
-            toast.error(error.response?.data?.message || "Failed to update event")
+            toast({
+                title: "Error",
+                description: "Failed to update event. Please try again.",
+                variant: "destructive"
+            })
         } finally {
             setIsSubmitting(false)
         }
@@ -158,6 +189,7 @@ export default function MemoriesEvents() {
 
     const resetEventForm = () => {
         setNewEvent({
+            id: "",
             title: "",
             event_location: "",
             event_date: "",
@@ -177,198 +209,226 @@ export default function MemoriesEvents() {
     }
 
     if (isLoading) {
-        return <LoadingSpinner />
+        return (
+            <div>
+                <div className="flex items-center justify-center min-h-screen">
+                    <Loader2 className="h-8 w-8 animate-spin text-warm-500" />
+                </div>
+            </div>
+        )
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-            <Header title={title} />
-            <EventForm
-                event={
-                    editingEventId !== null
-                        ? events.find(event => event.id === editingEventId)
-                        : newEvent
-                }
-                onInputChange={handleInputChange}
-                onCheckboxChange={handleCheckboxChange}
-                onSubmit={editingEventId !== null ? handleSaveEvent : handleAddEvent}
-                isSubmitting={isSubmitting}
-                isEditing={editingEventId !== null}
-            />
-            <EventList events={events} onEditEvent={handleEditEvent} />
-            <NavigationButtons id={id} />
+        <div>
+            <div className="container mx-auto px-4 py-8 max-w-4xl">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-3xl font-bold text-warm-800">
+                            {title}
+                        </CardTitle>
+                        <p className="text-xl text-warm-600">EVENTS</p>
+                    </CardHeader>
+                    <CardContent className="space-y-8">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-xl text-warm-700">
+                                    {editingEventId !== null ? "Edit Event" : "Add New Event"}
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="grid md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="title">Event Title</Label>
+                                        <Input
+                                            id="title"
+                                            name="title"
+                                            value={
+                                                editingEventId !== null
+                                                    ? events.find(e => e.id === editingEventId)?.title
+                                                    : newEvent.title
+                                            }
+                                            onChange={handleInputChange}
+                                            className="border-warm-200"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="event_location">Location</Label>
+                                        <Input
+                                            id="event_location"
+                                            name="event_location"
+                                            value={
+                                                editingEventId !== null
+                                                    ? events.find(e => e.id === editingEventId)
+                                                        ?.event_location
+                                                    : newEvent.event_location
+                                            }
+                                            onChange={handleInputChange}
+                                            className="border-warm-200"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="event_date">Date</Label>
+                                        <Input
+                                            id="event_date"
+                                            name="event_date"
+                                            type="date"
+                                            value={
+                                                editingEventId !== null
+                                                    ? events.find(e => e.id === editingEventId)
+                                                        ?.event_date
+                                                    : newEvent.event_date
+                                            }
+                                            onChange={handleInputChange}
+                                            className="border-warm-200"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="event_time">Time</Label>
+                                        <Input
+                                            id="event_time"
+                                            name="event_time"
+                                            type="time"
+                                            value={
+                                                editingEventId !== null
+                                                    ? events.find(e => e.id === editingEventId)
+                                                        ?.event_time
+                                                    : newEvent.event_time
+                                            }
+                                            onChange={handleInputChange}
+                                            className="border-warm-200"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Event Type</Label>
+                                    <div className="flex flex-wrap gap-4">
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id="is_private"
+                                                checked={
+                                                    editingEventId !== null
+                                                        ? events.find(e => e.id === editingEventId)
+                                                            ?.event_type.is_private
+                                                        : newEvent.event_type.is_private
+                                                }
+                                                onCheckedChange={() =>
+                                                    handleCheckboxChange("event_type", "is_private")
+                                                }
+                                            />
+                                            <Label htmlFor="is_private">Private Event</Label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label>Guest Options</Label>
+                                    <div className="flex flex-wrap gap-4">
+                                        <div className="flex items-center space-x-2">
+                                            <Checkbox
+                                                id="can_rsvp"
+                                                checked={
+                                                    editingEventId !== null
+                                                        ? events.find(e => e.id === editingEventId)
+                                                            ?.guest_option.can_rsvp
+                                                        : newEvent.guest_option.can_rsvp
+                                                }
+                                                onCheckedChange={() =>
+                                                    handleCheckboxChange("guest_option", "can_rsvp")
+                                                }
+                                            />
+                                            <Label htmlFor="can_rsvp">Allow RSVP</Label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="flex justify-center">
+                                    <Button
+                                        onClick={
+                                            editingEventId !== null ? handleSaveEvent : handleAddEvent
+                                        }
+                                        disabled={isSubmitting}
+                                        className="bg-warm-500 hover:bg-warm-600 "
+                                    >
+                                        {isSubmitting ? (
+                                            <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                        ) : editingEventId !== null ? (
+                                            <Save className="h-4 w-4 mr-2" />
+                                        ) : (
+                                            <Plus className="h-4 w-4 mr-2" />
+                                        )}
+                                        {editingEventId !== null ? "Save Event" : "Add Event"}
+                                    </Button>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="text-xl text-warm-700">
+                                    Event List
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <ScrollArea className="h-[400px] pr-4">
+                                    <div className="space-y-4">
+                                        {events.map(event => (
+                                            <Card key={event.id} className="p-4">
+                                                <CardContent className="space-y-2">
+                                                    <h3 className="text-lg font-semibold text-warm-800">
+                                                        {event.title}
+                                                    </h3>
+                                                    <div className="flex items-center text-warm-600">
+                                                        <MapPin className="mr-2 h-4 w-4" />
+                                                        <span>{event.event_location}</span>
+                                                    </div>
+                                                    <div className="flex items-center text-warm-600">
+                                                        <Calendar className="mr-2 h-4 w-4" />
+                                                        <span>
+                              {new Date(event.event_date).toLocaleDateString(
+                                  "en-GB"
+                              )}
+                            </span>
+                                                    </div>
+                                                    <div className="flex items-center text-warm-600">
+                                                        <Clock className="mr-2 h-4 w-4" />
+                                                        <span>{event.event_time}</span>
+                                                    </div>
+                                                    <div className="flex items-center text-warm-600">
+                                                        <Users className="mr-2 h-4 w-4" />
+                                                        <span>
+                              {event.event_type.is_private
+                                  ? "Private Event"
+                                  : "Public Event"}
+                            </span>
+                                                    </div>
+                                                    <Button
+                                                        onClick={() => handleEditEvent(event.id)}
+                                                        variant="outline"
+                                                        className="mt-2"
+                                                    >
+                                                        <Edit className="h-4 w-4 mr-2" /> Edit
+                                                    </Button>
+                                                </CardContent>
+                                            </Card>
+                                        ))}
+                                    </div>
+                                </ScrollArea>
+                            </CardContent>
+                        </Card>
+
+                        <div className="flex justify-between mt-8">
+                            <Link to={`/dashboard/tribute-life/${id}`}>
+                                <Button variant="outline" className="text-warm-700">
+                                    <ChevronLeft className="h-4 w-4 mr-2" /> Life
+                                </Button>
+                            </Link>
+                            <Link to={`/dashboard/memories/memories/${id}`}>
+                                <Button variant="outline" className="text-warm-700">
+                                    Memories <ChevronRight className="h-4 w-4 ml-2" />
+                                </Button>
+                            </Link>
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     )
 }
-
-const LoadingSpinner = () => (
-    <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-    </div>
-)
-
-const Header = ({ title }) => (
-    <div className="space-y-2 mb-8">
-        <h1 className="text-4xl font-medium text-gray-600">{title}</h1>
-        <h2 className="text-2xl text-gray-500">EVENTS</h2>
-    </div>
-)
-
-const EventForm = ({
-                       event,
-                       onInputChange,
-                       onCheckboxChange,
-                       onSubmit,
-                       isSubmitting,
-                       isEditing
-                   }) => (
-    <Card className="p-6 mb-8">
-        <div className="space-y-8">
-            <EventTypeCheckboxes event={event} onCheckboxChange={onCheckboxChange} />
-            <EventDetailsInputs event={event} onInputChange={onInputChange} />
-            <RSVPOptions event={event} onCheckboxChange={onCheckboxChange} />
-            <SubmitButton
-                onSubmit={onSubmit}
-                isSubmitting={isSubmitting}
-                isEditing={isEditing}
-            />
-        </div>
-    </Card>
-)
-
-const EventTypeCheckboxes = ({ event, onCheckboxChange }) => (
-    <div className="flex flex-wrap gap-6">
-        {[
-            "is_private",
-        ].map(type => (
-            <div key={type} className="flex items-center space-x-2">
-                <Checkbox
-                    id={type}
-                    checked={event.event_type[type]}
-                    onCheckedChange={() => onCheckboxChange("event_type", type)}
-                />
-                <Label htmlFor={type} className="text-blue-500">
-                    {type
-                        .split("_")
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                        .join(" ")}
-                </Label>
-            </div>
-        ))}
-    </div>
-)
-
-const EventDetailsInputs = ({ event, onInputChange }) => (
-    <div className="grid md:grid-cols-2 gap-6">
-        {["title", "event_location", "event_date", "event_time"].map(field => (
-            <div key={field} className="space-y-2">
-                <Label htmlFor={field} className="text-blue-500">
-                    {field
-                        .split("_")
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                        .join(" ")}
-                </Label>
-                <Input
-                    id={field}
-                    name={field}
-                    type={
-                        field.includes("date")
-                            ? "date"
-                            : field.includes("time")
-                                ? "time"
-                                : "text"
-                    }
-                    value={event[field]}
-                    onChange={onInputChange}
-                    className="border-blue-100"
-                />
-            </div>
-        ))}
-    </div>
-)
-
-const RSVPOptions = ({ event, onCheckboxChange }) => (
-    <div className="flex flex-wrap gap-6">
-        {["can_rsvp"].map(option => (
-            <div key={option} className="flex items-center space-x-2">
-                <Checkbox
-                    id={option}
-                    checked={event.guest_option[option]}
-                    onCheckedChange={() => onCheckboxChange("guest_option", option)}
-                />
-                <Label htmlFor={option} className="text-blue-500">
-                    {option
-                        .split("_")
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-                        .join(" ")}
-                </Label>
-            </div>
-        ))}
-    </div>
-)
-
-const SubmitButton = ({ onSubmit, isSubmitting, isEditing }) => (
-    <div className="flex justify-center">
-        <Button
-            onClick={onSubmit}
-            disabled={isSubmitting}
-            className="rounded-full w-12 h-12 bg-blue-500 hover:bg-blue-600"
-        >
-            {isSubmitting ? (
-                <Loader2 className="h-6 w-6 animate-spin" />
-            ) : isEditing ? (
-                <Save className="h-6 w-6" />
-            ) : (
-                <Plus className="h-6 w-6" />
-            )}
-        </Button>
-    </div>
-)
-
-const EventList = ({ events, onEditEvent }) => (
-    <div className="space-y-4">
-        {events.map((event, index) => (
-            <Card key={index} className="p-6">
-                <div className="space-y-4">
-                    <h3 className="text-xl font-semibold">{event.title}</h3>
-                    <p>
-                        <strong>Location:</strong> {event.event_location}
-                    </p>
-                    <p>
-                        <strong>Date:</strong> {new Date(event.event_date).toLocaleDateString('en-GB')}
-                    </p>
-                    <p>
-                        <strong>Time:</strong> {event.event_time}
-                    </p>
-                    <p>
-                        <strong>Event Type:</strong> {event.event_type.is_private ? "Private Event" : "Public Event"}
-                    </p>
-                    <p>
-                        <strong>Guest Options:</strong> {event.guest_option.can_rsvp ? "Can RSVP" : "No RSVP"}
-                    </p>
-                    <Button
-                        onClick={() => onEditEvent(event.id)}
-                        className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8"
-                    >
-                        <Edit className="h-4 w-4 mr-2" /> Edit
-                    </Button>
-                </div>
-            </Card>
-        ))}
-    </div>
-)
-
-const NavigationButtons = ({ id }) => (
-    <div className="flex justify-between mt-16">
-        <Link to={`/dashboard/tribute-life/${id}`}>
-            <Button variant="default" className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8">
-               Life
-            </Button>
-        </Link>
-        <Link to={`/dashboard/memories/memories/${id}`}>
-            <Button className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8 min-w-[120px]">
-                Memories
-            </Button>
-        </Link>
-    </div>
-)

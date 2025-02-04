@@ -1,24 +1,30 @@
-import React, { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { Upload } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
-import { Oval } from "react-loader-spinner";
-import {toast} from "react-hot-toast";
-import {server} from "@/server.js";
-import axios from "axios";
+import { useState, useEffect } from "react"
+import { Link, useParams } from "react-router-dom"
+import axios from "axios"
+import { toast } from "react-hot-toast"
+import { Upload, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { server } from "@/server.js"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Label } from "@/components/ui/label"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { DashboardLayout } from "@/components/main-dashboard/DashboardLayout"
+
+const themes = [
+    { name: "Warm", color: "#FFA07A", image: "/path/to/warm-image.jpg" },
+    { name: "Cool", color: "#00BFFF", image: "/path/to/cool-image.jpg" },
+    { name: "Autumn", color: "#FF7F50", image: "/path/to/autumn-image.jpg" }
+]
 
 export default function MemoriesMusicTheme() {
-    const { id } = useParams();
+    const { id } = useParams()
     const [tribute, setTribute] = useState({
-        music_option: false,
-        defaultMusic: false,
-        theme: '',
+        no_music: false,
+        default_music: false,
+        theme: "",
         music: null
-    });
-    const [loading, setLoading] = useState(false);
+    })
+    const [isLoading, setIsLoading] = useState(false)
     const [title, setTitle] = useState("TRIBUTE")
 
     useEffect(() => {
@@ -28,7 +34,7 @@ export default function MemoriesMusicTheme() {
 
     const fetchTributeTitle = async () => {
         try {
-            const user = JSON.parse(localStorage.getItem("user"))
+            const user = JSON.parse(localStorage.getItem("user") || "{}")
             const response = await axios.get(
                 `${server}/tribute/title/image/${user.id}`
             )
@@ -40,203 +46,208 @@ export default function MemoriesMusicTheme() {
 
     const fetchTributeDetails = async () => {
         try {
-            const response = await fetch(`${server}/tribute/details/${id}`);
-            const data = await response.json();
+            const response = await axios.get(`${server}/tribute/details/${id}`)
+            const data = response.data
             setTribute({
-                music_option: data.no_music,
-                defaultMusic: data.default_music,
-                theme: data.theme || '',
-                music: null 
-            });
+                no_music: data.no_music,
+                default_music: data.default_music,
+                theme: data.theme || "",
+                music: null
+            })
         } catch (error) {
-            console.error("Error fetching tribute details:", error);
+            console.error("Error fetching tribute details:", error)
+            toast({
+                title: "Error",
+                description: "Failed to load tribute details. Please try again.",
+                variant: "destructive"
+            })
         }
-    };
+    }
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setTribute({ ...tribute, [name]: value });
-    };
+    const handleMusicOptionChange = value => {
+        setTribute(prev => ({
+            ...prev,
+            no_music: value === "no_music",
+            default_music: value === "default_music"
+        }))
+    }
 
-    const handleCheckboxChange = (e) => {
-        const { name, checked } = e.target;
-        setTribute({ ...tribute, [name]: checked });
-    };
+    const handleThemeChange = theme => {
+        setTribute(prev => ({ ...prev, theme }))
+    }
 
-    const handleFileChange = (e) => {
-        setTribute({ ...tribute, music: e.target.files[0] });
-    };
+    const handleFileChange = e => {
+        const file = e.target.files?.[0]
+        if (file) {
+            setTribute(prev => ({ ...prev, music: file }))
+        }
+    }
 
     const handleSubmit = async () => {
-        setLoading(true);
-        const formData = new FormData();
-        formData.append('no_music', tribute.music_option);
-        formData.append('default_music', tribute.defaultMusic);
-        formData.append('theme', tribute.theme);
+        setIsLoading(true)
+        const formData = new FormData()
+        formData.append("no_music", tribute.no_music.toString())
+        formData.append("default_music", tribute.default_music.toString())
+        formData.append("theme", tribute.theme)
         if (tribute.music) {
-            formData.append('music_file', tribute.music);
+            formData.append("music_file", tribute.music)
         }
 
         try {
-            const response = await fetch(`/tributes/${id}`, {
-                method: 'PUT',
-                body: formData,
-            });
-            const result = await response.json();
-            if (response.ok) {
-                toast.success("Tribute updated successfully!");
+            const response = await axios.put(`${server}/tributes/${id}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            })
+            if (response.status === 200) {
+                toast({
+                    title: "Success",
+                    description: "Tribute updated successfully!"
+                })
             } else {
-                toast.error(result.message || "Failed to update tribute.");
+                throw new Error("Failed to update tribute")
             }
         } catch (error) {
-            toast.error("Failed to update tribute.");
+            console.error("Error updating tribute:", error)
+            toast({
+                title: "Error",
+                description: "Failed to update tribute. Please try again.",
+                variant: "destructive"
+            })
         } finally {
-            setLoading(false);
+            setIsLoading(false)
         }
-    };
+    }
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-4xl">
-            <div className="space-y-2 mb-8">
-                <h1 className="text-4xl font-medium text-gray-600">{title}</h1>
-                <h2 className="text-2xl text-gray-500">THEME AND MUSIC</h2>
-            </div>
-
-            {/* Music Options */}
-            <div className="flex flex-wrap gap-6 mb-8">
-                <div className="flex items-center space-x-2">
-                    <Checkbox
-                        id="music_option"
-                        name="music_option"
-                        checked={tribute.music_option}
-                        onChange={handleCheckboxChange}
-                    />
-                    <Label htmlFor="music_option" className="text-blue-500">
-                        No Music
-                    </Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Checkbox
-                        id="defaultMusic"
-                        name="defaultMusic"
-                        checked={tribute.defaultMusic}
-                        onChange={handleCheckboxChange}
-                    />
-                    <Label htmlFor="defaultMusic" className="text-blue-500">
-                        Default Music
-                    </Label>
-                </div>
-            </div>
-
-            {/* Upload Music Button */}
-            <div className="mb-12">
-                <Button
-                    variant="outline"
-                    className="h-16 w-full md:w-auto border-2 border-dashed border-blue-300 text-blue-500 hover:bg-blue-50"
-                >
-                    <Upload className="w-4 h-4 mr-2"/>
-                    <input type="file" onChange={handleFileChange} accept="audio/*" />
-                </Button>
-            </div>
-
-            {/* Theme Selection */}
-            <div className="space-y-6 mb-12">
-                <h3 className="text-xl text-gray-500">SELECT THEME</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {/* Theme Card 1 */}
-                    <Card
-                        className={`overflow-hidden relative ${tribute.theme === 'Warm' ? 'border-2 border-blue-500' : ''}`}
-                        onClick={() => setTribute({ ...tribute, theme: 'Warm' })}
-                        style={{ backgroundColor: '#FFA07A' }} // Warm color
-                    >
-                        {tribute.theme === 'Warm' && (
-                            <div className="absolute inset-0 bg-blue-500 bg-opacity-50 flex items-center justify-center">
-                                <span className="text-white text-lg">Selected</span>
-                            </div>
-                        )}
-                        <CardHeader className="bg-blue-100 p-4">
-                            <div className="space-y-1">
-                                <h4 className="text-blue-500">Warm</h4>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            <div className="aspect-square bg-blue-50">
-                                <img src="/path/to/warm-image.jpg" alt="Warm" className="w-full h-full object-cover" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Theme Card 2 */}
-                    <Card
-                        className={`overflow-hidden relative ${tribute.theme === 'Cool' ? 'border-2 border-blue-500' : ''}`}
-                        onClick={() => setTribute({ ...tribute, theme: 'Cool' })}
-                        style={{ backgroundColor: '#00BFFF' }} // Cool color
-                    >
-                        {tribute.theme === 'Cool' && (
-                            <div className="absolute inset-0 bg-blue-500 bg-opacity-50 flex items-center justify-center">
-                                <span className="text-white text-lg">Selected</span>
-                            </div>
-                        )}
-                        <CardHeader className="bg-blue-100 p-4">
-                            <div className="space-y-1">
-                                <h4 className="text-blue-500">Cool</h4>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            <div className="aspect-square bg-blue-50">
-                                <img src="/path/to/cool-image.jpg" alt="Cool" className="w-full h-full object-cover" />
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Theme Card 3 */}
-                    <Card
-                        className={`overflow-hidden relative ${tribute.theme === 'Autumn' ? 'border-2 border-orange-500' : ''}`}
-                        onClick={() => setTribute({ ...tribute, theme: 'Autumn' })}
-                        style={{ backgroundColor: '#FF7F50' }} // Autumn color
-                    >
-                        {tribute.theme === 'Autumn' && (
-                            <div className="absolute inset-0 bg-orange-500 bg-opacity-50 flex items-center justify-center">
-                                <span className="text-white text-lg">Selected</span>
-                            </div>
-                        )}
-                        <CardHeader className="bg-orange-100 p-4">
-                            <div className="space-y-1">
-                                <h4 className="text-blue-500">Autumn</h4>
-                            </div>
-                        </CardHeader>
-                        <CardContent className="p-0">
-                            <div className="aspect-square bg-blue-50">
-                                <img src="/path/to/autumn-image.jpg" alt="Autumn" className="w-full h-full object-cover" />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </div>
-
-            {/* Save Button */}
-            <div className="flex justify-center mt-8">
-                <Button
-                    onClick={handleSubmit}
-                    className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8 min-w-[120px]"
-                >
-                    {loading ? <Oval height={24} width={24} color="white" /> : "Save"}
-                </Button>
-            </div>
-
-            {/* Navigation */}
-            <div className="flex justify-between mt-16">
-                <Link to={`/dashboard/memories/donations/${id}`}>
-                    <Button className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8 min-w-[120px]">
-                        Donations
-                    </Button>
-                </Link>
-                <Link to={`/dashboard/preview/${id}`}>
-                    <Button className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8 min-w-[120px]">
-                        Preview
-                    </Button>
-                </Link>
+        <div>
+            <div className="container mx-auto px-4 py-8 max-w-4xl">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-3xl font-bold text-warm-800 text-center">
+                            {title}
+                        </CardTitle>
+                        <p className="text-xl text-warm-600 text-center">THEME AND MUSIC</p>
+                    </CardHeader>
+                    <CardContent className="space-y-8">
+                        <MusicOptions
+                            tribute={tribute}
+                            onChange={handleMusicOptionChange}
+                            onFileChange={handleFileChange}
+                        />
+                        <ThemeSelection
+                            tribute={tribute}
+                            themes={themes}
+                            onChange={handleThemeChange}
+                        />
+                        <div className="flex justify-center">
+                            <Button
+                                onClick={handleSubmit}
+                                disabled={isLoading}
+                                className="bg-warm-500 hover:bg-warm-600 "
+                            >
+                                {isLoading ? (
+                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                ) : null}
+                                {isLoading ? "Saving..." : "Save Changes"}
+                            </Button>
+                        </div>
+                        <NavigationButtons id={id} />
+                    </CardContent>
+                </Card>
             </div>
         </div>
-    );
+    )
 }
+
+const MusicOptions = ({ tribute, onChange, onFileChange }) => (
+    <div className="space-y-4">
+        <h3 className="text-xl font-semibold text-warm-700">Music Options</h3>
+        <RadioGroup
+            defaultValue={
+                tribute.no_music
+                    ? "no_music"
+                    : tribute.default_music
+                        ? "default_music"
+                        : "custom_music"
+            }
+            onValueChange={onChange}
+        >
+            <div className="flex items-center space-x-2">
+                <RadioGroupItem value="no_music" id="no_music" />
+                <Label htmlFor="no_music">No Music</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+                <RadioGroupItem value="default_music" id="default_music" />
+                <Label htmlFor="default_music">Default Music</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+                <RadioGroupItem value="custom_music" id="custom_music" />
+                <Label htmlFor="custom_music">Custom Music</Label>
+            </div>
+        </RadioGroup>
+        <div className="pt-2">
+            <Label htmlFor="music-upload" className="cursor-pointer">
+                <div className="flex items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-md appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+          <span className="flex items-center space-x-2">
+            <Upload className="w-6 h-6 text-warm-500" />
+            <span className="font-medium text-warm-600">
+              {tribute.music ? tribute.music.name : "Click to upload music"}
+            </span>
+          </span>
+                    <input
+                        id="music-upload"
+                        type="file"
+                        className="hidden"
+                        onChange={onFileChange}
+                        accept="audio/*"
+                    />
+                </div>
+            </Label>
+        </div>
+    </div>
+)
+
+const ThemeSelection = ({ tribute, themes, onChange }) => (
+    <div className="space-y-4">
+        <h3 className="text-xl font-semibold text-warm-700">Select Theme</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {themes.map(theme => (
+                <Card
+                    key={theme.name}
+                    className={`cursor-pointer transition-all ${
+                        tribute.theme === theme.name ? "ring-2 ring-warm-500" : ""
+                    }`}
+                    onClick={() => onChange(theme.name)}
+                >
+                    <div
+                        className="aspect-video"
+                        style={{ backgroundColor: theme.color }}
+                    >
+                        <img
+                            src={theme.image || "/placeholder.svg"}
+                            alt={theme.name}
+                            className="w-full h-full object-cover"
+                        />
+                    </div>
+                    <CardContent className="p-4">
+                        <h4 className="font-semibold text-warm-700">{theme.name}</h4>
+                    </CardContent>
+                </Card>
+            ))}
+        </div>
+    </div>
+)
+
+const NavigationButtons = ({ id, title }) => (
+    <div className="flex justify-between pt-8">
+        <Link to={`/dashboard/memories/donations/${id}`}>
+            <Button variant="outline" className="text-warm-700">
+                <ChevronLeft className="h-4 w-4 mr-2" /> Donations
+            </Button>
+        </Link>
+        <Link to={`/theme-warm/${id}/${title}`}>
+            <Button variant="outline" className="text-warm-700">
+                Preview <ChevronRight className="h-4 w-4 ml-2" />
+            </Button>
+        </Link>
+    </div>
+)

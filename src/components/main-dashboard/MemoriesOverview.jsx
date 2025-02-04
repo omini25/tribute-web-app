@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import axios from "axios"
 import { format } from "date-fns"
 import { toast } from "react-hot-toast"
-import {Loader2, Upload} from "lucide-react"
+import {Loader2, Upload, Calendar, Globe, LinkIcon, ChevronRight} from "lucide-react"
 import { server } from "@/server.js"
+import { assetServer } from "@/assetServer.js"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -15,6 +16,9 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Textarea } from "@/components/ui/textarea"
+import { DashboardLayout } from "@/components/main-dashboard/DashboardLayout"
 
 export default function MemoriesOverview() {
     const { id } = useParams()
@@ -27,27 +31,28 @@ export default function MemoriesOverview() {
         last_name: "",
         nickname: "",
         relationship: "",
-        date_of_death: null,
-        date_of_birth: null,
-        country_lived: "",
+        date_of_death: "",
+        date_of_birth: "",
+        country_of_birth: "",
+        country_died: "",
         customMemorialWebsite: "",
         quote: ""
     })
     const [title, setTitle] = useState("TRIBUTE")
-    const user = JSON.parse(localStorage.getItem("user"))
+    const user = JSON.parse(localStorage.getItem("user") || "{}")
     const [imagePreview, setImagePreview] = useState(null)
 
     useEffect(() => {
         fetchTributeTitle()
         fetchTributeDetails()
-    }, []) // Removed unnecessary dependency 'id'
+    }, [])
 
     const fetchTributeTitle = async () => {
         try {
             const response = await axios.get(
                 `${server}/tribute/title/image/${user.id}`
             )
-            setTitle(response.data.title || "TRIBUTE")
+            setTitle(response.data.title[0] || "TRIBUTE")
         } catch (error) {
             console.error("Error fetching tribute title:", error)
         }
@@ -56,7 +61,16 @@ export default function MemoriesOverview() {
     const fetchTributeDetails = async () => {
         try {
             const response = await axios.get(`${server}/tribute/details/${id}`)
-            setTribute(response.data)
+            const tributeData = response.data
+            setTribute({
+                ...tributeData,
+                date_of_death: tributeData.date_of_death
+                    ? format(new Date(tributeData.date_of_death), "yyyy-MM-dd")
+                    : "",
+                date_of_birth: tributeData.date_of_birth
+                    ? format(new Date(tributeData.date_of_birth), "yyyy-MM-dd")
+                    : ""
+            })
         } catch (error) {
             console.error("Error fetching tribute details:", error)
         }
@@ -72,14 +86,20 @@ export default function MemoriesOverview() {
     }
 
     const handleDateChange = (date, field) => {
-        const formattedDate = date ? format(date, "yyyy-MM-dd") : null
-        setTribute(prev => ({ ...prev, [field]: formattedDate }))
+        setTribute(prev => ({ ...prev, [field]: date }))
     }
 
     const handleFileChange = e => {
-        setFile(e.target.files[0])
+        const selectedFile = e.target.files?.[0]
+        if (selectedFile) {
+            setFile(selectedFile)
+            const reader = new FileReader()
+            reader.onloadend = () => {
+                setImagePreview(reader.result)
+            }
+            reader.readAsDataURL(selectedFile)
+        }
     }
-
 
     const handleSubmit = async () => {
         setIsLoading(true)
@@ -101,162 +121,119 @@ export default function MemoriesOverview() {
             )
 
             if (response.data.status === "success") {
-                toast.success("Tribute updated successfully!")
+                toast({
+                    title: "Success",
+                    description: "Tribute updated successfully!"
+                })
             } else {
-                toast.error("Failed to update tribute")
+                toast({
+                    title: "Error",
+                    description: "Failed to update tribute",
+                    variant: "destructive"
+                })
             }
         } catch (error) {
             console.error("Error updating tribute details:", error)
-            toast.error(error.response?.data?.message || "Failed to update tribute")
+            toast({
+                title: "Error",
+                description: "Failed to update tribute. Please try again.",
+                variant: "destructive"
+            })
         } finally {
             setIsLoading(false)
         }
     }
 
-    // Add image upload utility
-    const uploadImage = async (file) => {
-        const formData = new FormData()
-        formData.append('file', file)
-
-        try {
-            // Replace with your image upload API endpoint
-            const response = await fetch('YOUR_UPLOAD_API_ENDPOINT', {
-                method: 'POST',
-                body: formData
-            })
-            const data = await response.json()
-            return data.imageUrl
-        } catch (error) {
-            throw new Error('Image upload failed')
-        }
-    }
-
-    const handleImageChange = async (event) => {
-        const file = event.target.files[0]
-        if (file) {
-            // Preview
-            const reader = new FileReader()
-            reader.onloadend = () => {
-                setImagePreview(reader.result)
-            }
-            reader.readAsDataURL(file)
-
-            // Store in form
-            setValue('image', file)
-        }
-    }
-
     return (
-        <div className="container mx-auto p-6 max-w-6xl">
-            {isLoading && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-4 rounded-lg shadow-lg flex items-center space-x-2">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-                        <span className="text-gray-700">Saving changes...</span>
-                    </div>
-                </div>
-            )}
+        <div>
+            <div className="container mx-auto px-4 py-8 max-w-4xl">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-3xl font-bold text-warm-800 text-center">
+                            {title}
+                        </CardTitle>
+                        <p className="text-xl text-warm-600 text-center">OVERVIEW</p>
+                    </CardHeader>
+                    <CardContent className="space-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-6">
+                                <NameFields
+                                    tribute={tribute}
+                                    handleInputChange={handleInputChange}
+                                />
+                                <RelationshipField
+                                    tribute={tribute}
+                                    handleSelectChange={handleSelectChange}
+                                />
+                                <DateField
+                                    label="Date of death"
+                                    value={tribute.date_of_death}
+                                    onChange={date => handleDateChange(date, "date_of_death")}
+                                />
+                                <InputField
+                                    label="Country of birth"
+                                    id="country_of_birth"
+                                    value={tribute.country_of_birth}
+                                    onChange={handleInputChange}
+                                    icon={<Globe className="h-4 w-4 text-warm-500" />}
+                                />
+                            </div>
 
-            <div className="space-y-8">
-                <div className="space-y-2 text-center">
-                    <h1 className="text-4xl font-light text-gray-600">{title}</h1>
-                    <h2 className="text-2xl font-light text-gray-500">OVERVIEW</h2>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-6">
-                        <NameFields
-                            tribute={tribute}
-                            handleInputChange={handleInputChange}
-                        />
-                        <RelationshipField
-                            tribute={tribute}
-                            handleSelectChange={handleSelectChange}
-                        />
-                        <DateField
-                            label="Date of death"
-                            value={tribute.date_of_death}
-                            onChange={date => handleDateChange(date, "date_of_death")}
-                        />
-
-                        <InputField
-                            label="Country of birth"
-                            id="country_lived"
-                            value={tribute.country_of_birth}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    <div className="space-y-6">
-                        <div className="relative bg-blue-100 p-6 rounded-lg text-center">
-                            <input
-                                type="file"
-                                id="image"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={handleImageChange}
-                            />
-                            <label
-                                htmlFor="image"
-                                className="cursor-pointer block w-full h-full min-h-[200px]"
-                            >
-                                {imagePreview ? (
-                                    <img
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="w-full h-full object-cover rounded-lg"
-                                    />
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center h-full">
-                                        <Upload className="h-8 w-8 mb-2 text-blue-500" />
-                                        <span className="text-blue-500">UPLOAD PERSON'S IMAGE</span>
-                                    </div>
-                                )}
-                            </label>
+                            <div className="space-y-6">
+                                <ImageUpload
+                                    imagePreview={imagePreview}
+                                    tributeImage={tribute.image}
+                                    handleFileChange={handleFileChange}
+                                />
+                                <DateField
+                                    label="Date of Birth"
+                                    value={tribute.date_of_birth}
+                                    onChange={date => handleDateChange(date, "date_of_birth")}
+                                />
+                                <InputField
+                                    label="Country died"
+                                    id="country_died"
+                                    value={tribute.country_died}
+                                    onChange={handleInputChange}
+                                    icon={<Globe className="h-4 w-4 text-warm-500" />}
+                                />
+                                <InputField
+                                    label="Custom memorial website"
+                                    id="customMemorialWebsite"
+                                    value={`www.rememberedalways/tribute/${tribute.first_name}-${tribute.last_name}`}
+                                    onChange={handleInputChange}
+                                    icon={<LinkIcon className="h-4 w-4 text-warm-500" />}
+                                />
+                            </div>
                         </div>
 
-
-                        <DateField
-                            label="Date of Birth"
-                            value={tribute.date_of_birth}
-                            onChange={date => handleDateChange(date, "date_of_birth")}
+                        <QuoteSection
+                            quote={tribute.quote}
+                            handleInputChange={handleInputChange}
                         />
-                        <InputField
-                            label="Country died"
-                            id="country_lived"
-                            value={tribute.country_died}
-                            onChange={handleInputChange}
-                        />
-                        <InputField
-                            label="Custom memorial website"
-                            id="customMemorialWebsite"
-                            value={`www.rememberedalways/tribute/${tribute.first_name}-${tribute.last_name}`}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-                </div>
 
-                <QuoteSection
-                    quote={tribute.quote}
-                    handleInputChange={handleInputChange}
-                />
-
-                <div className="flex justify-center space-x-4">
-                    <Button
-                        className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8"
-                        onClick={handleSubmit}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? "Saving..." : "Save"}
-                    </Button>
-                    <Button
-                        className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8"
-                        onClick={() => navigate(`/dashboard/tribute-life/${id}`)}
-                        disabled={isLoading}
-                    >
-                        Life of person
-                    </Button>
-                </div>
+                        <div className="flex justify-center space-x-4">
+                            <Button
+                                onClick={handleSubmit}
+                                disabled={isLoading}
+                                className="bg-warm-500 hover:bg-warm-600 "
+                            >
+                                {isLoading ? (
+                                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                                ) : null}
+                                {isLoading ? "Saving..." : "Save"}
+                            </Button>
+                            <Button
+                                onClick={() => navigate(`/dashboard/tribute-life/${id}`)}
+                                disabled={isLoading}
+                                variant="outline"
+                                className="text-warm-700"
+                            >
+                                Life of person <ChevronRight className="h-4 w-4 ml-2" />
+                            </Button>
+                        </div>
+                    </CardContent>
+                </Card>
             </div>
         </div>
     )
@@ -279,31 +256,38 @@ const NameFields = ({ tribute, handleInputChange }) => (
     </div>
 )
 
-const InputField = ({ label, id, value, onChange }) => (
+const InputField = ({ label, id, value, onChange, icon }) => (
     <div className="space-y-2">
-        <Label htmlFor={id} className="text-gray-700">
+        <Label htmlFor={id} className="text-warm-700">
             {label}
         </Label>
-        <Input
-            id={id}
-            value={value}
-            onChange={onChange}
-            className="bg-blue-50 border-blue-100 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-        />
+        <div className="relative">
+            <Input
+                id={id}
+                value={value}
+                onChange={onChange}
+                className="pl-8 border-warm-200 focus:border-warm-300 focus:ring focus:ring-warm-200 focus:ring-opacity-50"
+            />
+            {icon && (
+                <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
+                    {icon}
+                </div>
+            )}
+        </div>
     </div>
 )
 
 const RelationshipField = ({ tribute, handleSelectChange }) => (
     <div className="space-y-2">
-        <Label className="text-gray-700">Relationship with bereaved</Label>
+        <Label className="text-warm-700">Relationship with bereaved</Label>
         <Select
             value={tribute.relationship}
             onValueChange={value => handleSelectChange(value, "relationship")}
         >
-            <SelectTrigger className="bg-blue-50 border-blue-100">
+            <SelectTrigger className="border-warm-200">
                 <SelectValue placeholder="Select relationship" />
             </SelectTrigger>
-            <SelectContent className="bg-white border-blue-100">
+            <SelectContent>
                 {["Father", "Mother", "Sibling", "Spouse", "Child"].map(relation => (
                     <SelectItem
                         key={relation.toLowerCase()}
@@ -319,49 +303,54 @@ const RelationshipField = ({ tribute, handleSelectChange }) => (
 
 const DateField = ({ label, value, onChange }) => (
     <div className="space-y-2">
-        <Label className="text-gray-700">{label}</Label>
-        <input
-            type="date"
-            className="bg-blue-50 border-blue-100 p-2 rounded w-full focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-            value={value || ""}
-            onChange={e => onChange(e.target.valueAsDate)}
-        />
-        {!value && <p className="text-gray-500 text-sm">None</p>}
+        <Label className="text-warm-700">{label}</Label>
+        <div className="relative">
+            <Input
+                type="date"
+                className="pl-8 border-warm-200 focus:border-warm-300 focus:ring focus:ring-warm-200 focus:ring-opacity-50"
+                value={value || ""}
+                onChange={e => onChange(e.target.value)}
+            />
+            <Calendar className="absolute left-2 top-1/2 transform -translate-y-1/2 h-4 w-4 text-warm-500" />
+        </div>
     </div>
 )
 
-const ImageUpload = ({ file, handleFileChange }) => (
-    <div className="bg-blue-50 p-6 rounded-lg text-center relative"> {/* Added relative */}
+const ImageUpload = ({ imagePreview, tributeImage, handleFileChange }) => (
+    <div className="relative bg-warm-100 p-6 rounded-lg text-center">
         <input
             type="file"
+            id="image"
             accept="image/*"
-            onChange={handleFileChange}
             className="hidden"
-            id="image-upload"
+            onChange={handleFileChange}
         />
-        <label htmlFor="image-upload" className="cursor-pointer absolute inset-0"> {/* Absolute positioning */}
-            {file ? ( // Conditionally render image preview
+        <label
+            htmlFor="image"
+            className="cursor-pointer block w-full h-full min-h-[200px]"
+        >
+            {imagePreview || tributeImage ? (
                 <img
-                    src={URL.createObjectURL(file)}
+                    src={imagePreview || `${assetServer}/images/people/${tributeImage}`}
                     alt="Preview"
                     className="w-full h-full object-cover rounded-lg"
                 />
-            ) : ( // Render upload button if no file selected
-                <Button variant="ghost" className="w-full h-full flex flex-col items-center justify-center text-blue-700">
-                    <Upload className="h-8 w-8 mb-2" />
-                    <span>Upload Image</span>
-                </Button>
+            ) : (
+                <div className="flex flex-col items-center justify-center h-full">
+                    <Upload className="h-8 w-8 mb-2 text-warm-500" />
+                    <span className="text-warm-500">UPLOAD PERSON'S IMAGE</span>
+                </div>
             )}
         </label>
     </div>
-);
+)
 
 const QuoteSection = ({ quote, handleInputChange }) => (
     <div className="relative max-w-3xl mx-auto text-center py-8">
-        <div className="text-6xl text-blue-200 absolute top-0 left-0">""</div>
-        <Input
+        <div className="text-6xl text-warm-200 absolute top-0 left-0">""</div>
+        <Textarea
             placeholder="Enter a short quote about the bereaved or about death"
-            className="bg-blue-50 border-blue-100 text-center italic text-lg"
+            className="bg-warm-50 border-warm-100 text-center italic text-lg min-h-[100px] resize-none"
             value={quote}
             onChange={handleInputChange}
             id="quote"

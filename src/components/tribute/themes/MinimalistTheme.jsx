@@ -8,11 +8,14 @@ import axios from "axios";
 import { server } from "@/server.js";
 import Header from "@/components/landing/Header.jsx";
 import { FamilyTreeMinimal } from "@/components/tribute/FamilyTreeMinimal.jsx";
+import { toast } from "react-hot-toast";
+import { Events } from "@/components/tribute/Events.jsx";
 
 export function MinimalistTheme() {
     const { id } = useParams();
     const [memorial, setMemorial] = useState(null);
     const [milestonesData, setMilestonesData] = useState([]);
+    const [memory, setMemory] = useState('');
 
     useEffect(() => {
         fetchMilestonesData()
@@ -38,6 +41,25 @@ export function MinimalistTheme() {
             console.error("Error fetching tribute details:", error)
         }
     }
+
+    //Add memories text
+    const handleAddMemory = async () => {
+        try {
+            const response = await axios.post('/api/memories', { memory });
+            if (response.status === 200) {
+                toast({
+                    title: "Memory Added",
+                    description: "Your memory has been successfully added.",
+                });
+            }
+        } catch (error) {
+            toast({
+                title: "Error",
+                description: "There was an error adding your memory.",
+                variant: "destructive",
+            });
+        }
+    };
 
 
     // if (!memorial) {
@@ -141,6 +163,17 @@ export function MinimalistTheme() {
                                     </Button>
                                 </Card>
                             </section>
+
+                            <section id="family">
+                                <h2 className="text-3xl font-light text-gray-800 mb-4">Memories</h2>
+                                <Card className="p-6 shadow-md bg-white">
+                                    <ul className="text-gray-600">
+                                        {milestonesData?.milestone?.map((item, index) => (
+                                            item && <li key={index}>{item}</li>
+                                        ))}
+                                    </ul>
+                                </Card>
+                            </section>
                         </div>
 
                         {/* Right Column */}
@@ -148,11 +181,24 @@ export function MinimalistTheme() {
                             <Card className="p-6 shadow-md bg-white">
                                 <h2 className="text-2xl font-medium text-gray-800 mb-4">Contribute</h2>
                                 <div className="space-y-4">
-                                    <Button className="w-full bg-red-100 text-red-700 hover:bg-red-200">
-                                        Share a Memory
-                                    </Button>
+                                    <h2 className="text-2xl font-medium text-gray-800 mb-4">Share a Memory</h2>
+                                    <>
+                                        <input
+                                            type="text"
+                                            placeholder="Write your memory here..."
+                                            className="w-full mb-8 p-4 border border-gray-200 rounded-lg"
+                                            value={memory}
+                                            onChange={(e) => setMemory(e.target.value)}
+                                        />
+                                        <Button className="w-full bg-red-100 text-red-700 hover:bg-red-200" onClick={handleAddMemory}>
+                                            Add Memories
+                                        </Button>
+                                    </>
                                     <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200">
                                         Add Photos
+                                    </Button>
+                                    <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200">
+                                        Add Videos
                                     </Button>
                                 </div>
                             </Card>
@@ -186,8 +232,10 @@ export function MinimalistTheme() {
                             </Card>
 
                             <Card className="p-6 shadow-md bg-white">
-                                <h2 className="text-2xl font-medium text-gray-800 mb-4">Recent Updates</h2>
-                                <p className="text-gray-600">No recent updates</p>
+                                <h2 className="text-2xl font-medium text-gray-800 mb-4">Events</h2>
+                               {milestonesData.length > 0 && (
+                                    <Events id={milestonesData[0].id} user_id={milestonesData[0].user_id} />
+                                )}
                             </Card>
                         </div>
                     </div>

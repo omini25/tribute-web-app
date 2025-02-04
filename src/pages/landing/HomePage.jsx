@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import Header from "@/components/landing/Header.jsx";
 import { Footer } from "@/components/landing/Footer.jsx";
 import { server } from "@/server.js";
+import { assetServer} from "@/assetServer.js";
 
 export default function HomePage() {
     const [memorials, setMemorials] = useState([]);
@@ -98,7 +99,7 @@ export default function HomePage() {
                             {memorials.map(memorial => (
                                 <Card key={memorial.id} className="overflow-hidden">
                                     <img
-                                        src={memorial.image || "/placeholder.svg"}
+                                        src={`${assetServer}/images/people/${memorial.image}` || "/placeholder.svg"}
                                         alt={`Featured Memorial ${memorial.id}`}
                                         width={400}
                                         height={300}

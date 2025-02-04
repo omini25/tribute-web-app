@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { format } from "date-fns"
 import { toast } from "react-hot-toast"
-import { Loader2, Upload } from "lucide-react"
+import { Loader2, Upload, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -13,7 +13,17 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle
+} from "@/components/ui/card"
 import { server } from "@/server.js"
+import { DashboardLayout } from "@/components/main-dashboard/DashboardLayout"
 
 export default function TributeFormOverview() {
     const navigate = useNavigate()
@@ -35,7 +45,7 @@ export default function TributeFormOverview() {
     })
     const user = JSON.parse(localStorage.getItem("user") || "{}")
 
-    const handleInputChange = (e) => {
+    const handleInputChange = e => {
         const { id, value } = e.target
         setFormData(prev => ({
             ...prev,
@@ -58,9 +68,19 @@ export default function TributeFormOverview() {
         }))
     }
 
-    const handleImageChange = (event) => {
-        const file = event.target.files[0]
+    const handleImageChange = event => {
+        const file = event.target.files?.[0]
         if (file) {
+            const validImageTypes = ["image/jpeg", "image/png", "image/jpg", "image/gif"]
+            if (!validImageTypes.includes(file.type)) {
+                toast({
+                    title: "Error",
+                    description: "The image field must be a file of type: jpeg, png, jpg, gif.",
+                    variant: "destructive"
+                })
+                return
+            }
+
             const reader = new FileReader()
             reader.onloadend = () => {
                 setImagePreview(reader.result)
@@ -73,236 +93,197 @@ export default function TributeFormOverview() {
         }
     }
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (plan, price) => {
         setIsLoading(true)
         try {
-            // Validate required fields
             if (!formData.firstName || !formData.lastName) {
                 throw new Error("First name and last name are required")
             }
 
-            // Submit the form data to the external API
+            // Convert price to kobo (Paystack expects the amount in the smallest currency unit)
+            const amountInKobo = Math.round(price * 100)
+
+            // Create FormData object to handle file upload
+            const formDataToSend = new FormData()
+            formDataToSend.append('firstName', formData.firstName)
+            formDataToSend.append('middleName', formData.middleName)
+            formDataToSend.append('lastName', formData.lastName)
+            formDataToSend.append('nickname', formData.nickname)
+            formDataToSend.append('relationship', formData.relationship)
+            formDataToSend.append('dateOfDeath', formData.dateOfDeath)
+            formDataToSend.append('dateOfBirth', formData.dateOfBirth)
+            formDataToSend.append('countryOfBirth', formData.countryOfBirth)
+            formDataToSend.append('countryDied', formData.countryDied)
+            formDataToSend.append('customMemorialWebsite', formData.customMemorialWebsite)
+            formDataToSend.append('quote', formData.quote)
+            formDataToSend.append('plan', plan)
+            formDataToSend.append('price', amountInKobo)
+            if (formData.image) {
+                formDataToSend.append('image', formData.image)
+            }
+
+            // Submit the form details
             const response = await fetch(`${server}/tribute/start/${user.id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
+                method: "POST",
+                body: formDataToSend
             })
 
             if (!response.ok) {
-                throw new Error('Failed to submit form')
+                throw new Error("Failed to submit form")
             }
 
             const data = await response.json()
 
-            toast.success("Memory saved successfully!")
-            // Navigate to next step with the response ID
-            navigate(`/dashboard/tribute-life/${data.id}`)
+            if (data.status === 'success') {
+                // Redirect to Paystack payment page
+                window.location.href = data.payment_url
+            } else {
+                throw new Error("Payment initiation failed")
+            }
         } catch (error) {
-            toast.error(error.message || "Failed to save memory")
+            toast({
+                title: "Error",
+                description:
+                    error instanceof Error ? error.message : "Failed to save memory",
+                variant: "destructive"
+            })
         } finally {
             setIsLoading(false)
         }
     }
 
     return (
-        <div className="container mx-auto p-6 max-w-6xl">
-            {/* Loading Overlay */}
-            {isLoading && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                    <div className="bg-white p-4 rounded-lg shadow-lg flex items-center space-x-2">
-                        <Loader2 className="h-6 w-6 animate-spin text-blue-500" />
-                        <span className="text-gray-700">Saving changes...</span>
-                    </div>
-                </div>
-            )}
-
-            <div className="space-y-8">
-                {/* Header */}
-                <div className="space-y-2 ">
-                    <h1 className="text-4xl font-light text-gray-600">Create A Tribute</h1>
-                    <h2 className="text-2xl font-light text-gray-500">Overview</h2>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {/* Left Column */}
-                    <div className="space-y-6">
-                        <div className="grid grid-cols-1 gap-4">
-                            {/* Name Fields */}
-                            <InputField
-                                label="First Name"
-                                id="firstName"
-                                value={formData.firstName}
-                                onChange={handleInputChange}
-                                required
-                            />
-                            <InputField
-                                label="Middle Name"
-                                id="middleName"
-                                value={formData.middleName}
-                                onChange={handleInputChange}
-                            />
-                            <InputField
-                                label="Last Name"
-                                id="lastName"
-                                value={formData.lastName}
-                                onChange={handleInputChange}
-                                required
-                            />
-                            <InputField
-                                label="Nickname"
-                                id="nickname"
-                                value={formData.nickname}
-                                onChange={handleInputChange}
-                            />
-                        </div>
-
-                        {/* Relationship Field */}
-                        <RelationshipField
-                            value={formData.relationship}
-                            onChange={(value) => handleSelectChange(value, "relationship")}
-                        />
-
-                        {/* Date of Death */}
-                        <DateField
-                            label="Date of Death"
-                            value={formData.dateOfDeath}
-                            onChange={(date) => handleDateChange(date, "dateOfDeath")}
-                        />
-
-                        <InputField
-                            label="Country of Birth"
-                            id="countryOfBirth"
-                            value={formData.countryOfBirth}
-                            onChange={handleInputChange}
-                        />
-                    </div>
-
-                    {/* Right Column */}
-                    <div className="space-y-6">
-                        {/* Image Upload */}
-                        <div className="relative bg-blue-100 p-6 rounded-lg text-center">
-                            <input
-                                type="file"
-                                id="image"
-                                accept="image/*"
-                                className="hidden"
-                                onChange={handleImageChange}
-                            />
-                            <label
-                                htmlFor="image"
-                                className="cursor-pointer block w-full h-full min-h-[200px]"
-                            >
-                                {imagePreview ? (
-                                    <img
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="w-full h-full object-cover rounded-lg"
-                                    />
-                                ) : (
-                                    <div className="flex flex-col items-center justify-center h-full">
-                                        <Upload className="h-8 w-8 mb-2 text-blue-500" />
-                                        <span className="text-blue-500">UPLOAD PERSON'S IMAGE</span>
-                                    </div>
-                                )}
-                            </label>
-                        </div>
-
-                        {/* Date of Birth */}
-                        <DateField
-                            label="Date of Birth"
-                            value={formData.dateOfBirth}
-                            onChange={(date) => handleDateChange(date, "dateOfBirth")}
-                        />
-
-                        <InputField
-                            label="Country Died"
-                            id="countryDied"
-                            value={formData.countryDied}
-                            onChange={handleInputChange}
-                        />
-
-                        <InputField
-                            label="Memorial Website"
-                            id="customMemorialWebsite"
-                            value={formData.customMemorialWebsite || `www.rememberedalways.com/tribute/${formData.firstName?.toLowerCase()}-${formData.lastName?.toLowerCase()}`}
-                            onChange={handleInputChange}
-                            disabled
-                        />
-                    </div>
-                </div>
-
-                {/* Quote Section */}
-                <div className="relative max-w-3xl mx-auto text-center py-8">
-                    <div className="text-6xl text-blue-200 absolute top-0 left-0">"</div>
-                    <textarea
-                        placeholder="Enter a short quote about the bereaved or about death"
-                        className="w-full p-4 bg-blue-50 border-blue-100 rounded-lg text-center italic text-lg resize-none"
-                        value={formData.quote}
-                        onChange={(e) => handleInputChange({
-                            target: { id: 'quote', value: e.target.value }
-                        })}
-                        rows={3}
-                    />
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex justify-center space-x-4">
-                    <Button
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8"
-                        onClick={handleSubmit}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? (
-                            <div className="flex items-center space-x-2">
-                                <Loader2 className="animate-spin" />
-                                <span>Saving...</span>
+        <div>
+            <div className="container mx-auto px-4 py-8 max-w-4xl">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="text-3xl font-bold text-warm-800">
+                            Create A Tribute
+                        </CardTitle>
+                        <CardDescription className="text-warm-600">
+                            Provide details about your loved one
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-6">
+                                <NameFields formData={formData} onChange={handleInputChange} />
+                                <RelationshipField
+                                    value={formData.relationship}
+                                    onChange={value => handleSelectChange(value, "relationship")}
+                                />
+                                <DateField
+                                    label="Date of Death"
+                                    value={formData.dateOfDeath}
+                                    onChange={date => handleDateChange(date, "dateOfDeath")}
+                                />
+                                <InputField
+                                    label="Country of Birth"
+                                    id="countryOfBirth"
+                                    value={formData.countryOfBirth}
+                                    onChange={handleInputChange}
+                                />
                             </div>
-                        ) : (
-                            'Save Changes'
-                        )}
-                    </Button>
-                    <Button
-                        className="bg-blue-50 hover:bg-blue-100 text-blue-700 px-8"
-                        onClick={() => navigate(`/dashboard/tribute-life/${data.id}`)}
-                        disabled={isLoading}
-                    >
-                        Next: Life of Person
-                    </Button>
-                </div>
+                            <div className="space-y-6">
+                                {/*<ImageUpload*/}
+                                {/*    imagePreview={imagePreview}*/}
+                                {/*    onChange={handleImageChange}*/}
+                                {/*/>*/}
+                                <DateField
+                                    label="Date of Birth"
+                                    value={formData.dateOfBirth}
+                                    onChange={date => handleDateChange(date, "dateOfBirth")}
+                                />
+                                <InputField
+                                    label="Country Died"
+                                    id="countryDied"
+                                    value={formData.countryDied}
+                                    onChange={handleInputChange}
+                                />
+                                <InputField
+                                    label="Memorial Website"
+                                    id="customMemorialWebsite"
+                                    value={
+                                        formData.customMemorialWebsite ||
+                                        `www.rememberedalways.com/tribute/${formData.firstName?.toLowerCase()}-${formData.lastName?.toLowerCase()}`
+                                    }
+                                    onChange={handleInputChange}
+                                    disabled
+                                />
+                            </div>
+                        </div>
+                        <QuoteSection quote={formData.quote} onChange={handleInputChange} />
+
+                        <PricingPlans handleSubmit={handleSubmit} />
+
+                    </CardContent>
+                </Card>
             </div>
         </div>
     )
 }
 
-// Component for Input Fields
-const InputField = ({ label, id, value, onChange, required = false, disabled = false }) => (
+const NameFields = ({ formData, onChange }) => (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {["firstName", "middleName", "lastName", "nickname"].map(field => (
+            <InputField
+                key={field}
+                label={field
+                    .split(/(?=[A-Z])/)
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(" ")}
+                id={field}
+                value={formData[field]}
+                onChange={onChange}
+                required={field === "firstName" || field === "lastName"}
+            />
+        ))}
+    </div>
+)
+
+const InputField = ({
+                        label,
+                        id,
+                        value,
+                        onChange,
+                        required = false,
+                        disabled = false
+                    }) => (
     <div className="space-y-2">
-        <Label htmlFor={id} className="text-gray-700">
+        <Label htmlFor={id} className="text-warm-700">
             {label} {required && <span className="text-red-500">*</span>}
         </Label>
         <Input
             id={id}
-            value={value || ''}
+            value={value || ""}
             onChange={onChange}
-            className="bg-blue-50 border-blue-100 focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+            className="border-warm-200 focus:border-warm-300 focus:ring focus:ring-warm-200 focus:ring-opacity-50"
             disabled={disabled}
         />
     </div>
 )
 
-// Component for Relationship Field
 const RelationshipField = ({ value, onChange }) => (
     <div className="space-y-2">
-        <Label className="text-gray-700">Relationship with bereaved</Label>
+        <Label className="text-warm-700">Relationship with bereaved</Label>
         <Select value={value} onValueChange={onChange}>
-            <SelectTrigger className="bg-blue-50 border-blue-100">
+            <SelectTrigger className="border-warm-200">
                 <SelectValue placeholder="Select relationship" />
             </SelectTrigger>
-            <SelectContent className="bg-white border-blue-100">
-                {["Father", "Mother", "Sibling", "Spouse", "Child", "Friend", "Other"].map(relation => (
-                    <SelectItem key={relation.toLowerCase()} value={relation.toLowerCase()}>
+            <SelectContent>
+                {[
+                    "Father",
+                    "Mother",
+                    "Sibling",
+                    "Spouse",
+                    "Child",
+                    "Friend",
+                    "Other"
+                ].map(relation => (
+                    <SelectItem
+                        key={relation.toLowerCase()}
+                        value={relation.toLowerCase()}
+                    >
                         {relation}
                     </SelectItem>
                 ))}
@@ -311,15 +292,112 @@ const RelationshipField = ({ value, onChange }) => (
     </div>
 )
 
-// Component for Date Fields
 const DateField = ({ label, value, onChange }) => (
     <div className="space-y-2">
-        <Label className="text-gray-700">{label}</Label>
-        <input
+        <Label className="text-warm-700">{label}</Label>
+        <Input
             type="date"
-            className="w-full bg-blue-50 border-blue-100 p-2 rounded focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-            value={value || ''}
-            onChange={(e) => onChange(e.target.value)}
+            className="border-warm-200 focus:border-warm-300 focus:ring focus:ring-warm-200 focus:ring-opacity-50"
+            value={value || ""}
+            onChange={e => onChange(e.target.value)}
         />
+    </div>
+)
+
+const ImageUpload = ({ imagePreview, onChange }) => (
+    <div className="relative bg-warm-100 p-6 rounded-lg text-center">
+        <input
+            type="file"
+            id="image"
+            accept="image/*"
+            className="hidden"
+            onChange={onChange}
+        />
+        <label
+            htmlFor="image"
+            className="cursor-pointer block w-full h-full min-h-[200px]"
+        >
+            {imagePreview ? (
+                <img
+                    src={imagePreview || "/placeholder.svg"}
+                    alt="Preview"
+                    className="w-full h-full object-cover rounded-lg"
+                />
+            ) : (
+                <div className="flex flex-col items-center justify-center h-full">
+                    <Upload className="h-8 w-8 mb-2 text-warm-500" />
+                    <span className="text-warm-500">UPLOAD PERSON'S IMAGE</span>
+                </div>
+            )}
+        </label>
+    </div>
+)
+
+const QuoteSection = ({ quote, onChange }) => (
+    <div className="relative max-w-3xl mx-auto text-center py-8">
+        <div className="text-6xl text-warm-200 absolute top-0 left-0">""</div>
+        <Textarea
+            placeholder="Enter a short quote about the bereaved or about death"
+            className="min-h-[100px] border-warm-200 text-center italic text-lg resize-none"
+            value={quote}
+            onChange={onChange}
+            id="quote"
+        />
+    </div>
+)
+
+const PricingPlans = ({ handleSubmit }) => (
+    <div className="mt-16">
+        <h2 className="text-2xl font-semibold text-warm-800 mb-8 text-center">
+            Choose Your Plan
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+                {
+                    name: "Basic",
+                    price: 999, // price in cents
+                    features: ["Feature 1", "Feature 2", "Feature 3"]
+                },
+                {
+                    name: "Pro",
+                    price: 1999, // price in cents
+                    features: ["All Basic features", "Feature 4", "Feature 5"]
+                },
+                {
+                    name: "Premium",
+                    price: 2999, // price in cents
+                    features: ["All Pro features", "Feature 6", "Feature 7"]
+                }
+            ].map(plan => (
+                <Card key={plan.name} className="flex flex-col">
+                    <CardHeader>
+                        <CardTitle className="text-xl font-semibold text-warm-700">
+                            {plan.name}
+                        </CardTitle>
+                        <CardDescription className="text-2xl font-bold text-warm-800">
+                            ${plan.price / 100}/month
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="flex-grow">
+                        <ul className="space-y-2">
+                            {plan.features.map((feature, index) => (
+                                <li key={index} className="flex items-center text-warm-600">
+                                    <Check className="h-5 w-5 text-warm-500 mr-2" />
+                                    {feature}
+                                </li>
+                            ))}
+                        </ul>
+                    </CardContent>
+                    <CardFooter>
+                        <Button
+                            className="w-full bg-warm-500 hover:bg-warm-600"
+                            onClick={() => handleSubmit(plan.name, plan.price)}
+                        >
+                            Start Tribute
+                        </Button>
+                    </CardFooter>
+                </Card>
+            ))}
+        </div>
     </div>
 )
