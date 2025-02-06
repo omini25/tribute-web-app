@@ -120,7 +120,7 @@ export default function UserInfoForm({ onSubmit }) {
 
             </div>
 
-            <Button type="submit" className="w-full">Next</Button>
+            {/*<Button type="submit" className="w-full">Next</Button>*/}
         </form>
     )
 }

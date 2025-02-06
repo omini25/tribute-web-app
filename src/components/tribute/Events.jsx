@@ -12,7 +12,7 @@ export const Events = ({ id, user_id }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    console.log("Events", id, user_id);
+
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -21,6 +21,7 @@ export const Events = ({ id, user_id }) => {
             try {
                 const response = await axios.get(`${server}/tributes/allmemories/${id}`);
                 setEvents(response.data);
+                console.log(response)
             } catch (error) {
                 console.error("Error fetching events:", error);
                 setError("Failed to load events. Please try again later.");
@@ -67,14 +68,14 @@ export const Events = ({ id, user_id }) => {
                                 <Users className="mr-2 h-4 w-4" />
                                 <span>{event.event_type.is_private ? "Private Event" : "Public Event"}</span>
                             </div>
-                            <div className="mt-4">
-                                <Button
-                                    variant="outline"
-                                    className="w-full border-warm-300 text-warm-700 hover:bg-warm-100"
-                                >
-                                    {event.guest_option.can_rsvp ? "RSVP" : "View Details"}
-                                </Button>
-                            </div>
+                            {/*<div className="mt-4">*/}
+                            {/*    <Button*/}
+                            {/*        variant="outline"*/}
+                            {/*        className="w-full border-warm-300 text-warm-700 hover:bg-warm-100"*/}
+                            {/*    >*/}
+                            {/*        {event.guest_option.can_rsvp ? "RSVP" : "View Details"}*/}
+                            {/*    </Button>*/}
+                            {/*</div>*/}
                         </div>
                     </CardContent>
                 </Card>

@@ -180,7 +180,7 @@ export default function DeceasedInfoForm({ onSubmit }) {
                     value={formData.relationshipWithBereaved}
                     >
                         <SelectTrigger className="bg-blue-50/50 border-secondary">
-                            <SelectValue placeholder="Father"/>
+                           <SelectValue placeholder="Relationship with deceased"/>
                         </SelectTrigger>
                         <SelectContent className="bg-quaternary border-secondary">
                             <SelectItem value="father">Father</SelectItem>
@@ -188,6 +188,7 @@ export default function DeceasedInfoForm({ onSubmit }) {
                             <SelectItem value="sibling">Sibling</SelectItem>
                             <SelectItem value="child">Child</SelectItem>
                             <SelectItem value="spouse">Spouse</SelectItem>
+                            <SelectItem value="friend">Friend</SelectItem>
                         </SelectContent>
                     </Select>
             </div>
@@ -216,9 +217,9 @@ export default function DeceasedInfoForm({ onSubmit }) {
                 {/*<p className="text-sm text-gray-500 mt-1">not available</p>*/}
             </div>
 
-                <Button type="submit" className="w-full">
-                    Next
-                </Button>
+                {/*<Button type="submit" className="w-full">*/}
+                {/*    Next*/}
+                {/*</Button>*/}
         </form>
 )
 }

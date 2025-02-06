@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import DeceasedInfoForm from "@/components/auth/DeceasedInfoForm.jsx";
 import UserInfoForm from "@/components/auth/UserInfoForm.jsx";
 import PlanSelection from "@/components/auth/PlanSelection.jsx";
-import AuthHeader from "@/components/auth/AuthHeader.jsx";
+import Header from "@/components/landing/Header"
 import { toast } from "react-hot-toast";
 import {server} from "@/server.js";
 import axios from "axios";
@@ -80,7 +80,7 @@ export const SignupPage = () => {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
-            <AuthHeader />
+            <Header />
 
             <div className="container mx-auto max-w-3xl mt-16">
                 <h1 className="mb-8 text-center text-3xl font-bold">

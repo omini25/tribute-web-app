@@ -4,7 +4,7 @@ import logo from "../../assets/images/remember-me.png";
 export const Footer = () => {
     return (
         <>
-            <footer className="border-t bg-background ">
+            <footer className="border-t bg-background max-w-6xl mx-auto">
                 <div className="container px-4 py-12 md:px-6">
                     <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 ">
                         <div>
