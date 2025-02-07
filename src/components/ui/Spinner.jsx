@@ -1,12 +1,29 @@
+// src/components/ui/Spinner.jsx
+import React from 'react';
 
-export default function Spinner({ size = 'md' }) {
-    const sizeClasses = {
-        sm: 'h-4 w-4',
-        md: 'h-6 w-6',
-        lg: 'h-8 w-8',
-    };
-
+const Spinner = () => {
     return (
-        <div className={`animate-spin rounded-full border-2 border-t-2 border-gray-200 border-t-blue-500 ${sizeClasses[size]}`}></div>
+        <div className="spinner">
+            <style jsx>{`
+                .spinner {
+                    border: 4px solid rgba(0, 0, 0, 0.1);
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    border-left-color: #09f;
+                    animation: spin 1s ease infinite;
+                }
+                @keyframes spin {
+                    0% {
+                        transform: rotate(0deg);
+                    }
+                    100% {
+                        transform: rotate(360deg);
+                    }
+                }
+            `}</style>
+        </div>
     );
-}
+};
+
+export default Spinner;
