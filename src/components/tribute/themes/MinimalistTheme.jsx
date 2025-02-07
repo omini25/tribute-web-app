@@ -13,8 +13,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/ui/spinner";
+import  Spinner  from "@/components/ui/spinner";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { server } from "@/server.js";

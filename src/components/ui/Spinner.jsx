@@ -1,5 +1,5 @@
 
-export function Spinner({ size = 'md' }) {
+export default function Spinner({ size = 'md' }) {
     const sizeClasses = {
         sm: 'h-4 w-4',
         md: 'h-6 w-6',
