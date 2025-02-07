@@ -13,6 +13,7 @@ import {
     LogOut,
 } from "lucide-react";
 import { Link } from "react-router-dom";
+import Logo from "../../assets/Remember-me-logo.png"
 
 
 
@@ -40,11 +41,11 @@ export function SidebarMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
     return (
         <div className="flex h-full flex-col justify-between">
             {/* Sidebar Header with Image */}
-            <div className="flex flex-col items-center py-6">
+            <div className="flex flex-col items-center">
                 <img
-                    src="/path/to/your/logo.png" // Replace with your image path
+                    src={Logo}
                     alt="Logo"
-                    className="h-16 w-16 rounded-full"
+                    className="h-32 w-32 rounded-full"
                 />
             </div>
 

@@ -72,64 +72,139 @@ export default function MemoriesMemories() {
         }
     }
 
+
+
     const handleCheckboxChange = () => {
         setTribute(prev => ({ ...prev, event_private: !prev.event_private }))
     }
 
-    const addMemory = () => {
-        if (!newMemory) return
-        setTribute(prev => ({
-            ...prev,
-            memories: prev.memories ? `${prev.memories}\n${newMemory}` : newMemory
-        }))
-        setNewMemory("")
-        setNewMemoryImage(null)
-        toast({
-            title: "Memory Added",
-            description: "Your memory has been added successfully."
-        })
-    }
 
-    const handleSubmit = async () => {
-        setIsSubmitting(true)
-        const formData = new FormData()
 
-        formData.append("event_private", tribute.event_private ? "yes" : "no")
-        formData.append("memories", tribute.memories)
-        formData.append("links", JSON.stringify(tribute.links))
-
-        if (fileUpload) {
-            formData.append("file", fileUpload)
-        }
+    const addMemory = async () => {
+        if (!newMemory) return;
 
         try {
-            await axios.post(`${server}/tributes/memories/${id}`, formData, {
+            // const user = JSON.parse(localStorage.getItem("user") || "{}")
+            // const userId = user?.id;
+
+            const response = await axios.post(`${server}/memories/add/text`, {
+                tribute_id: id,
+                memory: newMemory,
+                // uploader_name: storedUser?.name || "Guest"
+            }, {
                 headers: {
-                    "Content-Type": "multipart/form-data"
+                    "Content-Type": "application/json"
                 }
-            })
-            toast({
-                title: "Success",
-                description: "Tribute updated successfully!"
-            })
-            fetchTributeDetails()
+            });
+
+            if (response.status === 200) {
+                setTribute(prev => ({
+                    ...prev,
+                    memories: prev.memories ? `${prev.memories}\n${newMemory}` : newMemory
+                }));
+                setNewMemory("");
+                toast.success("Memory added successfully.");
+            } else {
+                toast.error("An error occurred. Please try again.");
+                console.error(response);
+            }
         } catch (error) {
-            console.error("Error updating tribute:", error)
-            toast({
-                title: "Error",
-                description: "Failed to update tribute. Please try again.",
-                variant: "destructive"
-            })
-        } finally {
-            setIsSubmitting(false)
+            if (error.response) {
+                console.error('Error response:', error.response.data);
+                toast.error(`Error: ${error.response.data.message || 'An error occurred. Please try again.'}`);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+                toast.error('No response received from the server. Please try again.');
+            } else {
+                console.error('Error message:', error.message);
+                toast.error(`Error: ${error.message}`);
+            }
         }
-    }
+    };
 
     const handleFileChange = e => {
         if (e.target.files) {
             setFileUpload(e.target.files[0])
         }
     }
+
+    const handleSubmit = async () => {
+        if (!fileUpload) return;
+
+        setIsSubmitting(true);
+        const formData = new FormData();
+        formData.append('tribute_id', id);
+        formData.append('files[]', fileUpload);
+        formData.append('uploader_name', JSON.parse(localStorage.getItem("user"))?.name || "Guest");
+
+        try {
+            const response = await axios.post(`${server}/memories/add/video`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
+            if (response.status === 200) {
+                toast.success("Video uploaded successfully.");
+                fetchTributeDetails(); // Refresh the tribute details to show the new video
+            } else {
+                toast.error("An error occurred. Please try again.");
+                console.error(response);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.error('Error response:', error.response.data);
+                toast.error(`Error: ${error.response.data.message || 'An error occurred. Please try again.'}`);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+                toast.error('No response received from the server. Please try again.');
+            } else {
+                console.error('Error message:', error.message);
+                toast.error(`Error: ${error.message}`);
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleImageSubmit = async () => {
+        if (!fileUpload) return;
+
+        setIsSubmitting(true);
+        const formData = new FormData();
+        formData.append('tribute_id', id);
+        formData.append('files[]', fileUpload);
+        formData.append('uploader_name', JSON.parse(localStorage.getItem("user"))?.name || "Guest");
+
+        try {
+            const response = await axios.post(`${server}/memories/add/image`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+
+            if (response.status === 200) {
+                toast.success("Image uploaded successfully.");
+                fetchTributeDetails(); // Refresh the tribute details to show the new image
+            } else {
+                toast.error("An error occurred. Please try again.");
+                console.error(response);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.error('Error response:', error.response.data);
+                toast.error(`Error: ${error.response.data.message || 'An error occurred. Please try again.'}`);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+                toast.error('No response received from the server. Please try again.');
+            } else {
+                console.error('Error message:', error.message);
+                toast.error(`Error: ${error.message}`);
+            }
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     const handleLinkSubmit = async () => {
         if (!linkInput) return
@@ -175,16 +250,16 @@ export default function MemoriesMemories() {
                         <p className="text-xl text-warm-600">MEMORIES</p>
                     </CardHeader>
                     <CardContent className="space-y-8">
-                        <div className="flex items-center space-x-2">
-                            <Checkbox
-                                id="private"
-                                checked={tribute.event_private}
-                                onCheckedChange={handleCheckboxChange}
-                            />
-                            <Label htmlFor="private" className="text-warm-600">
-                                Allow Anyone Add Memories To Tribute
-                            </Label>
-                        </div>
+                        {/*<div className="flex items-center space-x-2">*/}
+                        {/*    <Checkbox*/}
+                        {/*        id="private"*/}
+                        {/*        checked={tribute.event_private}*/}
+                        {/*        onCheckedChange={handleCheckboxChange}*/}
+                        {/*    />*/}
+                        {/*    <Label htmlFor="private" className="text-warm-600">*/}
+                        {/*        Allow Anyone Add Memories To Tribute*/}
+                        {/*    </Label>*/}
+                        {/*</div>*/}
 
                         <Card>
                             <CardHeader>
@@ -195,7 +270,7 @@ export default function MemoriesMemories() {
                             <CardContent>
                                 <ScrollArea className="h-[200px]">
                                     <ul className="list-disc list-inside space-y-2">
-                                        {tribute.memories.split("\n").map((memory, index) => (
+                                        {JSON.parse(tribute.memories).map((memory, index) => (
                                             <li key={index} className="text-warm-600">
                                                 {memory}
                                             </li>
@@ -223,20 +298,7 @@ export default function MemoriesMemories() {
                                             placeholder="Enter your memory here"
                                             className="min-h-[100px] border-warm-200 resize-none"
                                         />
-                                        <div className="space-y-2">
-                                            <Label htmlFor="image-upload">Upload Image</Label>
-                                            <Input
-                                                id="image-upload"
-                                                type="file"
-                                                accept="image/*"
-                                                onChange={e =>
-                                                    setNewMemoryImage(
-                                                        e.target.files ? e.target.files[0] : null
-                                                    )
-                                                }
-                                                className="border-2 border-warm-200"
-                                            />
-                                        </div>
+
                                         <Button
                                             onClick={addMemory}
                                             className="bg-warm-500 hover:bg-warm-600 bg-secondary"
@@ -254,10 +316,10 @@ export default function MemoriesMemories() {
                                     Upload File (Video, Audio, or Image)
                                 </Label>
                                 <div className="flex items-center space-x-2">
-                                    <Input
+                                   <Input
                                         id="file-upload"
                                         type="file"
-                                        accept="video/*,audio/*,image/*"
+                                        accept="video/*"
                                         onChange={handleFileChange}
                                         className="border-2 border-warm-200"
                                     />
@@ -288,6 +350,30 @@ export default function MemoriesMemories() {
                                     <Button
                                         onClick={handleLinkSubmit}
                                         disabled={!linkInput || isSubmitting}
+                                        className="bg-warm-500 hover:bg-warm-600 "
+                                    >
+                                        {isSubmitting ? (
+                                            <Loader2 className="h-4 w-4 animate-spin" />
+                                        ) : (
+                                            "Add"
+                                        )}
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2">
+                                <Label htmlFor="file-upload">Add Images</Label>
+                                <div className="flex items-center space-x-2">
+                                    <Input
+                                        id="file-upload"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleFileChange}
+                                        className="border-2 border-warm-200"
+                                    />
+                                    <Button
+                                        onClick={handleImageSubmit}
+                                        disabled={!fileUpload || isSubmitting}
                                         className="bg-warm-500 hover:bg-warm-600 "
                                     >
                                         {isSubmitting ? (

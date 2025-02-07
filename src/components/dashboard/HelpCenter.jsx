@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import axios from "axios"
 import { DashboardLayout } from "@/components/main-dashboard/DashboardLayout"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,6 +9,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Mail, Plus, Send } from "lucide-react"
+import { server } from "@/server.js"
+import {toast} from "react-hot-toast";
 
 export default function HelpCenter() {
     const [tickets, setTickets] = useState([])
@@ -15,32 +18,65 @@ export default function HelpCenter() {
     const [selectedTicket, setSelectedTicket] = useState(null)
     const [response, setResponse] = useState("")
 
-    const handleCreateTicket = () => {
+    const user = localStorage.getItem("user")
+    const userId = user ? JSON.parse(user).id : null
+
+
+    useEffect(() => {
+        const fetchTickets = async () => {
+            try {
+                const response = await axios.get(`${server}/tickets?userId=${userId}`)
+                setTickets(response.data)
+            } catch (error) {
+                console.error("Error fetching tickets:", error)
+            }
+        }
+
+        fetchTickets()
+    }, [userId])
+
+    const handleCreateTicket = async () => {
         if (!newTicket.subject || !newTicket.description) {
             alert("Please fill in all fields.")
             return
         }
-        const updatedTickets = [
-            ...tickets,
-            { id: Date.now(), ...newTicket, status: "open", responses: [] }
-        ]
-        setTickets(updatedTickets)
-        setNewTicket({ subject: "", description: "" })
+
+        try {
+            const response = await axios.post(`${server}/tickets`, {
+                userId,
+                ...newTicket
+            })
+            setTickets([...tickets, response.data])
+            setNewTicket({ subject: "", description: "" })
+            toast.success("Ticket created successfully")
+        } catch (error) {
+            console.error("Error creating ticket:", error)
+            toast.error("Error creating ticket")
+        }
     }
 
-    const handleRespond = (ticketId, responseText) => {
-        const updatedTickets = tickets.map(ticket =>
-            ticket.id === ticketId
-                ? {
-                    ...ticket,
-                    responses: [...ticket.responses, responseText],
-                    status: "responded"
-                }
-                : ticket
-        )
-        setTickets(updatedTickets)
-        setSelectedTicket(null)
-        setResponse("")
+    const handleRespond = async (ticketId, responseText) => {
+        try {
+            const response = await axios.post(`${server}/tickets/${ticketId}/response`, {
+                response: responseText
+            })
+            const updatedTickets = tickets.map(ticket =>
+                ticket.id === ticketId
+                    ? {
+                        ...ticket,
+                        responses: [...ticket.responses, response.data],
+                        status: "responded"
+                    }
+                    : ticket
+            )
+            setTickets(updatedTickets)
+            setSelectedTicket(null)
+            setResponse("")
+            toast.success("Response sent successfully")
+        } catch (error) {
+            console.error("Error responding to ticket:", error)
+            toast.error("Error responding to ticket")
+        }
     }
 
     const handleSendEmail = () => {

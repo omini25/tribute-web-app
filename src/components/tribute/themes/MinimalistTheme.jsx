@@ -108,11 +108,57 @@ export function MinimalistTheme() {
     };
 
     const handleAddVideo = async () => {
-        // Implement video upload logic here
+        if (!video) {
+            toast.error("Please select a video to upload.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('tribute_id', id);
+        formData.append('files[]', video);
+
+        try {
+            const response = await axios.post(`${server}/memories/add/video`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 200) {
+                toast.success("Video uploaded successfully");
+                setVideo(null);
+            }
+        } catch (error) {
+            toast.error("Error uploading video");
+            console.error("Error uploading video:", error);
+        }
     };
 
-    const handleAddLink = async () => {
-        // Implement link addition logic here
+   const handleAddLink = async () => {
+        if (!link) {
+            toast.error("Please enter a link.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('tribute_id', id);
+        formData.append('links', link);
+
+        try {
+            const response = await axios.post(`${server}/memories/add/link`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (response.status === 200) {
+                toast.success("Link added successfully");
+                setLink('');
+            }
+        } catch (error) {
+            toast.error("Error adding link");
+            console.error("Error adding link:", error);
+        }
     };
 
     useEffect(() => {
@@ -321,7 +367,7 @@ export function MinimalistTheme() {
                             </section>
 
                             <section id="memories">
-                                <h2 className="text-3xl font-light text-gray-800 mb-4">Memories</h2>
+                                <h2 className="text-3xl font-light text-gray-800 mb-4">Memories and Links</h2>
                                 <Card className="p-6 shadow-md bg-white">
                                     {isLoading ? (
                                         <div className="flex justify-center items-center">
@@ -329,10 +375,19 @@ export function MinimalistTheme() {
                                         </div>
                                     ) : (
                                        <div className="grid gap-4">
-                                           {memories?.memories && memories.memories.length > 0 && JSON.parse(memories.memories).map((item, index) => (
+                                            {memories?.memories && memories.memories.length > 0 && JSON.parse(memories.memories).map((item, index) => (
                                                 item && (
                                                     <Card key={index} className="p-4 shadow-md bg-white">
                                                         <p className="text-gray-600">{item}</p>
+                                                    </Card>
+                                                )
+                                            ))}
+                                            {memories?.links && memories.links.length > 0 && JSON.parse(memories.links).map((link, index) => (
+                                                link && (
+                                                    <Card key={index} className="p-4 shadow-md bg-white">
+                                                        <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                                                            {link}
+                                                        </a>
                                                     </Card>
                                                 )
                                             ))}

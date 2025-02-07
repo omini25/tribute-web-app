@@ -127,14 +127,14 @@ function EventCard({ event }) {
                           {event.event_type.is_private ? "Private Event" : "Public Event"}
                         </span>
                     </div>
-                    <div className="mt-4">
-                        <Button
-                            variant="outline"
-                            className="w-full border-warm-300 text-warm-700 hover:bg-warm-100"
-                        >
-                            {event.guest_option.can_rsvp ? "RSVP" : "View Details"}
-                        </Button>
-                    </div>
+                    {/*<div className="mt-4">*/}
+                    {/*    <Button*/}
+                    {/*        variant="outline"*/}
+                    {/*        className="w-full border-warm-300 text-warm-700 hover:bg-warm-100"*/}
+                    {/*    >*/}
+                    {/*        {event.guest_option.can_rsvp ? "RSVP" : "View Details"}*/}
+                    {/*    </Button>*/}
+                    {/*</div>*/}
                 </div>
             </CardContent>
         </Card>

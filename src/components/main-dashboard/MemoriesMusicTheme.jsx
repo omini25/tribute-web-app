@@ -8,12 +8,14 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { DashboardLayout } from "@/components/main-dashboard/DashboardLayout"
+import Warm from "../../assets/Landing/images/2948b129-4e43-47d4-b0f5-2b4db8eec2e3.png"
+import Cool from "../../assets/Landing/images/8ffeac91-b6be-40e2-80e8-70b2c42e0a57.png"
+import Autumn from "../../assets/Landing/images/5e5bc4bb-31c3-4994-b66c-d53a887a3447.png"
 
 const themes = [
-    { name: "Warm", color: "#FFA07A", image: "/path/to/warm-image.jpg" },
-    { name: "Cool", color: "#00BFFF", image: "/path/to/cool-image.jpg" },
-    { name: "Autumn", color: "#FF7F50", image: "/path/to/autumn-image.jpg" }
+    { name: "Warm", color: "#FFA07A", image: Warm },
+    { name: "Cool", color: "#00BFFF", image: Cool },
+    { name: "Autumn", color: "#FF7F50", image: Autumn }
 ]
 
 export default function MemoriesMusicTheme() {

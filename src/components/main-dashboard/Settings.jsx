@@ -8,6 +8,8 @@ import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { User, Bell, Lock } from "lucide-react";
 import { toast } from "react-hot-toast";
+import { server } from "@/server.js";
+import axios from "axios";
 
 export default function Settings() {
     const [profile, setProfile] = useState({
@@ -42,34 +44,33 @@ export default function Settings() {
 
     const handleProfileSave = async () => {
         try {
-            const response = await fetch("/api/update-profile", {
-                method: "POST",
+            const storedUser = JSON.parse(localStorage.getItem("user"));
+            const userId = storedUser?.id;
+
+            const response = await axios.post(`${server}/update-account/${userId}`, profile, {
                 headers: {
                     "Content-Type": "application/json"
-                },
-                body: JSON.stringify(profile)
+                }
             });
 
-            if (response.ok) {
-                // Save profile to local storage
-                localStorage.setItem("userProfile", JSON.stringify(profile));
-                toast({
-                    title: "Profile Updated",
-                    description: "Your profile information has been successfully updated."
-                });
+            if (response.status === 200) {
+                localStorage.setItem("user", JSON.stringify(profile));
+                toast.success("Profile updated successfully.");
             } else {
-                toast({
-                    title: "Error",
-                    description: "There was an error updating your profile.",
-                    variant: "destructive"
-                });
+                toast.error("An error occurred. Please try again.");
+                console.error(response);
             }
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "There was an error updating your profile.",
-                variant: "destructive"
-            });
+            if (error.response) {
+                console.error('Error response:', error.response.data);
+                toast.error(`Error: ${error.response.data.message || 'An error occurred. Please try again.'}`);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+                toast.error('No response received from the server. Please try again.');
+            } else {
+                console.error('Error message:', error.message);
+                toast.error(`Error: ${error.message}`);
+            }
         }
     };
 
@@ -82,7 +83,7 @@ export default function Settings() {
         setPassword({ ...password, [name]: value });
     };
 
-    const handlePasswordSave = e => {
+    const handlePasswordSave = async (e) => {
         e.preventDefault();
         if (password.newPassword !== password.confirmPassword) {
             toast({
@@ -92,10 +93,38 @@ export default function Settings() {
             });
             return;
         }
-        toast({
-            title: "Password Updated",
-            description: "Your password has been successfully updated."
-        });
+
+        try {
+            const storedUser = JSON.parse(localStorage.getItem("user"));
+            const userId = storedUser?.id;
+
+            const response = await axios.post(`${server}/update-password/${userId}`, {
+                currentPassword: password.currentPassword,
+                newPassword: password.newPassword
+            }, {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+
+            if (response.status === 200) {
+                toast.success("Password updated successfully.");
+            } else {
+                toast.error("An error occurred. Please try again.");
+                console.error(response);
+            }
+        } catch (error) {
+            if (error.response) {
+                console.error('Error response:', error.response.data);
+                toast.error(`Error: ${error.response.data.message || 'An error occurred. Please try again.'}`);
+            } else if (error.request) {
+                console.error('Error request:', error.request);
+                toast.error('No response received from the server. Please try again.');
+            } else {
+                console.error('Error message:', error.message);
+                toast.error(`Error: ${error.message}`);
+            }
+        }
     };
 
     return (
