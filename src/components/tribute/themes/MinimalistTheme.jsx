@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Share, Printer, Heart, Camera, Users, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -13,7 +13,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import  Spinner  from "@/components/ui/spinner";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { server } from "@/server.js";
@@ -133,7 +132,7 @@ export function MinimalistTheme() {
         }
     };
 
-   const handleAddLink = async () => {
+    const handleAddLink = async () => {
         if (!link) {
             toast.error("Please enter a link.");
             return;
@@ -370,10 +369,10 @@ export function MinimalistTheme() {
                                 <Card className="p-6 shadow-md bg-white">
                                     {isLoading ? (
                                         <div className="flex justify-center items-center">
-                                            <Spinner /> {/* Display a spinner or loading indicator */}
+                                            <p>Loading...</p> {/* Display a loading text */}
                                         </div>
                                     ) : (
-                                       <div className="grid gap-4">
+                                        <div className="grid gap-4">
                                             {memories?.memories && memories.memories.length > 0 && JSON.parse(memories.memories).map((item, index) => (
                                                 item && (
                                                     <Card key={index} className="p-4 shadow-md bg-white">
@@ -472,7 +471,7 @@ export function MinimalistTheme() {
                                 <h2 className="text-2xl font-medium text-gray-800 mb-4">Images and Videos</h2>
                                 {isLoading ? (
                                     <div className="flex justify-center items-center">
-                                        <Spinner /> {/* Display a spinner or loading indicator */}
+                                        <p>Loading...</p>
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
