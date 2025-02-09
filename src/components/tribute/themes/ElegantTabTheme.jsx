@@ -7,7 +7,7 @@ import {useParams} from "react-router-dom";
 import {server} from "@/server.js";
 import {assetServer} from "@/assetServer.js";
 import Header from "@/components/landing/Header.jsx";
-import Cool from "../../../assets/landing/images/8ffeac91-b6be-40e2-80e8-70b2c42e0a57.png"
+import Cool from "@/assets/landing/images/8ffeac91-b6be-40e2-80e8-70b2c42e0a57.png"
 import {FamilyTreeMinimal} from "@/components/tribute/FamilyTreeMinimal.jsx";
 import {Events} from "@/components/tribute/Events.jsx";
 
