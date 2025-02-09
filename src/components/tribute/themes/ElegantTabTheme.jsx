@@ -7,7 +7,7 @@ import {useParams} from "react-router-dom";
 import {server} from "@/server.js";
 import {assetServer} from "@/assetServer.js";
 import Header from "@/components/landing/Header.jsx";
-import Cool from "@/assets/landing/images/8ffeac91-b6be-40e2-80e8-70b2c42e0a57.png"
+
 import {FamilyTreeMinimal} from "@/components/tribute/FamilyTreeMinimal.jsx";
 import {Events} from "@/components/tribute/Events.jsx";
 
@@ -49,7 +49,7 @@ export function ElegantTabTheme( ) {
             <Header />
 
             <div className="bg-gray-50 min-h-screen">
-                <header className="relative bg-cover bg-center text-white py-16" style={{ backgroundImage: `url(${Cool})` }}>
+                <header className="relative bg-cover bg-center text-white py-16" style={{ backgroundImage: `url('/src/assets/landing/images/8ffeac91-b6be-40e2-80e8-70b2c42e0a57.png')` }}>
                     {/*<div className="absolute inset-0 bg-gradient-to-r from-purple-800 to-indigo-800 opacity-75"></div>*/}
                     <div className="relative container mx-auto text-center mt-12">
                         <h1 className="text-5xl font-serif mb-2">{memorial?.first_name} {memorial?.middle_name} {memorial?.last_name} ({memorial?.nickname})</h1>
