@@ -29,6 +29,8 @@ import {ModernTheme} from "@/components/tribute/themes/ModernTheme.jsx";
 import {MinimalistTheme} from "@/components/tribute/themes/MinimalistTheme.jsx";
 import HelpCenter from "@/components/dashboard/HelpCenter.jsx";
 import TributeLife from "@/components/dashboard/TributeLife.jsx";
+import {ElegantTabTheme} from "@/components/tribute/themes/ElegantTabTheme.jsx";
+import {MinimalistTabTheme} from "@/components/tribute/MinimalistTabTheme.jsx";
 
 
 function App() {
@@ -52,6 +54,8 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/mordern" element={<ModernTheme />} />
                 <Route path="/theme-warm/:id/:title" element={<MinimalistTheme />} />
+                <Route path="/elegant/:id/:title" element={<ElegantTabTheme />} />
+                <Route path="/minimal-tab" element={<MinimalistTabTheme />} />
 
 
                 <Route path="/dashboard" element={<DashboardLayout />}>

@@ -271,7 +271,7 @@ function MemorialCard({ memorial }) {
                 <Link
                     to={
                         memorial.theme === "Warm"
-                            ? `/theme-warm/${memorial.id}/${memorial.title}`
+                            ? `/elegant/${memorial.id}/${memorial.title}`
                             : "#"
                     }
                 >

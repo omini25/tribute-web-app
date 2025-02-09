@@ -217,9 +217,9 @@ export default function DeceasedInfoForm({ onSubmit }) {
                 {/*<p className="text-sm text-gray-500 mt-1">not available</p>*/}
             </div>
 
-                {/*<Button type="submit" className="w-full">*/}
-                {/*    Next*/}
-                {/*</Button>*/}
+                <Button type="submit" className="w-full">
+                    Next
+                </Button>
         </form>
 )
 }

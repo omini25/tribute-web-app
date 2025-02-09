@@ -21,8 +21,8 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
 		colors: {
-			'primary': '#FDA4AF',
-			'secondary': '#C4B5FD',
+			'primary': '#125500',
+			'secondary': '#BFB313',
 			'tertiary': '#C7D2FE',
 			'quaternary': '#DBEAFE',
 

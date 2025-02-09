@@ -1,73 +1,101 @@
-import {Link} from "react-router-dom";
-import logo from "../../assets/images/remember-me.png";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Separator } from "@/components/ui/separator"
 
-export const Footer = () => {
+export function Footer() {
     return (
-        <>
-            <footer className="border-t bg-background max-w-6xl mx-auto">
-                <div className="container px-4 py-12 md:px-6">
-                    <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 ">
-                        <div>
-                            <img
-                                src={logo}
-                                alt="Memories Logo"
-                                width={150}
-                                height={40}
-                                className="h-10 w-auto"
-                            />
-                            <p className="mt-4 text-sm text-gray-500">
-                                Helping families preserve and share memories 
-                            </p>
-                        </div>
-                        <div>
-                            <h3 className="mb-4 text-sm font-semibold">Product</h3>
-                            <ul className="space-y-2 text-sm text-gray-500">
-                                <li>
-                                    <Link to="#">Features</Link>
-                                </li>
-                                <li>
-                                    <Link to="#">Pricing</Link>
-                                </li>
-                                <li>
-                                    <Link to="#">Examples</Link>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="mb-4 text-sm font-semibold">Company</h3>
-                            <ul className="space-y-2 text-sm text-gray-500">
-                                <li>
-                                    <Link to="#">About</Link>
-                                </li>
-                                <li>
-                                    <Link to="#">Blog</Link>
-                                </li>
-                                <li>
-                                    <Link to="#">Contact</Link>
-                                </li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="mb-4 text-sm font-semibold">Legal</h3>
-                            <ul className="space-y-2 text-sm text-gray-500">
-                                <li>
-                                    <Link to="#">Privacy</Link>
-                                </li>
-                                <li>
-                                    <Link to="#">Terms</Link>
-                                </li>
-                                <li>
-                                    <Link to="#">Cookie Policy</Link>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="mt-8 border-t pt-8 text-center text-sm text-gray-500">
-                        © {new Date().getFullYear()} Memories. All rights reserved.
+        <footer className="border-t bg-background max-w-6xl mx-auto py-16">
+            <div className="container mx-auto px-4 py-12">
+                {/* Newsletter Section - Centered at top */}
+                <div className="max-w-md mx-auto text-center mb-16">
+                    <h3 className="text-lg font-medium tracking-wider mb-4">
+                        JOIN MY SECRET SOCIETY
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-4">
+                        Be the first to hear about sales & new projects!
+                    </p>
+                    <div className="flex">
+                        <Input
+                            type="email"
+                            placeholder="Enter your email here*"
+                            className="rounded-r-none"
+                        />
+                        <Button
+                            type="submit"
+                            variant="default"
+                            className="rounded-l-none px-8"
+                        >
+                            Join
+                        </Button>
                     </div>
                 </div>
-            </footer>
-        </>
 
+                {/* Main Footer Content */}
+                <div className="grid gap-8 lg:grid-cols-[1fr,1px,1fr] items-start">
+                    {/* Navigation Links */}
+                    <div className="grid grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+                        <div>
+                            <h4 className="font-medium mb-4 uppercase border-b border-primary inline-block">
+                                ABOUT
+                            </h4>
+                            <ul className="space-y-2">
+                                <li>
+                                    <a href="#" className="text-sm hover:underline">
+                                        MY STORY
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" className="text-sm hover:underline">
+                                        BLOG
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" className="text-sm hover:underline">
+                                        STOCKISTS
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4 className="font-medium mb-4 uppercase border-b border-primary inline-block">
+                                HELP
+                            </h4>
+                            <ul className="space-y-2">
+                                <li>
+                                    <a href="#" className="text-sm hover:underline">
+                                        CONTACT
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#" className="text-sm hover:underline">
+                                        WHOLESALE
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    {/* Vertical Separator - Only visible on large screens */}
+                    <Separator orientation="vertical" className="hidden lg:block" />
+
+                    {/* About Text */}
+                    <div>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                            Holly "Oddly" L'Oiseau is an illustrator of peculiar paper and
+                            weird wares living in rural South Georgia. If you are all about
+                            being right, or like seeing what your inner child is up to get it
+                            right the first...or even second time around, this is the place
+                            for you. Here, you'll find paper, home goods, and accessories that
+                            help you get all of those mixed up feelings off your chest.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Copyright */}
+                <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
+                    © 2025 BY REMEMBER.
+                </div>
+            </div>
+        </footer>
     )
 }

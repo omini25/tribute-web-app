@@ -24,12 +24,9 @@ export const SignupPage = () => {
 
     const nextStep = () => {
         if (step === 1 && (
-            !formData.deceased.deadFirstName ||
-            !formData.deceased.deadLastName ||
             !formData.deceased.dateOfBirth ||
-            !formData.deceased.dateOfDeath ||
-            !formData.deceased.stateAndCountryLived ||
-            !formData.deceased.countryLivedIn
+            !formData.deceased.dateOfDeath
+
         )) {
             toast.error("Please fill all required fields in the Deceased Information form.");
             return;
@@ -116,11 +113,11 @@ export const SignupPage = () => {
                             Previous
                         </Button>
                     )}
-                    {step < 3 && (
-                        <Button onClick={nextStep} className="ml-auto">
-                            Next
-                        </Button>
-                    )}
+                    {/*{step < 3 && (*/}
+                    {/*    <Button onClick={nextStep} className="ml-auto">*/}
+                    {/*        Next*/}
+                    {/*    </Button>*/}
+                    {/*)}*/}
                 </div>
             </div>
         </div>
