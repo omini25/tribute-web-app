@@ -56,22 +56,23 @@ const plans = [
 ]
 
 const themes = [
-    {
-        id: "warm",
-        name: "Warm",
-        image: Warm
-    },
-    {
-        id: "cool",
-        name: "Cool",
-        image: Cool
-    },
-    {
-        id: "autumn",
-        name: "Autumn",
-        image: Autumn
-    }
+    { id: "warm", name: "Warm", image: Warm },
+    { id: "cool", name: "Cool", image: Cool },
+    { id: "autumn", name: "Autumn", image: Autumn }
 ]
+
+const FeatureItem = ({ included, name }) => (
+    <div className="flex items-center space-x-2">
+        {included ? (
+            <Check className="min-w-[20px] w-5 h-5 text-green-500" />
+        ) : (
+            <X className="min-w-[20px] w-5 h-5 text-red-500" />
+        )}
+        <span className={included ? "text-foreground" : "text-muted-foreground"}>
+            {name}
+        </span>
+    </div>
+)
 
 export default function PlanSelection({ onSubmit }) {
     const [selectedPlan, setSelectedPlan] = useState(null)
@@ -87,32 +88,31 @@ export default function PlanSelection({ onSubmit }) {
     }
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="space-y-12 max-w-6xl mx-auto px-4 py-8"
-        >
-            <div className="text-center">
-                <h2 className="text-3xl font-bold mb-2">Select Your Plan and Theme</h2>
-                <p className="text-muted-foreground">
+        <form onSubmit={handleSubmit} className="space-y-8 w-full max-w-6xl mx-auto px-4 py-6 sm:py-8">
+            {/* Header Section */}
+            <div className="text-center space-y-2">
+                <h2 className="text-2xl sm:text-3xl font-bold">Select Your Plan and Theme</h2>
+                <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
                     Choose the perfect plan and theme to honor your loved one's memory.
                 </p>
             </div>
 
-            <div>
-                <h3 className="text-2xl font-semibold mb-6">Choose a Plan</h3>
+            {/* Plans Section */}
+            <section className="space-y-4">
+                <h3 className="text-xl sm:text-2xl font-semibold">Choose a Plan</h3>
                 <RadioGroup
                     onValueChange={setSelectedPlan}
                     required
-                    className="grid gap-6 md:grid-cols-3"
+                    className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
                 >
                     {plans.map(plan => (
-                        <div key={plan.id}>
+                        <div key={plan.id} className="w-full">
                             <RadioGroupItem
                                 value={plan.id}
                                 id={plan.id}
                                 className="peer sr-only"
                             />
-                            <Label htmlFor={plan.id} className="block cursor-pointer">
+                            <Label htmlFor={plan.id} className="block cursor-pointer h-full">
                                 <Card
                                     className={`h-full transition-all duration-300 ${
                                         selectedPlan === plan.id
@@ -120,30 +120,15 @@ export default function PlanSelection({ onSubmit }) {
                                             : "hover:border-primary/50"
                                     }`}
                                 >
-                                    <CardHeader>
-                                        <CardTitle>{plan.name}</CardTitle>
+                                    <CardHeader className="space-y-1">
+                                        <CardTitle className="text-lg sm:text-xl">{plan.name}</CardTitle>
                                         <CardDescription>
-                                            <span className="text-2xl font-bold">{plan.price}</span>
+                                            <span className="text-xl sm:text-2xl font-bold">{plan.price}</span>
                                         </CardDescription>
                                     </CardHeader>
-                                    <CardContent className="space-y-4">
+                                    <CardContent className="space-y-3">
                                         {plan.features.map((feature, index) => (
-                                            <div key={index} className="flex items-center space-x-2">
-                                                {feature.included ? (
-                                                    <Check className="w-5 h-5 text-green-500" />
-                                                ) : (
-                                                    <X className="w-5 h-5 text-red-500" />
-                                                )}
-                                                <span
-                                                    className={
-                                                        feature.included
-                                                            ? "text-foreground"
-                                                            : "text-muted-foreground"
-                                                    }
-                                                >
-                          {feature.name}
-                        </span>
-                                            </div>
+                                            <FeatureItem key={index} {...feature} />
                                         ))}
                                     </CardContent>
                                 </Card>
@@ -151,17 +136,18 @@ export default function PlanSelection({ onSubmit }) {
                         </div>
                     ))}
                 </RadioGroup>
-            </div>
+            </section>
 
-            <div>
-                <h3 className="text-2xl font-semibold mb-6">Choose a Theme</h3>
+            {/* Themes Section */}
+            <section className="space-y-4">
+                <h3 className="text-xl sm:text-2xl font-semibold">Choose a Theme</h3>
                 <RadioGroup
                     onValueChange={setSelectedTheme}
                     required
-                    className="grid gap-6 md:grid-cols-3"
+                    className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
                 >
                     {themes.map(theme => (
-                        <div key={theme.id}>
+                        <div key={theme.id} className="w-full">
                             <RadioGroupItem
                                 value={theme.id}
                                 id={theme.id}
@@ -176,16 +162,16 @@ export default function PlanSelection({ onSubmit }) {
                                     }`}
                                 >
                                     <CardContent className="p-0">
-                                        <div className="relative aspect-video overflow-hidden">
+                                        <div className="relative aspect-video overflow-hidden group">
                                             <img
                                                 src={theme.image || "/placeholder.svg"}
                                                 alt={theme.name}
-                                                className="object-cover w-full h-full transition-transform duration-300 peer-checked:scale-110"
+                                                className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
                                             />
-                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 transition-opacity duration-300 hover:opacity-100">
-                        <span className="text-white text-lg font-semibold">
-                          {theme.name}
-                        </span>
+                                            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                                                <span className="text-white text-lg font-semibold">
+                                                    {theme.name}
+                                                </span>
                                             </div>
                                         </div>
                                     </CardContent>
@@ -194,11 +180,14 @@ export default function PlanSelection({ onSubmit }) {
                         </div>
                     ))}
                 </RadioGroup>
-            </div>
+            </section>
 
-            <Button type="submit" className="w-full">
-                Proceed to Payment
-            </Button>
+            {/* Submit Button */}
+            <div className="pt-4">
+                <Button type="submit" className="w-full max-w-md mx-auto block">
+                    Proceed to Payment
+                </Button>
+            </div>
         </form>
     )
 }

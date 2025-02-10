@@ -27,101 +27,75 @@ export default function UserInfoForm({ onSubmit }) {
         onSubmit(formData)
     }
 
+    const FormField = ({ label, id, type = "text", placeholder, required = true }) => (
+        <div className="w-full">
+            <Label htmlFor={id}>{label}</Label>
+            <Input
+                id={id}
+                name={id}
+                type={type}
+                placeholder={placeholder}
+                value={formData[id]}
+                onChange={handleChange}
+                required={required}
+                className="w-full"
+            />
+        </div>
+    )
+
     return (
-        <form onSubmit={handleSubmit} className="space-y-6">
-            <h2 className="text-2xl font-semibold">Your Information</h2>
+        <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto p-4">
+            <h2 className="text-2xl font-semibold text-center mb-6">Your Information</h2>
 
-            <div className="grid grid-cols-2 gap-4">
-                <div>
-                    <Label htmlFor="firstName">Name Name</Label>
-                    <Input
-                        id="firstName"
-                        name="firstName"
-                        type="text"
-                        placeholder="John"
-                        value={formData.firstName}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                        id="lastName"
-                        name="lastName"
-                        type="text"
-                        placeholder="Doe"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
+            {/* Name Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                    label="First Name"
+                    id="firstName"
+                    placeholder="John"
+                />
+                <FormField
+                    label="Last Name"
+                    id="lastName"
+                    placeholder="Doe"
+                />
             </div>
 
-
-            <div className="grid grid-cols-2 gap-4">
-                <div>
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="email@johndoe.com"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input
-                        id="phone"
-                        name="phone"
-                        type="tel"
-                        placeholder="568928973"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
+            {/* Contact Information */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                    label="Email"
+                    id="email"
+                    type="email"
+                    placeholder="email@johndoe.com"
+                />
+                <FormField
+                    label="Phone Number"
+                    id="phone"
+                    type="tel"
+                    placeholder="568928973"
+                />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-
-                <div>
-                    <Label htmlFor="password">Password</Label>
-                    <Input
-                        id="password"
-                        name="password"
-                        type="password"
-                        placeholder="••••••••••"
-                        value={formData.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
-                <div>
-                    <Label htmlFor="confirmPassword">Confirm Password</Label>
-                    <Input
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        type="password"
-                        placeholder="••••••••••"
-                        value={formData.confirmPassword}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-
+            {/* Password Fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                    label="Password"
+                    id="password"
+                    type="password"
+                    placeholder="••••••••••"
+                />
+                <FormField
+                    label="Confirm Password"
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="••••••••••"
+                />
             </div>
 
-            <Button type="submit" className="w-full">Next</Button>
+            <Button type="submit" className="w-full mt-6">
+                Next
+            </Button>
         </form>
     )
 }
-

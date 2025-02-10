@@ -44,7 +44,7 @@ export default function TributeNavigation() {
                                     key={link.text}
                                     to={link.path}   // Use 'to' prop for routing
                                     className={({isActive}) =>  // Use activeClassName for styling
-                                        `block text-sm ${isActive ? 'text-[#0369a1]' : 'text-[#0ea5e9]'} hover:text-[#0369a1]`
+                                        `block text-sm ${isActive ? 'text-secondary' : 'text-primary'} hover:text-secondary`
                                     }
                                     end={link.text === "TRIBUTE"} // Set 'end' prop for exact match on root route
                                 >
@@ -58,7 +58,7 @@ export default function TributeNavigation() {
                         <h2 className="text-gray-600 mb-4">JOHN DOE TRIBUTE</h2>
                         <a
                             href="http://www.tfpd/tribute/johndoe"
-                            className="text-blue-500 hover:text-blue-600 flex items-center gap-2 text-sm"
+                            className="text-primary hover:text-secondary flex items-center gap-2 text-sm"
                         >
                             <Globe className="h-4 w-4"/>
                             www.tfpd/tribute/johndoe
@@ -82,23 +82,23 @@ export default function TributeNavigation() {
                 </nav>
 
                 {/* Main Content */}
-                <main className="ml-64 flex-1 p-8 overflow-y-auto">
+                <main className="ml-64 flex-1  overflow-y-auto">
                     <Outlet/>
                 </main>
 
                 {/* Footer */}
-                <footer className="fixed bottom-0 left-0 right-0 bg-gray-50 border-t p-4">
+                <footer className="fixed bottom-0 left-0 right-0 bg-transparent p-4">
                     <div className="container mx-auto flex justify-between items-center">
                         <div className="flex gap-4 text-sm">
-                            <a href="#" className="text-gray-500 hover:text-gray-700">About</a>
-                            <a href="#" className="text-gray-500 hover:text-gray-700">Create Tribute</a>
-                            <a href="#" className="text-gray-500 hover:text-gray-700">Privacy</a>
+                            {/*<a href="#" className="text-gray-500 hover:text-gray-700">About</a>*/}
+                            {/*<a href="#" className="text-gray-500 hover:text-gray-700">Create Tribute</a>*/}
+                            {/*<a href="#" className="text-gray-500 hover:text-gray-700">Privacy</a>*/}
                         </div>
 
                         <Button
                             variant="outline"
                             size="icon"
-                            className="rounded-full"
+                            className="rounded-full bg-white"
                             onClick={scrollToTop}
                         >
                             <ArrowUp className="h-4 w-4"/>

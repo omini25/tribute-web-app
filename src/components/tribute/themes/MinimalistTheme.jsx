@@ -33,6 +33,8 @@ export function MinimalistTheme() {
     const [link, setLink] = useState('');
     const [memories, setMemories] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isMemorialLoading, setIsMemorialLoading] = useState(true);
+    const [isMilestonesLoading, setIsMilestonesLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [formData, setFormData] = useState({
         name: "",
@@ -52,6 +54,9 @@ export function MinimalistTheme() {
             })
             .catch(error => {
                 console.error("Error fetching memorial details:", error);
+            })
+            .finally(() => {
+                setIsMemorialLoading(false);
             });
     }, [id]);
 
@@ -63,6 +68,8 @@ export function MinimalistTheme() {
             }
         } catch (error) {
             console.error("Error fetching tribute details:", error);
+        } finally {
+            setIsMilestonesLoading(false);
         }
     };
 
@@ -174,8 +181,6 @@ export function MinimalistTheme() {
         fetchMemories();
     }, [id]);
 
-
-
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
@@ -194,297 +199,305 @@ export function MinimalistTheme() {
 
     return (
         <>
-            <Header />
-            <div className="min-h-screen bg-gray-100">
-                <div
-                    className="relative h-[400px] bg-cover bg-center"
-                    style={{
-                        backgroundImage: `url(${Warm})`
-                    }}
-                >
-                    <div className="absolute inset-0 bg-black/50" />
-                    <div className="absolute top-4 right-4 flex gap-2 mt-12">
-                        {/*<Button variant="ghost" className="text-white hover:bg-white/20">*/}
-                        {/*    <Printer className="h-4 w-4 mr-2" />*/}
-                        {/*    Print*/}
-                        {/*</Button>*/}
-                        <Button
-                            variant="ghost"
-                            className="text-white hover:bg-white/20"
-                            onClick={() => {
-                                if (navigator.share) {
-                                    navigator.share({
-                                        title: document.title,
-                                        url: window.location.href,
-                                    }).catch(error => console.error('Error sharing:', error));
-                                } else {
-                                    console.error('Share API not supported');
-                                }
-                            }}
-                        >
-                            <Share className="h-4 w-4 mr-2" />
-                            Share
-                        </Button>
-                    </div>
-                    <div className="absolute bottom-4 left-4 text-white">
-                        <h1 className="text-4xl font-bold">In Loving Memory</h1>
-                        <p className="text-xl">{memorial?.first_name} {memorial?.middle_name} {memorial?.last_name} ({memorial?.nickname})</p>
-                    </div>
+        <Header />
+        <div className="min-h-screen bg-gray-100">
+            <div
+                className="relative h-[400px] bg-cover bg-center"
+                style={{
+                    backgroundImage: `url(${Warm})`
+                }}
+            >
+                <div className="absolute inset-0 bg-black/50" />
+                <div className="absolute top-4 right-4 flex gap-2 mt-12">
+                    <Button
+                        variant="ghost"
+                        className="text-white hover:bg-white/20"
+                        onClick={() => {
+                            if (navigator.share) {
+                                navigator.share({
+                                    title: document.title,
+                                    url: window.location.href,
+                                }).catch(error => console.error('Error sharing:', error));
+                            } else {
+                                console.error('Share API not supported');
+                            }
+                        }}
+                    >
+                        <Share className="h-4 w-4 mr-2" />
+                        Share
+                    </Button>
                 </div>
+                <div className="absolute bottom-4 left-4 text-white">
+                    {isMemorialLoading ? (
+                        <div className="flex justify-center items-center">
+                            <p>Loading memorial details...</p>
+                        </div>
+                    ) : (
+                        <>
+                            <h1 className="text-4xl font-bold">In Loving Memory</h1>
+                            <p className="text-xl">{memorial?.first_name} {memorial?.middle_name} {memorial?.last_name} ({memorial?.nickname})</p>
+                        </>
+                    )}
+                </div>
+            </div>
 
-                <main className="container mx-auto px-4 py-8 max-w-7xl">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        <div className="lg:col-span-2 space-y-8">
-                            <section id="about">
-                                <h2 className="text-3xl font-light text-gray-800 mb-4">Biography</h2>
-                                <Card className="p-6 shadow-md bg-white">
+            <main className="container mx-auto px-4 py-8 max-w-7xl">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="lg:col-span-2 space-y-8">
+                        <section id="about">
+                            <h2 className="text-3xl font-light text-gray-800 mb-4">Biography</h2>
+                            <Card className="p-6 shadow-md bg-white">
+                                {isMilestonesLoading ? (
+                                    <div className="flex justify-center items-center">
+                                        <p>Loading biography...</p>
+                                    </div>
+                                ) : (
                                     <p className="text-gray-600">{milestonesData?.bio}</p>
-                                </Card>
-                            </section>
+                                )}
+                            </Card>
+                        </section>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <section id="birth">
-                                    <h2 className="text-3xl font-light text-gray-800 mb-4">Birth</h2>
-                                    <Card className="p-6 shadow-md bg-white">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <section id="birth">
+                                <h2 className="text-3xl font-light text-gray-800 mb-4">Birth</h2>
+                                <Card className="p-6 shadow-md bg-white">
+                                    {isMemorialLoading ? (
+                                        <div className="flex justify-center items-center">
+                                            <p>Loading birth details...</p>
+                                        </div>
+                                    ) : (
                                         <div className="space-y-2 text-gray-600">
                                             <p>Date: {new Date(memorial?.date_of_birth).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })} </p>
                                             <p>Location: {memorial?.country_of_birth}</p>
                                         </div>
-                                    </Card>
-                                </section>
+                                    )}
+                                </Card>
+                            </section>
 
-                                <section id="death">
-                                    <h2 className="text-3xl font-light text-gray-800 mb-4">Death</h2>
-                                    <Card className="p-6 shadow-md bg-white">
+                            <section id="death">
+                                <h2 className="text-3xl font-light text-gray-800 mb-4">Death</h2>
+                                <Card className="p-6 shadow-md bg-white">
+                                    {isMemorialLoading ? (
+                                        <div className="flex justify-center items-center">
+                                            <p>Loading death details...</p>
+                                        </div>
+                                    ) : (
                                         <div className="space-y-2 text-gray-600">
                                             <p>Date: {new Date(memorial?.date_of_death).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</p>
                                             <p>Location: {memorial?.country_died}</p>
-                                        </div>
-                                    </Card>
-                                </section>
-                            </div>
-
-                            <section id="family">
-                                <h2 className="text-3xl font-light text-gray-800 mb-4">Milestones</h2>
-                                <Card className="p-6 shadow-md bg-white">
-                                    <ul className="text-gray-600">
-                                        {milestonesData?.milestone?.map((item, index) => (
-                                            item && <li key={index}>{item}</li>
-                                        ))}
-                                    </ul>
-                                </Card>
-                            </section>
-
-                            <section id="extended-family">
-                                <h2 className="text-3xl font-light text-gray-800 mb-4">Family</h2>
-                                <Card className="p-6 shadow-md bg-white">
-                                    <div className="p-8">
-                                        <FamilyTreeMinimal data={milestonesData?.family} />
-                                    </div>
-                                </Card>
-                            </section>
-
-                            <section id="donations">
-                                <h2 className="text-3xl font-light text-gray-800 mb-4">Donations</h2>
-                                <Card className="p-6 shadow-md bg-white">
-                                    <p className="text-gray-600 mb-4">
-                                        To honor {memorial?.first_name} {memorial?.last_name} memory, please consider a donation:
-                                    </p>
-                                    <>
-                                        <Button className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setIsModalOpen(true)}>
-                                            Make a Donation
-                                        </Button>
-
-                                        {isModalOpen && (
-                                            <Dialog open={isModalOpen} onOpenChange={() => setIsModalOpen(false)}>
-                                                <DialogContent className="sm:max-w-[425px] bg-white">
-                                                    <DialogHeader>
-                                                        <DialogTitle>Make a Donation</DialogTitle>
-                                                        <DialogDescription>
-                                                            Please fill out the form below to make a donation.
-                                                        </DialogDescription>
-                                                    </DialogHeader>
-                                                    <form onSubmit={handleSubmit} className="space-y-4">
-                                                        <div className="grid gap-4 py-4">
-                                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                                <Label htmlFor="name" className="text-right">
-                                                                    Name
-                                                                </Label>
-                                                                <Input
-                                                                    id="name"
-                                                                    name="name"
-                                                                    placeholder="Name"
-                                                                    value={formData.name}
-                                                                    onChange={handleInputChange}
-                                                                    className="col-span-3"
-                                                                    required
-                                                                />
-                                                            </div>
-                                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                                <Label htmlFor="email" className="text-right">
-                                                                    Email
-                                                                </Label>
-                                                                <Input
-                                                                    id="email"
-                                                                    name="email"
-                                                                    type="email"
-                                                                    placeholder="Email"
-                                                                    value={formData.email}
-                                                                    onChange={handleInputChange}
-                                                                    className="col-span-3"
-                                                                    required
-                                                                />
-                                                            </div>
-                                                            <div className="grid grid-cols-4 items-center gap-4">
-                                                                <Label htmlFor="amount" className="text-right">
-                                                                    Amount
-                                                                </Label>
-                                                                <Input
-                                                                    id="amount"
-                                                                    name="amount"
-                                                                    type="number"
-                                                                    placeholder="Amount"
-                                                                    value={formData.amount}
-                                                                    onChange={handleInputChange}
-                                                                    className="col-span-3"
-                                                                    required
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <DialogFooter>
-                                                            <Button type="submit" className="w-full bg-blue-500 text-white hover:bg-blue-600">
-                                                                Submit
-                                                            </Button>
-                                                        </DialogFooter>
-                                                    </form>
-                                                </DialogContent>
-                                            </Dialog>
-                                        )}
-                                    </>
-                                </Card>
-                            </section>
-
-                            <section id="memories">
-                                <h2 className="text-3xl font-light text-gray-800 mb-4">Memories and Links</h2>
-                                <Card className="p-6 shadow-md bg-white">
-                                    {isLoading ? (
-                                        <div className="flex justify-center items-center">
-                                            <p>Loading...</p> {/* Display a loading text */}
-                                        </div>
-                                    ) : (
-                                        <div className="grid gap-4">
-                                            {memories?.memories && memories.memories.length > 0 && JSON.parse(memories.memories).map((item, index) => (
-                                                item && (
-                                                    <Card key={index} className="p-4 shadow-md bg-white">
-                                                        <p className="text-gray-600">{item}</p>
-                                                    </Card>
-                                                )
-                                            ))}
-                                            {memories?.links && memories.links.length > 0 && JSON.parse(memories.links).map((link, index) => (
-                                                link && (
-                                                    <Card key={index} className="p-4 shadow-md bg-white">
-                                                        <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
-                                                            {link}
-                                                        </a>
-                                                    </Card>
-                                                )
-                                            ))}
                                         </div>
                                     )}
                                 </Card>
                             </section>
                         </div>
 
-                        <div className="space-y-8">
+                        <section id="family">
+                            <h2 className="text-3xl font-light text-gray-800 mb-4">Milestones</h2>
                             <Card className="p-6 shadow-md bg-white">
-                                <h2 className="text-2xl font-medium text-gray-800 mb-4">Contribute</h2>
-                                <div className="space-y-4">
-                                    <h2 className="text-2xl font-medium text-gray-800 mb-4">Share a Memory</h2>
-                                    <>
-                                        <input
-                                            type="text"
-                                            placeholder="Write your memory here..."
-                                            className="w-full mb-8 p-4 border border-gray-200 rounded-lg"
-                                            value={memory}
-                                            onChange={(e) => setMemory(e.target.value)}
-                                        />
-                                        <Button className="w-full bg-red-100 text-red-700 hover:bg-red-200" onClick={handleAddMemory}>
-                                            Add Memories
-                                        </Button>
-                                    </>
-                                    <input
-                                        type="file"
-                                        className="w-full mb-8 p-4 border border-gray-200 rounded-lg"
-                                        onChange={(e) => setImage(e.target.files[0])}
-                                    />
-                                    <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200" onClick={handleAddImage}>
-                                        Add Photos
-                                    </Button>
-                                    <input
-                                        type="file"
-                                        className="w-full mb-8 p-4 border border-gray-200 rounded-lg"
-                                        onChange={(e) => setVideo(e.target.files[0])}
-                                    />
-                                    <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200" onClick={handleAddVideo}>
-                                        Add Videos
-                                    </Button>
-                                    <input
-                                        type="text"
-                                        placeholder="Add a link..."
-                                        className="w-full mb-8 p-4 border border-gray-200 rounded-lg"
-                                        value={link}
-                                        onChange={(e) => setLink(e.target.value)}
-                                    />
-                                    <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200" onClick={handleAddLink}>
-                                        Add Link
-                                    </Button>
-                                </div>
-                            </Card>
-
-                            {/*<Card className="p-6 shadow-md bg-white">*/}
-                            {/*    <h2 className="text-2xl font-medium text-gray-800 mb-4">Memorial Statistics</h2>*/}
-                            {/*    <div className="space-y-4">*/}
-                            {/*        <div className="flex items-center justify-between text-gray-600">*/}
-                            {/*            <div className="flex items-center">*/}
-                            {/*                <Camera className="h-4 w-4 mr-2" />*/}
-                            {/*                Photos and Videos*/}
-                            {/*            </div>*/}
-                            {/*            <span>*/}
-                            {/*                {memorial?.images && memorial?.videos*/}
-                            {/*                    ? JSON.parse(memorial.images).length + JSON.parse(memorial.videos).length*/}
-                            {/*                    : 0}*/}
-                            {/*            </span>*/}
-                            {/*        </div>*/}
-                            {/*        <Separator />*/}
-                            {/*        <div className="flex items-center justify-between text-gray-600">*/}
-                            {/*            <div className="flex items-center">*/}
-                            {/*                <Users className="h-4 w-4 mr-2" />*/}
-                            {/*                Contributors*/}
-                            {/*            </div>*/}
-                            {/*            <span>0</span>*/}
-                            {/*        </div>*/}
-                            {/*        <Separator />*/}
-                            {/*    </div>*/}
-                            {/*</Card>*/}
-
-                            <Card className="p-6 shadow-md bg-white">
-                                <h2 className="text-2xl font-medium text-gray-800 mb-4">Images and Videos</h2>
-                                {isLoading ? (
+                                {isMilestonesLoading ? (
                                     <div className="flex justify-center items-center">
-                                        <p>Loading...</p>
+                                        <p>Loading milestones...</p>
                                     </div>
                                 ) : (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {memories?.images && JSON.parse(memories.images).map((image, index) => (
-                                            <img key={index} src={`${assetServer}/images/gallery/${image}`} alt={`Memory ${index}`} className="w-full h-auto rounded-lg shadow-md" />
+                                    <ul className="text-gray-600">
+                                        {milestonesData?.milestone?.map((item, index) => (
+                                            item && <li key={index}>{item}</li>
                                         ))}
-                                        {memories?.videos && JSON.parse(memories.videos).map((video, index) => (
-                                            <video key={index} controls className="w-full h-auto rounded-lg shadow-md">
-                                                <source src={`${assetServer}/${video}`} type="video/mp4" />
-                                                Your browser does not support the video tag.
-                                            </video>
+                                    </ul>
+                                )}
+                            </Card>
+                        </section>
+
+                        <section id="extended-family">
+                            <h2 className="text-3xl font-light text-gray-800 mb-4">Family</h2>
+                            <Card className="p-6 shadow-md bg-white">
+                                {isMilestonesLoading ? (
+                                    <div className="flex justify-center items-center">
+                                        <p>Loading family tree...</p>
+                                    </div>
+                                ) : (
+                                    <div className="p-8">
+                                        <FamilyTreeMinimal data={milestonesData?.family} />
+                                    </div>
+                                )}
+                            </Card>
+                        </section>
+
+                        <section id="donations">
+                            <h2 className="text-3xl font-light text-gray-800 mb-4">Donations</h2>
+                            <Card className="p-6 shadow-md bg-white">
+                                <p className="text-gray-600 mb-4">
+                                    To honor {memorial?.first_name} {memorial?.last_name} memory, please consider a donation:
+                                </p>
+                                <>
+                                    <Button className="bg-gray-200 text-gray-800 hover:bg-gray-300" onClick={() => setIsModalOpen(true)}>
+                                        Make a Donation
+                                    </Button>
+
+                                    {isModalOpen && (
+                                        <Dialog open={isModalOpen} onOpenChange={() => setIsModalOpen(false)}>
+                                            <DialogContent className="sm:max-w-[425px] bg-white">
+                                                <DialogHeader>
+                                                    <DialogTitle>Make a Donation</DialogTitle>
+                                                    <DialogDescription>
+                                                        Please fill out the form below to make a donation.
+                                                    </DialogDescription>
+                                                </DialogHeader>
+                                                <form onSubmit={handleSubmit} className="space-y-4">
+                                                    <div className="grid gap-4 py-4">
+                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                            <Label htmlFor="name" className="text-right">
+                                                                Name
+                                                            </Label>
+                                                            <Input
+                                                                id="name"
+                                                                name="name"
+                                                                placeholder="Name"
+                                                                value={formData.name}
+                                                                onChange={handleInputChange}
+                                                                className="col-span-3"
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                            <Label htmlFor="email" className="text-right">
+                                                                Email
+                                                            </Label>
+                                                            <Input
+                                                                id="email"
+                                                                name="email"
+                                                                type="email"
+                                                                placeholder="Email"
+                                                                value={formData.email}
+                                                                onChange={handleInputChange}
+                                                                className="col-span-3"
+                                                                required
+                                                            />
+                                                        </div>
+                                                        <div className="grid grid-cols-4 items-center gap-4">
+                                                            <Label htmlFor="amount" className="text-right">
+                                                                Amount
+                                                            </Label>
+                                                            <Input
+                                                                id="amount"
+                                                                name="amount"
+                                                                type="number"
+                                                                placeholder="Amount"
+                                                                value={formData.amount}
+                                                                onChange={handleInputChange}
+                                                                className="col-span-3"
+                                                                required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <DialogFooter>
+                                                        <Button type="submit" className="w-full bg-blue-500 text-white hover:bg-blue-600">
+                                                            Submit
+                                                        </Button>
+                                                    </DialogFooter>
+                                                </form>
+                                            </DialogContent>
+                                        </Dialog>
+                                    )}
+                                </>
+                            </Card>
+                        </section>
+
+                        <section id="memories">
+                            <h2 className="text-3xl font-light text-gray-800 mb-4">Memories and Links</h2>
+                            <Card className="p-6 shadow-md bg-white">
+                                {isLoading ? (
+                                    <div className="flex justify-center items-center">
+                                        <p>Loading memories...</p>
+                                    </div>
+                                ) : (
+                                    <div className="grid gap-4">
+                                        {memories?.memories && memories.memories.length > 0 && JSON.parse(memories.memories).map((item, index) => (
+                                            item && (
+                                                <Card key={index} className="p-4 shadow-md bg-white">
+                                                    <p className="text-gray-600">{item}</p>
+                                                </Card>
+                                            )
+                                        ))}
+                                        {memories?.links && memories.links.length > 0 && JSON.parse(memories.links).map((link, index) => (
+                                            link && (
+                                                <Card key={index} className="p-4 shadow-md bg-white">
+                                                    <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-500 underline">
+                                                        {link}
+                                                    </a>
+                                                </Card>
+                                            )
                                         ))}
                                     </div>
+                                )}
+                            </Card>
+                        </section>
+                    </div>
+
+                    <div className="space-y-8">
+                        <Card className="p-6 shadow-md bg-white">
+                            <h2 className="text-2xl font-medium text-gray-800 mb-4">Contribute</h2>
+                            <div className="space-y-4">
+                                <h2 className="text-2xl font-medium text-gray-800 mb-4">Share a Memory</h2>
+                                <>
+                                    <input
+                                        type="text"
+                                        placeholder="Write your memory here..."
+                                        className="w-full mb-8 p-4 border border-gray-200 rounded-lg"
+                                        value={memory}
+                                        onChange={(e) => setMemory(e.target.value)}
+                                    />
+                                    <Button className="w-full bg-red-100 text-red-700 hover:bg-red-200" onClick={handleAddMemory}>
+                                        Add Memories
+                                    </Button>
+                                </>
+                                <input
+                                    type="file"
+                                    className="w-full mb-8 p-4 border border-gray-200 rounded-lg"
+                                    onChange={(e) => setImage(e.target.files[0])}
+                                />
+                                <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200" onClick={handleAddImage}>
+                                    Add Photos
+                                </Button>
+                                <input
+                                    type="file"
+                                    className="w-full mb-8 p-4 border border-gray-200 rounded-lg"
+                                    onChange={(e) => setVideo(e.target.files[0])}
+                                />
+                                <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200" onClick={handleAddVideo}>
+                                    Add Videos
+                                </Button>
+                                <input
+                                    type="text"
+                                    placeholder="Add a link..."
+                                    className="w-full mb-8 p-4 border border-gray-200 rounded-lg"
+                                    value={link}
+                                    onChange={(e) => setLink(e.target.value)}
+                                />
+                                <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200" onClick={handleAddLink}>
+                                    Add Link
+                                </Button>
+                            </div>
+                        </Card>
+
+                        <Card className="p-6 shadow-md bg-white">
+                            <h2 className="text-2xl font-medium text-gray-800 mb-4">Images and Videos</h2>
+                            {isLoading ? (
+                                <div className="flex justify-center items-center">
+                                    <p>Loading images and videos...</p>
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {memories?.images && JSON.parse(memories.images).map((image, index) => (
+                                        <img key={index} src={`${assetServer}/images/gallery/${image}`} alt={`Memory ${index}`} className="w-full h-auto rounded-lg shadow-md" />
+                                    ))}
+                                    {memories?.videos && JSON.parse(memories.videos).map((video, index) => (
+                                        <video key={index} controls className="w-full h-auto rounded-lg shadow-md">
+                                            <source src={`${assetServer}/${video}`} type="video/mp4" />
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    ))}
+                                </div>
                                 )}
                             </Card>
 

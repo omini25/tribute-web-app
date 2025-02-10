@@ -31,6 +31,9 @@ import HelpCenter from "@/components/dashboard/HelpCenter.jsx";
 import TributeLife from "@/components/dashboard/TributeLife.jsx";
 import {ElegantTabTheme} from "@/components/tribute/themes/ElegantTabTheme.jsx";
 import {MinimalistTabTheme} from "@/components/tribute/MinimalistTabTheme.jsx";
+import TributeNavigation from "@/components/tribute/themes/firstTheme/TributeNavigation.jsx";
+import {Tribute} from "@/pages/tribute/Tribute.jsx";
+import Life from "@/pages/tribute/Life.jsx";
 
 
 function App() {
@@ -56,6 +59,13 @@ function App() {
                 <Route path="/theme-warm/:id/:title" element={<MinimalistTheme />} />
                 <Route path="/elegant/:id/:title" element={<ElegantTabTheme />} />
                 <Route path="/minimal-tab" element={<MinimalistTabTheme />} />
+
+                <Route path="/main-theme" element={<TributeNavigation />}>
+                    <Route path="overview" element={<Tribute />} />
+                    <Route path="life" element={<Life />} />
+
+                </Route>
+
 
 
                 <Route path="/dashboard" element={<DashboardLayout />}>

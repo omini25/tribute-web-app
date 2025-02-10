@@ -43,8 +43,8 @@ export default function Header() {
                                 src={logo || "/placeholder.svg"}
                                 alt="Memories Logo"
                                 width={150}
-                                height={40}
-                                className="h-8 w-auto"
+                                height={50}
+                                className="h-44 w-auto"
                             />
                         </Link>
                         <nav className="hidden md:ml-10 md:flex md:space-x-8">
@@ -65,7 +65,7 @@ export default function Header() {
                                 <Input
                                     type="search"
                                     placeholder="Search..."
-                                    className="w-full sm:w-[200px] pl-8"
+                                    className="w-full sm:w-[200px] pl-8 pr-3 py-2 rounded focus:ring-primary focus:border-primary"
                                 />
                                 <div className="absolute inset-y-0 left-0 flex items-center pl-2">
                                     <svg
@@ -84,10 +84,10 @@ export default function Header() {
                         </form>
                         <div className="hidden sm:flex sm:items-center sm:space-x-2">
                             <Button variant="ghost" asChild>
-                                <Link to="/login">Log in</Link>
+                                <Link to="/login" >Log in</Link>
                             </Button>
                             <Button asChild>
-                                <Link to="/signup">Get Started</Link>
+                                <Link to="/signup" className="text-white">Get Started</Link>
                             </Button>
                         </div>
                         <Sheet>
@@ -97,7 +97,7 @@ export default function Header() {
                                     <Menu className="h-6 w-6" />
                                 </Button>
                             </SheetTrigger>
-                            <SheetContent side="right">
+                            <SheetContent side="right" className="bg-white">
                                 <nav className="flex flex-col space-y-4 mt-4">
                                     {navigation.map(item => (
                                         <Link
@@ -120,7 +120,7 @@ export default function Header() {
                                             <Link to="/login">Log in</Link>
                                         </Button>
                                         <Button asChild>
-                                            <Link to="/signup">Get Started</Link>
+                                            <Link to="/signup" className="text-white">Get Started</Link>
                                         </Button>
                                     </div>
                                 </nav>

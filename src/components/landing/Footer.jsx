@@ -9,7 +9,7 @@ export function Footer() {
                 {/* Newsletter Section - Centered at top */}
                 <div className="max-w-md mx-auto text-center mb-16">
                     <h3 className="text-lg font-medium tracking-wider mb-4">
-                        JOIN MY SECRET SOCIETY
+                       Join Our Newsletter
                     </h3>
                     <p className="text-sm text-muted-foreground mb-4">
                         Be the first to hear about sales & new projects!
@@ -41,7 +41,7 @@ export function Footer() {
                             <ul className="space-y-2">
                                 <li>
                                     <a href="#" className="text-sm hover:underline">
-                                        MY STORY
+                                        Our STORY
                                     </a>
                                 </li>
                                 <li>
@@ -68,7 +68,7 @@ export function Footer() {
                                 </li>
                                 <li>
                                     <a href="#" className="text-sm hover:underline">
-                                        WHOLESALE
+                                        MULTIPLE
                                     </a>
                                 </li>
                             </ul>
