@@ -28,7 +28,7 @@ export const SignupPage = () => {
             !formData.deceased.dateOfDeath
 
         )) {
-            toast.error("Please fill all required fields in the Deceased Information form.");
+            // toast.error("Please fill all required fields in the Deceased Information form.");
             return;
         }
         if (step === 2 && (
@@ -39,7 +39,7 @@ export const SignupPage = () => {
             !formData.user.password ||
             !formData.user.confirmPassword
         )) {
-            toast.error("Please fill all required fields in the User Information form.");
+            // toast.error("Please fill all required fields in the User Information form.");
             return;
         }
         setStep(prev => Math.min(prev + 1, 3));

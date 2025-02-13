@@ -3,12 +3,12 @@ import { Heart, Instagram, Twitter, Facebook, Globe, ArrowUp } from 'lucide-reac
 import {NavLink, Outlet} from "react-router-dom";
 import {Tribute} from "@/pages/tribute/Tribute.jsx";
 import Life from "@/pages/tribute/Life.jsx";
-import {Events} from "@/pages/tribute/Events.jsx";
+import {Eventing} from "@/pages/tribute/Eventing.jsx";
 import {Memories} from "@/pages/tribute/Memories.jsx";
 import {FamilyTree} from "@/pages/tribute/FamilyTree.jsx";
-import {Gallery} from "@/pages/tribute/Gallery.jsx";
+import {Gallerys} from "@/pages/tribute/Gallerys.jsx";
 import {Posts} from "@/pages/tribute/Posts.jsx";
-import {Donations} from "@/pages/tribute/Donations.jsx";
+import {Donation} from "@/pages/tribute/Donation.jsx";
 import {Conclusions} from "@/pages/tribute/Conclusions.jsx";
 import Header from "@/components/tribute/themes/Header.jsx";
 
@@ -18,12 +18,12 @@ export default function TributeNavigation() {
     const navLinks = [
         { text: "TRIBUTE", path: "overview" , element: <Tribute/>},
         { text: "LIFE", path: "life", element: <Life/> },
-        { text: "EVENTS", path: "events", element: <Events/> },
+        { text: "EVENTS", path: "events", element: <Eventing/> },
         {text: "MEMORIES", path:"memories", element: <Memories/>},
         {text: "FAMILY TREE", path:"family-tree", element: <FamilyTree/>},
-        {text: "GALLERY", path:"gallery", element: <Gallery/>},
+        {text: "GALLERY", path:"gallery", element: <Gallerys/>},
         {text: "POSTS", path:"posts", element: <Posts/>},
-        {text: "DONATIONS", path:"donations", element: <Donations/>},
+        {text: "DONATIONS", path:"donations", element: <Donation/>},
         {text: "CONCLUSIONS", path:"conclusions", element: <Conclusions/>}
     ];
 

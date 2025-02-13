@@ -2,9 +2,27 @@ import React, { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.jsx"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { InfoCircledIcon } from "@radix-ui/react-icons"
+
+const InputField = ({ label, id, type = "text", placeholder, value, onChange, required = false, readOnly = false, className = "" }) => (
+    <div className="w-full">
+        <Label htmlFor={id} className="block mb-2 text-sm font-medium">
+            {label}
+        </Label>
+        <Input
+            id={id}
+            name={id}
+            type={type}
+            placeholder={placeholder}
+            value={value}
+            onChange={(e) => onChange(id, e.target.value)}
+            required={required}
+            readOnly={readOnly}
+            className={`w-full p-2 rounded-md border ${className}`}
+        />
+    </div>
+)
 
 export default function DeceasedInfoForm({ onSubmit }) {
     const [customMemorialWebsite, setCustomMemorialWebsite] = useState('')
@@ -48,29 +66,13 @@ export default function DeceasedInfoForm({ onSubmit }) {
         }
     }, [formData.deadFirstName, formData.deadLastName, isEditingWebsite])
 
-    const FormField = ({ label, id, type = "text", placeholder, value, onChange, required = false }) => (
-        <div className="w-full">
-            <Label htmlFor={id}>{label}</Label>
-            <Input
-                id={id}
-                name={id}
-                type={type}
-                placeholder={placeholder}
-                value={value}
-                onChange={(e) => onChange(id, e.target.value)}
-                required={required}
-                className="w-full"
-            />
-        </div>
-    )
-
     return (
         <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto p-4">
             <h2 className="text-2xl font-semibold text-center mb-6">Information about the Deceased</h2>
 
             {/* Name Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
+                <InputField
                     label="First Name"
                     id="deadFirstName"
                     placeholder="John"
@@ -78,7 +80,7 @@ export default function DeceasedInfoForm({ onSubmit }) {
                     onChange={handleChange}
                     required
                 />
-                <FormField
+                <InputField
                     label="Last Name"
                     id="deadLastName"
                     placeholder="Doe"
@@ -90,14 +92,14 @@ export default function DeceasedInfoForm({ onSubmit }) {
 
             {/* Middle Name and Nickname */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
+                <InputField
                     label="Middle Name"
                     id="middleName"
                     placeholder="Middle"
                     value={formData.middleName}
                     onChange={handleChange}
                 />
-                <FormField
+                <InputField
                     label="Nick Name"
                     id="nickname"
                     placeholder="Johnny"
@@ -108,7 +110,7 @@ export default function DeceasedInfoForm({ onSubmit }) {
 
             {/* Dates */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
+                <InputField
                     label="Date of Birth"
                     id="dateOfBirth"
                     type="date"
@@ -116,7 +118,7 @@ export default function DeceasedInfoForm({ onSubmit }) {
                     onChange={handleChange}
                     required
                 />
-                <FormField
+                <InputField
                     label="Date of Death"
                     id="dateOfDeath"
                     type="date"
@@ -128,7 +130,7 @@ export default function DeceasedInfoForm({ onSubmit }) {
 
             {/* Country Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <FormField
+                <InputField
                     label="Country of Birth"
                     id="stateAndCountryLived"
                     placeholder="E.g USA"
@@ -136,7 +138,7 @@ export default function DeceasedInfoForm({ onSubmit }) {
                     onChange={handleChange}
                     required
                 />
-                <FormField
+                <InputField
                     label="Country of Death"
                     id="countryLivedIn"
                     placeholder="E.g Canada"
@@ -148,11 +150,10 @@ export default function DeceasedInfoForm({ onSubmit }) {
 
             {/* Relationship Dropdown */}
             <div className="w-full">
-                <Label htmlFor="relationshipWithBereaved">
-                    Relationship with bereaved
+                <Label htmlFor="relationshipWithBereaved" className="block mb-2 text-sm font-medium">
+                    Relationship with deceased
                 </Label>
                 <Select
-                    label="Relationship with bereaved"
                     onValueChange={(value) => handleChange("relationshipWithBereaved", value)}
                     value={formData.relationshipWithBereaved}
                 >
@@ -172,12 +173,13 @@ export default function DeceasedInfoForm({ onSubmit }) {
 
             {/* Memorial Website */}
             <div className="w-full">
-                <Label htmlFor="customMemorialWebsite">
+                <Label htmlFor="customMemorialWebsite" className="block mb-2 text-sm font-medium">
                     Custom memorial website
                 </Label>
                 <div className="relative">
                     <Input
                         id="customMemorialWebsite"
+                        name="customMemorialWebsite"
                         type="text"
                         placeholder="www.rememberedalways/tribute/johndoe"
                         value={customMemorialWebsite}

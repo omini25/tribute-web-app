@@ -1,6 +1,6 @@
 import EventCard from "@/components/tribute/themes/firstTheme/EventCard.jsx";
 
-export const Events = () => {
+export const Eventing = () => {
     return (
         <>
             <div className="max-w-6xl mx-auto p-6">

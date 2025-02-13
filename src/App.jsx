@@ -34,6 +34,13 @@ import {MinimalistTabTheme} from "@/components/tribute/MinimalistTabTheme.jsx";
 import TributeNavigation from "@/components/tribute/themes/firstTheme/TributeNavigation.jsx";
 import {Tribute} from "@/pages/tribute/Tribute.jsx";
 import Life from "@/pages/tribute/Life.jsx";
+import {Memories} from "@/pages/tribute/Memories.jsx";
+import {FamilyTree} from "@/pages/tribute/FamilyTree.jsx";
+import {Posts} from "@/pages/tribute/Posts.jsx";
+import {Conclusions} from "@/pages/tribute/Conclusions.jsx";
+import {Donation} from "@/pages/tribute/Donation.jsx";
+import {Gallerys} from "@/pages/tribute/Gallerys.jsx";
+import {Eventing} from "@/pages/tribute/Eventing.jsx";
 
 
 function App() {
@@ -63,7 +70,13 @@ function App() {
                 <Route path="/main-theme" element={<TributeNavigation />}>
                     <Route path="overview" element={<Tribute />} />
                     <Route path="life" element={<Life />} />
-
+                    <Route path="events" element={<Eventing />} />
+                    <Route path="memories" element={<Memories />} />
+                    <Route path="family-tree" element={<FamilyTree />} />
+                    <Route path="gallery" element={<Gallerys />} />
+                    <Route path="posts" element={<Posts />} />
+                    <Route path="donations" element={<Donation />} />
+                    <Route path="conclusions" element={<Conclusions />} />
                 </Route>
 
 

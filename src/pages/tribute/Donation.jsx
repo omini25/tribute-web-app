@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
-export const Donations = () => {
+export const Donation = () => {
     return (
         <div className="container mx-auto p-4 max-w-3xl">
             <Card className="mb-8">

@@ -1,7 +1,7 @@
 import { Card } from "@/components/ui/card"
 
 
-export const Gallery = () => {
+export const Gallerys = () => {
     // Create an array of 8 items for the grid
     const items = Array(8).fill(null)
 
