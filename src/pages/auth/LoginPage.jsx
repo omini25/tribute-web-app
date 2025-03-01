@@ -40,7 +40,7 @@ export const LoginPage = () => {
                     user: response.data.user,
                     token: response.data.access_token,
                 }));
-                navigate('/dashboard');
+                navigate('/dashboard/main');
                 toast.success('Login successful');
                 localStorage.setItem('user', JSON.stringify(response.data.user));
                 localStorage.setItem('token', response.data.access_token);

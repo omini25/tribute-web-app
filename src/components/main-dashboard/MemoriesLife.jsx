@@ -61,12 +61,16 @@ export default function MemoriesLife() {
                 setTributeData(response.data.data)
             }
         } catch (error) {
-            console.error("Error fetching tribute details:", error)
-            toast({
-                title: "Error",
-                description: "Failed to fetch tribute details. Please try again.",
-                variant: "destructive"
-            })
+            if (error.response && error.response.status === 404) {
+                console.warn("Resource not found, proceeding with default data.")
+            } else {
+                console.error("Error fetching tribute details:", error)
+                toast({
+                    title: "Error",
+                    description: "Failed to fetch tribute details. Please try again.",
+                    variant: "destructive"
+                })
+            }
         }
     }
 

@@ -68,13 +68,18 @@ export default function MemoriesEvents() {
         try {
             const response = await axios.get(`${server}/events/${id}`)
             setEvents(Array.isArray(response.data) ? response.data : [response.data])
-            setIsLoading(false)
         } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to load events. Please try again.",
-                variant: "destructive"
-            })
+            if (error.response && error.response.status === 404) {
+                console.warn("Resource not found, proceeding with default data.")
+                setEvents([])
+            } else {
+                toast({
+                    title: "Error",
+                    description: "Failed to load events. Please try again.",
+                    variant: "destructive"
+                })
+            }
+        } finally {
             setIsLoading(false)
         }
     }

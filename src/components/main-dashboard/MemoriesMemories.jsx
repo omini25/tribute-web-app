@@ -61,12 +61,24 @@ export default function MemoriesMemories() {
             const response = await axios.get(`${server}/tributes/memories/${id}`)
             setTribute(response.data)
         } catch (error) {
-            console.error("Error fetching tribute details:", error)
-            toast({
-                title: "Error",
-                description: "Failed to fetch tribute details. Please try again.",
-                variant: "destructive"
-            })
+            if (error.response && error.response.status === 404) {
+                console.warn("Resource not found, proceeding with default data.")
+                setTribute({
+                    event_private: false,
+                    memories: "",
+                    images: [],
+                    videos: [],
+                    audio: [],
+                    links: []
+                })
+            } else {
+                console.error("Error fetching tribute details:", error)
+                toast({
+                    title: "Error",
+                    description: "Failed to fetch tribute details. Please try again.",
+                    variant: "destructive"
+                })
+            }
         } finally {
             setIsLoading(false)
         }
@@ -269,13 +281,21 @@ export default function MemoriesMemories() {
                             </CardHeader>
                             <CardContent>
                                 <ScrollArea className="h-[200px]">
-                                    <ul className="list-disc list-inside space-y-2">
-                                        {JSON.parse(tribute.memories).map((memory, index) => (
-                                            <li key={index} className="text-warm-600">
-                                                {memory}
-                                            </li>
-                                        ))}
-                                    </ul>
+                                   <ul className="list-disc list-inside space-y-2">
+                                        {(() => {
+                                            try {
+                                                const memories = JSON.parse(tribute.memories);
+                                                return memories.map((memory, index) => (
+                                                    <li key={index} className="text-warm-600">
+                                                        {memory}
+                                                    </li>
+                                                ));
+                                            } catch (error) {
+                                                console.error("Error parsing memories:", error);
+                                                return null;
+                                            }
+                                        })()}
+                                   </ul>
                                 </ScrollArea>
                             </CardContent>
                         </Card>

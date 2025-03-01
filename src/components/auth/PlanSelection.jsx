@@ -11,10 +11,11 @@ import {
     CardHeader,
     CardTitle
 } from "@/components/ui/card"
-import { Check, X } from "lucide-react"
+import { Check, X, Eye } from "lucide-react"
 import Warm from "../../assets/Landing/images/2948b129-4e43-47d4-b0f5-2b4db8eec2e3.png"
 import Cool from "../../assets/Landing/images/8ffeac91-b6be-40e2-80e8-70b2c42e0a57.png"
 import Autumn from "../../assets/Landing/images/5e5bc4bb-31c3-4994-b66c-d53a887a3447.png"
+import ThemePreviewModal from "@/components/ThemePreviewModal"
 
 const plans = [
     {
@@ -69,14 +70,15 @@ const FeatureItem = ({ included, name }) => (
             <X className="min-w-[20px] w-5 h-5 text-red-500" />
         )}
         <span className={included ? "text-foreground" : "text-muted-foreground"}>
-            {name}
-        </span>
+      {name}
+    </span>
     </div>
 )
 
 export default function PlanSelection({ onSubmit }) {
     const [selectedPlan, setSelectedPlan] = useState(null)
     const [selectedTheme, setSelectedTheme] = useState(null)
+    const [previewTheme, setPreviewTheme] = useState(null)
 
     const handleSubmit = e => {
         e.preventDefault()
@@ -87,11 +89,20 @@ export default function PlanSelection({ onSubmit }) {
         onSubmit({ plan: selectedPlan, theme: selectedTheme })
     }
 
+    const handlePreview = theme => {
+        setPreviewTheme(theme)
+    }
+
     return (
-        <form onSubmit={handleSubmit} className="space-y-8 w-full max-w-6xl mx-auto px-4 py-6 sm:py-8">
+        <form
+            onSubmit={handleSubmit}
+            className="space-y-8 w-full max-w-6xl mx-auto px-4 py-6 sm:py-8"
+        >
             {/* Header Section */}
             <div className="text-center space-y-2">
-                <h2 className="text-2xl sm:text-3xl font-bold">Select Your Plan and Theme</h2>
+                <h2 className="text-2xl sm:text-3xl font-bold">
+                    Select Your Plan and Theme
+                </h2>
                 <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto">
                     Choose the perfect plan and theme to honor your loved one's memory.
                 </p>
@@ -121,9 +132,13 @@ export default function PlanSelection({ onSubmit }) {
                                     }`}
                                 >
                                     <CardHeader className="space-y-1">
-                                        <CardTitle className="text-lg sm:text-xl">{plan.name}</CardTitle>
+                                        <CardTitle className="text-lg sm:text-xl">
+                                            {plan.name}
+                                        </CardTitle>
                                         <CardDescription>
-                                            <span className="text-xl sm:text-2xl font-bold">{plan.price}</span>
+                      <span className="text-xl sm:text-2xl font-bold">
+                        {plan.price}
+                      </span>
                                         </CardDescription>
                                     </CardHeader>
                                     <CardContent className="space-y-3">
@@ -170,9 +185,21 @@ export default function PlanSelection({ onSubmit }) {
                                             />
                                             <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                                                 <span className="text-white text-lg font-semibold">
-                                                    {theme.name}
+                                                  {theme.name}
                                                 </span>
                                             </div>
+                                            <Button
+                                                variant="secondary"
+                                                size="sm"
+                                                className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                                onClick={e => {
+                                                    e.preventDefault()
+                                                    handlePreview(theme)
+                                                }}
+                                            >
+                                                <Eye className="w-4 h-4 mr-2" />
+                                                Preview
+                                            </Button>
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -188,6 +215,15 @@ export default function PlanSelection({ onSubmit }) {
                     Proceed to Payment
                 </Button>
             </div>
+
+            {/* Theme Preview Modal */}
+            {previewTheme && (
+                <ThemePreviewModal
+                    isOpen={!!previewTheme}
+                    onClose={() => setPreviewTheme(null)}
+                    theme={previewTheme}
+                />
+            )}
         </form>
     )
 }

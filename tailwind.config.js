@@ -6,6 +6,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
+	  container: {
+		  center: true,
+		  padding: "2rem",
+		  screens: {
+			  "2xl": "1400px",
+		  },
+	  },
   	extend: {
   		'pastel': {
   			'pink': '#FFB3BA',
@@ -25,6 +32,7 @@ export default {
 			'secondary': '#BFB313',
 			'tertiary': '#C7D2FE',
 			'quaternary': '#DBEAFE',
+			'alernatebg': '#f9fafb',
 
 		},
 		fontFamily: {
