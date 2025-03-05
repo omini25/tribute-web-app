@@ -130,18 +130,65 @@ export default function HomePage() {
 function HeroSection() {
     return (
         <section className="relative min-h-screen bg-[#f5f0ea]">
-            {/* Background with soft gradient overlay */}
-            <div
-                className="absolute inset-0 bg-center bg-cover"
-                style={{
-                    backgroundImage: "url('/images/soft-roses-bg.jpg')",
-                    opacity: 0.6
-                }}
-            />
+            {/* Animated cloud background - use multiple layers for parallax effect */}
+            <div className="absolute inset-0 overflow-hidden">
+                {/* Background cloud layer - slowest moving */}
+                <div className="absolute inset-0 bg-repeat-x animate-cloud-slow"
+                     style={{
+                         backgroundImage: "url('/images/cloud-bg-layer1.png')",
+                         backgroundPosition: "0 80%",
+                         backgroundSize: "1200px auto",
+                     }}
+                />
 
-            <div className="absolute inset-0 bg-gradient-to-r from-[#f5f0ea]/90 to-[#f5f0ea]/60 flex flex-col items-center justify-center text-center px-4">
+                {/* Middle cloud layer - medium speed */}
+                <div className="absolute inset-0 bg-repeat-x animate-cloud-medium"
+                     style={{
+                         backgroundImage: "url('/images/cloud-bg-layer2.png')",
+                         backgroundPosition: "0 60%",
+                         backgroundSize: "1000px auto",
+                         opacity: 0.7,
+                     }}
+                />
+
+                {/* Foreground cloud layer - fastest moving */}
+                <div className="absolute inset-0 bg-repeat-x animate-cloud-fast"
+                     style={{
+                         backgroundImage: "url('/images/cloud-bg-layer3.png')",
+                         backgroundPosition: "0 90%",
+                         backgroundSize: "800px auto",
+                         opacity: 0.5,
+                     }}
+                />
+
+                <style jsx="true">{`
+                    @keyframes cloud-move-slow {
+                        0% { background-position: 0% 80%; }
+                        100% { background-position: 1200px 80%; }
+                    }
+                    @keyframes cloud-move-medium {
+                        0% { background-position: 0% 60%; }
+                        100% { background-position: 1000px 60%; }
+                    }
+                    @keyframes cloud-move-fast {
+                        0% { background-position: 0% 90%; }
+                        100% { background-position: 800px 90%; }
+                    }
+                    .animate-cloud-slow {
+                        animation: cloud-move-slow 60s linear infinite;
+                    }
+                    .animate-cloud-medium {
+                        animation: cloud-move-medium 40s linear infinite;
+                    }
+                    .animate-cloud-fast {
+                        animation: cloud-move-fast 30s linear infinite;
+                    }
+                `}</style>
+            </div>
+
+            <div className="absolute inset-0 bg-gradient-to-r from-[#f5f0ea]/80 to-[#f5f0ea]/60 flex flex-col items-center justify-center text-center px-4">
                 <div className="max-w-4xl mx-auto space-y-8 relative">
-                    {/* ChartCandlestick Image */}
+                    {/* Candle flame */}
                     <div className="mb-6 flex justify-center">
                         <div className="w-40 h-40 flex items-center justify-center">
                             <div className="relative">
