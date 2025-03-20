@@ -28,8 +28,8 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
 		colors: {
-			'primary': '#125500',
-			'secondary': '#BFB313',
+			'primary': '#fcd34d',
+			'secondary': '#92400e',
 			'tertiary': '#C7D2FE',
 			'quaternary': '#DBEAFE',
 			'alernatebg': '#f9fafb',

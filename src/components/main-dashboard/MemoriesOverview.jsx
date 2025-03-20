@@ -109,7 +109,19 @@ export default function MemoriesOverview() {
             if (value !== null) formData.append(key, value)
         })
 
-        if (file) formData.append("image", file)
+        if (file) {
+            const validImageTypes = ["image/jpeg", "image/png", "image/jpg", "image/gif"]
+            if (!validImageTypes.includes(file.type)) {
+                toast({
+                    title: "Error",
+                    description: "Invalid image type. Please upload a jpeg, png, jpg, or gif file.",
+                    variant: "destructive"
+                })
+                setIsLoading(false)
+                return
+            }
+            formData.append("image", file)
+        }
 
         try {
             const response = await axios.post(
@@ -121,24 +133,17 @@ export default function MemoriesOverview() {
             )
 
             if (response.data.status === "success") {
-                toast({
-                    title: "Success",
-                    description: "Tribute updated successfully!"
-                })
+                toast.success("Tribute updated successfully")
             } else {
-                toast({
-                    title: "Error",
-                    description: "Failed to update tribute",
-                    variant: "destructive"
-                })
+                toast.error(response.data.message)
             }
         } catch (error) {
             console.error("Error updating tribute details:", error)
-            toast({
-                title: "Error",
-                description: "Failed to update tribute. Please try again.",
-                variant: "destructive"
-            })
+            // toast({
+            //     title: "Error",
+            //     description: "Failed to update tribute. Please try again.",
+            //     variant: "destructive"
+            // })
         } finally {
             setIsLoading(false)
         }

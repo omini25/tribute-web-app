@@ -15,7 +15,7 @@ export default function ContactPage() {
         <div className="flex min-h-screen flex-col bg-white">
             <Header />
             <main className="flex-1">
-                <HeroSection />
+                {/*<HeroSection />*/}
                 <ContactSection />
                 <MapSection />
                 <FAQSection />

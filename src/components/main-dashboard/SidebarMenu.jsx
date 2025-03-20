@@ -1,76 +1,136 @@
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { logout } from "@/redux/slices/authSlice";
-import { SidebarMenuItem } from "../SidebarMenuItem";
-import { UserProfile } from "../UserProfile";
+import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
+import { logout } from "@/redux/slices/authSlice"
+import { SidebarMenuItem } from "./SidebarMenuItem"
+import { UserProfile } from "./UserProfile"
 import {
     LayoutDashboard,
-    Image,
+    ImageIcon,
     Calendar,
     DollarSign,
     Settings,
     HelpCircle,
     LogOut,
-} from "lucide-react";
-import { Link } from "react-router-dom";
-import Logo from "../../assets/Remember-me-logo.png"
-
-
+    MessageSquare,
+    Users,
+    Home
+} from "lucide-react"
+import { Link } from "react-router-dom"
+import { CandlesBackground } from "../CandlesBackground.jsx"
+import { cn } from "@/lib/utils"
+import logo from "@/assets/Remember-me-logo.png"
 
 export function SidebarMenu({ isMobileMenuOpen, setIsMobileMenuOpen }) {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const userName = JSON.parse(localStorage.getItem("user"))?.name || "User";
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const userName = JSON.parse(localStorage.getItem("user"))?.name || "User"
 
     const menuItems = [
         { icon: LayoutDashboard, title: "Dashboard", href: "/dashboard/main" },
-        { icon: Image, title: "Gallery", href: "/dashboard/gallery" },
+        { icon: ImageIcon, title: "Gallery", href: "/dashboard/gallery" },
         { icon: Calendar, title: "Events", href: "/dashboard/events" },
+        { icon: MessageSquare, title: "Messages", href: "/dashboard/messages" },
+        { icon: Users, title: "Members", href: "/dashboard/users" },
         { icon: DollarSign, title: "Donations", href: "/dashboard/donations" },
         { icon: Settings, title: "Settings", href: "/dashboard/settings" },
-        { icon: HelpCircle, title: "Help Center", href: "/dashboard/help" },
-    ];
+        { icon: HelpCircle, title: "Help Center", href: "/dashboard/help" }
+    ]
 
     const handleLogout = () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("token");
-        dispatch(logout());
-        navigate("/");
-    };
+        localStorage.removeItem("user")
+        localStorage.removeItem("token")
+        dispatch(logout())
+        navigate("/")
+    }
 
     return (
-        <div className="flex h-full flex-col justify-between">
-            {/* Sidebar Header with Image */}
-            <div className="flex flex-col items-center">
-                <img
-                    src={Logo}
-                    alt="Logo"
-                    className="h-32 w-32 rounded-full"
-                />
-            </div>
+        <div className="relative flex h-full flex-col justify-between overflow-hidden bg-[#f8f4f0] text-gray-800">
+            {/* Candles Background */}
+            <CandlesBackground />
 
-            {/* Menu Items */}
-            <nav className="flex-1 space-y-1 px-2">
-                {menuItems.map((item) => (
-                    <Link to={item.href} key={item.href} onClick={() => setIsMobileMenuOpen(false)}>
-                        <SidebarMenuItem
-                            icon={item.icon}
-                            title={item.title}
+            <div className="relative z-10 flex flex-col h-full">
+                {/* Sidebar Header with Logo */}
+                <div className="flex flex-col items-center py-6 px-4">
+                    <div className="relative mb-2 overflow-hidden rounded-full border-4 border-amber-100 shadow-md">
+                        <img
+                            src={logo}
+                            alt="Remember Me Logo"
+                            className="h-24 w-16 "
                         />
-                    </Link>
-                ))}
-            </nav>
+                    </div>
+                    <h1 className="mt-2 text-xl font-bold text-amber-800">Remember Me</h1>
+                    <div className="mt-1 h-1 w-16 rounded-full bg-amber-300"></div>
+                </div>
 
-            {/* Logout Button and User Profile */}
-            <div className="border-t border-gray-700 px-2 py-4">
-                <SidebarMenuItem
-                    icon={LogOut}
-                    title="Log Out"
-                    onClick={handleLogout}
-                    className="text-red-400 hover:text-red-300"
-                />
-                <UserProfile name={userName} image="/placeholder.svg" className="mt-5 p-4" />
+                {/* Menu Items */}
+                <div className="scrollbar-thin scrollbar-thumb-amber-300 scrollbar-track-transparent flex-1 space-y-1 overflow-y-auto px-4 py-2">
+                    <div className="mb-4 px-2 text-xs font-semibold uppercase tracking-wider text-amber-700">
+                        Navigation
+                    </div>
+
+                    {menuItems.slice(0, 3).map(item => (
+                        <div className="list-none" key={item.href}>
+                            <Link
+                                to={item.href}
+                                onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}
+                            >
+                                <SidebarMenuItem icon={item.icon} title={item.title} className="p-0"/>
+                            </Link>
+                        </div>
+
+                    ))}
+
+                    <div className="my-4 px-2 text-xs font-semibold uppercase tracking-wider text-amber-700">
+                        Management
+                    </div>
+
+                    {menuItems.slice(3, 7).map(item => (
+                        <div className="list-none" key={item.href}>
+                            <Link
+                                to={item.href}
+                                onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}
+                            >
+                                <SidebarMenuItem icon={item.icon} title={item.title} className="p-0"/>
+                            </Link>
+                        </div>
+                    ))}
+
+                    <div className="my-4 px-2 text-xs font-semibold uppercase tracking-wider text-amber-700">
+                        Support
+                    </div>
+
+                    {menuItems.slice(7).map(item => (
+                        <div className="list-none" key={item.href}>
+                            <Link
+                                to={item.href}
+                                onClick={() => setIsMobileMenuOpen && setIsMobileMenuOpen(false)}
+                            >
+                                <SidebarMenuItem icon={item.icon} title={item.title} className="p-0"/>
+                            </Link>
+                        </div>
+                    ))}
+                </div>
+
+                {/* User Profile and Logout */}
+                <div className="relative border-t border-amber-200 bg-amber-50/50 backdrop-blur-sm">
+                    <UserProfile
+                        name={userName}
+                        image="/placeholder.svg"
+                        className="p-4"
+                    />
+
+                    <button
+                        onClick={handleLogout}
+                        className={cn(
+                            "flex w-full items-center gap-3 px-4 py-3 text-left text-sm transition-colors",
+                            "text-red-600 hover:bg-red-50 hover:text-red-700"
+                        )}
+                    >
+                        <LogOut className="h-5 w-5" />
+                        <span>Log Out</span>
+                    </button>
+                </div>
             </div>
         </div>
-    );
+    )
 }

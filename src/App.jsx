@@ -41,6 +41,7 @@ import {Conclusions} from "@/pages/tribute/Conclusions.jsx";
 import {Donation} from "@/pages/tribute/Donation.jsx";
 import {Gallerys} from "@/pages/tribute/Gallerys.jsx";
 import {Eventing} from "@/pages/tribute/Eventing.jsx";
+import MessagesPage from "@/pages/dashboard/MessagesPage.jsx";
 
 
 function App() {
@@ -63,8 +64,8 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/mordern" element={<ModernTheme />} />
-                <Route path="/theme-warm/:id/:title" element={<MinimalistTheme />} />
-                <Route path="/elegant/:id/:title" element={<ElegantTabTheme />} />
+                <Route path="/warm/:id/:title" element={<MinimalistTheme />} />
+                <Route path="/cool/:id/:title" element={<ElegantTabTheme />} />
                 <Route path="/minimal-tab" element={<MinimalistTabTheme />} />
 
                 <Route path="/main-theme" element={<TributeNavigation />}>
@@ -103,6 +104,7 @@ function App() {
                     <Route path="donations" element={<Donations />} />
                     <Route path="settings" element={<Settings />} />
                     <Route path="help" element={<HelpCenter />} />
+                    <Route path={"messages"} element={<MessagesPage />} />
 
                 </Route>
 

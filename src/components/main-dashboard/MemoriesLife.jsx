@@ -94,11 +94,31 @@ export default function MemoriesLife() {
         }))
     }
 
-    const removeFamilyMember = index => {
-        setTributeData(prev => ({
-            ...prev,
-            family: prev.family.filter((_, i) => i !== index)
-        }))
+    const removeFamilyMember = async index => {
+        const memberToRemove = tributeData.family[index]
+        setIsLoading(true)
+        try {
+            const response = await axios.post(`${server}/tributes/${id}/family/remove`, {
+                member: memberToRemove
+            })
+            if (response.data.status === "success") {
+                setTributeData(prev => ({
+                    ...prev,
+                    family: prev.family.filter((_, i) => i !== index)
+                }))
+                toast.success("Family member removed successfully, please save changes")
+
+                window.location.reload();
+            } else {
+                throw new Error("Failed to remove family member")
+            }
+        } catch (error) {
+            window.location.reload();
+            console.error("Error removing family member:", error)
+           toast.error("Failed to remove family member")
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const handleAddMilestone = () => {
@@ -111,11 +131,28 @@ export default function MemoriesLife() {
         }
     }
 
-    const handleRemoveMilestone = index => {
-        setTributeData(prev => ({
-            ...prev,
-            milestone: prev.milestone.filter((_, i) => i !== index)
-        }))
+    const handleRemoveMilestone = async index => {
+        const milestoneToRemove = tributeData.milestone[index]
+        setIsLoading(true)
+        try {
+            const response = await axios.post(`${server}/tributes/${id}/milestones/remove`, {
+                milestone: milestoneToRemove
+            })
+            if (response.data.status === "success") {
+                setTributeData(prev => ({
+                    ...prev,
+                    milestone: prev.milestone.filter((_, i) => i !== index)
+                }))
+                window.location.reload();
+            } else {
+                throw new Error("Failed to remove milestone")
+            }
+        } catch (error) {
+            console.error("Error removing milestone:", error)
+            window.location.reload();
+        } finally {
+            setIsLoading(false)
+        }
     }
 
     const handleSubmit = async () => {
@@ -126,20 +163,13 @@ export default function MemoriesLife() {
                 tributeData
             )
             if (response.data.status === "success") {
-                toast({
-                    title: "Success",
-                    description: "Tribute details updated successfully!"
-                })
+               toast.success("Tribute details updated successfully")
             } else {
                 throw new Error("Failed to update tribute details")
             }
         } catch (error) {
             console.error("Error updating tribute details:", error)
-            toast({
-                title: "Error",
-                description: "Failed to update tribute details. Please try again.",
-                variant: "destructive"
-            })
+            toast.error("Failed to update tribute details")
         } finally {
             setIsLoading(false)
         }

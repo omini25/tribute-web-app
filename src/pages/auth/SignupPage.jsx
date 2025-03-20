@@ -1,5 +1,3 @@
-"use client"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -57,7 +55,8 @@ export const SignupPage = () => {
             ...formData.deceased,
             ...formData.user,
             plan: data.plan,
-            theme: data.theme
+            theme: data.theme,
+            amount: data.amount,
         }
 
         try {
@@ -99,7 +98,7 @@ export const SignupPage = () => {
                     prevStep={prevStep}
                     handleFinalSubmit={handleFinalSubmit}
                 />
-                {/*<SupportSection />*/}
+                <SupportSection />
             </main>
             {/*<Footer />*/}
         </div>
@@ -259,40 +258,40 @@ function FormSection({ step, steps, formData, updateFormData, nextStep, prevStep
                                     Previous
                                 </Button>
                             )}
-                            {step < 3 && step === 1 && (
-                                <Button
-                                    onClick={() => {
-                                        if (!formData.deceased.dateOfBirth ||
-                                            !formData.deceased.dateOfDeath) {
-                                            toast.error("Please fill all required fields in the Deceased Information form.")
-                                            return
-                                        }
-                                        nextStep()
-                                    }}
-                                    className="ml-auto bg-[#786f66] hover:bg-[#645a52] text-white"
-                                >
-                                    Next
-                                </Button>
-                            )}
-                            {step < 3 && step === 2 && (
-                                <Button
-                                    onClick={() => {
-                                        if (!formData.user.firstName ||
-                                            !formData.user.lastName ||
-                                            !formData.user.email ||
-                                            !formData.user.phone ||
-                                            !formData.user.password ||
-                                            !formData.user.confirmPassword) {
-                                            toast.error("Please fill all required fields in the User Information form.")
-                                            return
-                                        }
-                                        nextStep()
-                                    }}
-                                    className="ml-auto bg-[#786f66] hover:bg-[#645a52] text-white"
-                                >
-                                    Next
-                                </Button>
-                            )}
+                            {/*{step < 3 && step === 1 && (*/}
+                            {/*    <Button*/}
+                            {/*        onClick={() => {*/}
+                            {/*            if (!formData.deceased.dateOfBirth ||*/}
+                            {/*                !formData.deceased.dateOfDeath) {*/}
+                            {/*                toast.error("Please fill all required fields in the Deceased Information form.")*/}
+                            {/*                return*/}
+                            {/*            }*/}
+                            {/*            nextStep()*/}
+                            {/*        }}*/}
+                            {/*        className="ml-auto bg-[#786f66] hover:bg-[#645a52] text-white"*/}
+                            {/*    >*/}
+                            {/*        Next*/}
+                            {/*    </Button>*/}
+                            {/*)}*/}
+                            {/*{step < 3 && step === 2 && (*/}
+                            {/*    <Button*/}
+                            {/*        onClick={() => {*/}
+                            {/*            if (!formData.user.firstName ||*/}
+                            {/*                !formData.user.lastName ||*/}
+                            {/*                !formData.user.email ||*/}
+                            {/*                !formData.user.phone ||*/}
+                            {/*                !formData.user.password ||*/}
+                            {/*                !formData.user.confirmPassword) {*/}
+                            {/*                toast.error("Please fill all required fields in the User Information form.")*/}
+                            {/*                return*/}
+                            {/*            }*/}
+                            {/*            nextStep()*/}
+                            {/*        }}*/}
+                            {/*        className="ml-auto bg-[#786f66] hover:bg-[#645a52] text-white"*/}
+                            {/*    >*/}
+                            {/*        Next*/}
+                            {/*    </Button>*/}
+                            {/*)}*/}
                         </div>
                     </CardContent>
                 </Card>

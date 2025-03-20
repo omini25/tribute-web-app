@@ -123,7 +123,7 @@ export default function PricingPage() {
         <div className="flex min-h-screen flex-col bg-white">
             <Header />
             <main className="flex-1">
-                <HeroSection />
+                {/*<HeroSection />*/}
                 <PricingSection />
                 <ComparisonSection />
                 <CallToActionSection />

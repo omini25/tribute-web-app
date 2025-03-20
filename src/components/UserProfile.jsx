@@ -1,14 +1,22 @@
-export function UserProfile({ name, image }) {
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { cn } from "@/lib/utils"
+
+export function UserProfile({ name, image, className }) {
     return (
-        <div className="flex items-center space-x-3">
-            {/*<img*/}
-            {/*    className="h-10 w-10 rounded-full"*/}
-            {/*    src={image || "/placeholder.svg"}*/}
-            {/*    alt={`${name}'s profile`}*/}
-            {/*/>*/}
+        <div className={cn("flex items-center gap-3 p-3", className)}>
+            <Avatar className="h-10 w-10 border-2 border-amber-200">
+                <AvatarImage src={image} alt={name} />
+                <AvatarFallback className="bg-amber-200 text-amber-800">
+                    {name
+                        .split(" ")
+                        .map(n => n[0])
+                        .join("")
+                        .toUpperCase()}
+                </AvatarFallback>
+            </Avatar>
             <div>
-                <p className="text-sm font-medium text-white">{name}</p>
-                {/*<p className="text-xs text-gray-400">View profile</p>*/}
+                <p className="font-medium text-amber-900">{name}</p>
+                <p className="text-xs text-amber-700/70">Memorial Admin</p>
             </div>
         </div>
     )

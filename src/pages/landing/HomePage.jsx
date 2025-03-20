@@ -1,5 +1,3 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { Button } from "@/components/ui/button"
@@ -365,11 +363,7 @@ function MemorialCard({ memorial }) {
                     {memorial.quote}
                 </p>
                 <Link
-                    to={
-                        memorial.theme === "Warm"
-                            ? `/elegant/${memorial.id}/${memorial.title}`
-                            : "#"
-                    }
+                    to={`${memorial.theme}/${memorial.id}/${memorial.title}`}
                 >
                     <Button className="w-full bg-[#786f66] hover:bg-[#645a52] text-white">
                         View Memorial

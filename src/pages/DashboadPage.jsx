@@ -49,68 +49,64 @@ export default function DashboardPage() {
     }
 
     return (
-        <div>
-            <div className="container mx-auto px-4 py-8">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="text-3xl font-bold text-warm-800">
-                            Dashboard
-                        </CardTitle>
-                        <CardDescription className="text-warm-600">
-                            Welcome to your personal dashboard
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Tabs defaultValue="tributes" className="space-y-6">
-                            <TabsList>
-                                <TabsTrigger value="tributes">Tributes</TabsTrigger>
-                                <TabsTrigger value="posts">Recent Posts</TabsTrigger>
-                            </TabsList>
+        <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8">
+            <CardHeader className="p-0">
+                <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
+                    Dashboard
+                </CardTitle>
+                <CardDescription className="text-warm-600">
+                    Welcome to your personal dashboard
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="p-0">
+                <Tabs defaultValue="tributes" className="space-y-6">
+                    <TabsList className="flex flex-wrap gap-2">
+                        <TabsTrigger value="tributes">Tributes</TabsTrigger>
+                        <TabsTrigger value="posts">Recent Posts</TabsTrigger>
+                    </TabsList>
 
-                            <TabsContent value="tributes" className="space-y-6">
-                                <div className="flex gap-4 overflow-x-auto pb-4">
-                                    <TributeCard variant="dashed" />
-                                    <TributeCard />
+                    <TabsContent value="tributes" className="space-y-6">
+                        <div className="flex flex-col sm:flex-row gap-4 overflow-x-auto pb-4">
+                            <TributeCard variant="dashed" />
+                            <TributeCard />
+                            {/* Add more TributeCard components here if needed */}
+                        </div>
+                    </TabsContent>
 
-                                </div>
-                            </TabsContent>
-
-                            <TabsContent value="posts">
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="text-2xl font-semibold text-warm-700">
-                                            Recent Posts
-                                        </CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        {loading ? (
-                                            <div className="flex justify-center items-center h-64">
-                                                <Loader2 className="h-8 w-8 animate-spin text-warm-500" />
-                                            </div>
-                                        ) : posts.length > 0 ? (
-                                            <ScrollArea className="h-[400px] pr-4">
-                                                <div className="space-y-4">
-                                                    {posts.map(post => (
-                                                        <Post
-                                                            key={post.id}
-                                                            name={post.name}
-                                                            time={post.time}
-                                                            content={post.content}
-                                                            likes={post.likes}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </ScrollArea>
-                                        ) : (
-                                            <p className="text-center text-warm-600">No posts yet.</p>
-                                        )}
-                                    </CardContent>
-                                </Card>
-                            </TabsContent>
-                        </Tabs>
-                    </CardContent>
-                </Card>
-            </div>
+                    <TabsContent value="posts">
+                        <Card>
+                            <CardHeader className="p-0">
+                                <CardTitle className="text-xl font-semibold text-warm-700 sm:text-2xl">
+                                    Recent Posts
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="p-0">
+                                {loading ? (
+                                    <div className="flex justify-center items-center h-64">
+                                        <Loader2 className="h-8 w-8 animate-spin text-warm-500" />
+                                    </div>
+                                ) : posts.length > 0 ? (
+                                    <ScrollArea className="h-[400px] pr-4">
+                                        <div className="space-y-4">
+                                            {posts.map(post => (
+                                                <Post
+                                                    key={post.id}
+                                                    name={post.name}
+                                                    time={post.time}
+                                                    content={post.content}
+                                                    likes={post.likes}
+                                                />
+                                            ))}
+                                        </div>
+                                    </ScrollArea>
+                                ) : (
+                                    <p className="text-center text-warm-600">No posts yet.</p>
+                                )}
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                </Tabs>
+            </CardContent>
         </div>
     )
 }

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
-import { DashboardLayout } from "@/components/main-dashboard/DashboardLayout"
 import { server } from "@/server.js"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -13,9 +12,10 @@ import {
     TableHeader,
     TableRow
 } from "@/components/ui/table"
-import { DollarSign, Calendar, Search, Download } from "lucide-react"
+import { DollarSign, Search, Download } from "lucide-react"
 import { format } from "date-fns"
 import { Dialog, DialogContent, DialogOverlay } from "@/components/ui/dialog"
+import Decimal from "decimal.js";
 
 export default function DonationsAndPayments() {
     const [donations, setDonations] = useState([])
@@ -23,14 +23,11 @@ export default function DonationsAndPayments() {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
     const [searchTerm, setSearchTerm] = useState("")
-
-    const user = localStorage.getItem("user")
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     useEffect(() => {
         fetchData()
     }, [])
-
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleRequestRedrawClick = () => {
         setIsModalOpen(true);
@@ -64,8 +61,6 @@ export default function DonationsAndPayments() {
         }
     };
 
-    console.log(donations, payments)
-
     const filteredDonations = donations.filter(
         donation =>
             donation.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -78,15 +73,13 @@ export default function DonationsAndPayments() {
             (payment.email && payment.email.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
-    const totalDonations = filteredDonations.reduce(
-        (sum, donation) => sum + donation.amount,
-        0
-    )
+    const totalDonations = filteredDonations.reduce((sum, donation) => {
+        return sum.plus(new Decimal(donation.amount));
+    }, new Decimal(0));
 
-    const totalPayments = filteredPayments.reduce(
-        (sum, payment) => sum + payment.amount,
-        0
-    )
+    const totalPayments = filteredPayments.reduce((sum, payment) => {
+        return sum.plus(new Decimal(payment.amount));
+    }, new Decimal(0));
 
     return (
         <div>
@@ -110,7 +103,7 @@ export default function DonationsAndPayments() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">
-                                ${Number(totalDonations).toFixed(2)}
+                                ${totalDonations.toFixed(2)}
                             </div>
                             <p className="text-xs text-warm-500">
                                 {filteredDonations.length} donations
@@ -126,7 +119,7 @@ export default function DonationsAndPayments() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">
-                                ${Number(totalPayments).toFixed(2)}
+                                ${totalPayments.toFixed(2)}
                             </div>
                             <p className="text-xs text-warm-500">
                                 {filteredPayments.length} payments
@@ -142,7 +135,7 @@ export default function DonationsAndPayments() {
                         </CardHeader>
                         <CardContent>
                             <div className="text-2xl font-bold">
-                                ${Number(totalDonations).toFixed(2)}
+                                ${totalDonations.toFixed(2)}
                             </div>
                             <p className="text-xs text-warm-500">
                                 From {filteredDonations.length} donations

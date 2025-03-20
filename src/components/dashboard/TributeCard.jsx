@@ -16,7 +16,6 @@ export function TributeCard({ variant = "solid", onClick }) {
    useEffect(() => {
        axios.get(`${server}/tribute/title/image/${user.id}`)
            .then(response => {
-               console.log(response);
                const tributes = response.data; // Get all tributes from the array
                setTributes(tributes); // Assuming you have a state to store all tributes
            })
