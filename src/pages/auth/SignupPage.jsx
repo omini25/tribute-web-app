@@ -11,19 +11,30 @@ import { toast } from "react-hot-toast"
 import { server } from "@/server.js"
 import axios from "axios"
 import { Check } from "lucide-react"
+import { AuthHeader } from "@/components/auth/AuthHeader.jsx";
+import { AuthFooter } from "@/components/auth/AuthFooter.jsx"
 
 export const SignupPage = () => {
     const [step, setStep] = useState(1)
-    const [formData, setFormData] = useState({
-        deceased: {},
-        user: {},
-        plan: null,
-        theme: null
-    })
+    const [formData, setFormData] = useState(() => {
+        // Try to get saved form data from localStorage
+        const savedData = localStorage.getItem('signupFormData');
+        return savedData ? JSON.parse(savedData) : {
+            deceased: {},
+            user: {},
+            plan: null,
+            theme: null
+        };
+    });
 
     const updateFormData = (section, data) => {
-        setFormData(prev => ({ ...prev, [section]: { ...prev[section], ...data } }))
-    }
+        setFormData(prev => {
+            const newData = { ...prev, [section]: { ...prev[section], ...data } };
+            // Save to localStorage whenever form data updates
+            localStorage.setItem('signupFormData', JSON.stringify(newData));
+            return newData;
+        });
+    };
 
     const nextStep = () => {
         if (step === 1 && (
@@ -50,33 +61,34 @@ export const SignupPage = () => {
     const prevStep = () => setStep(prev => Math.max(prev - 1, 1))
 
     const handleFinalSubmit = async (data) => {
-        updateFormData("plan", data)
+        updateFormData("plan", data);
         const payload = {
             ...formData.deceased,
             ...formData.user,
             plan: data.plan,
             theme: data.theme,
             amount: data.amount,
-        }
+        };
 
         try {
             const response = await axios.post(`${server}/register`, payload, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-            })
+            });
 
             if (response.status === 200) {
-                window.location.href = response.data.redirect_url // Redirect to Paystack payment page
+                // Clear form data from localStorage on successful submission
+                localStorage.removeItem('signupFormData');
+                window.location.href = response.data.redirect_url;
             } else {
-                toast.error(response.data.message || "An error occurred during signup.")
-                console.error("Error during signup:", response.data)
+                toast.error(response.data.message || "An error occurred during signup.");
             }
         } catch (error) {
-            toast.error("An error occurred during signup.")
-            console.error("Error during signup:", error)
+            toast.error("An error occurred during signup.");
+            console.error("Error during signup:", error);
         }
-    }
+    };
 
     const steps = [
         { name: "Deceased Information", description: "Enter details about your loved one" },
@@ -86,7 +98,7 @@ export const SignupPage = () => {
 
     return (
         <div className="flex min-h-screen flex-col bg-white">
-            <Header />
+            <AuthHeader />
             <main className="flex-1">
                 {/*<HeroSection />*/}
                 <FormSection
@@ -100,7 +112,7 @@ export const SignupPage = () => {
                 />
                 <SupportSection />
             </main>
-            {/*<Footer />*/}
+            <AuthFooter />
         </div>
     )
 }

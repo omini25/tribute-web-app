@@ -3,7 +3,7 @@ import axios from "axios"
 import { server } from "@/server.js"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {
     Table,
     TableBody,
@@ -83,162 +83,174 @@ export default function DonationsAndPayments() {
 
     return (
         <div>
-            <div className="container mx-auto px-4 py-8">
-                <div className="flex justify-between items-center mb-8">
-                    <h1 className="text-3xl font-bold text-warm-800">Donations & Payments</h1>
+            <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8">
+
+                <CardHeader className="p-0">
+                    <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
+                        Donations & Payments
+                    </CardTitle>
+                    <CardDescription className="text-warm-600">
+                        Manage your donations and payments here.
+                    </CardDescription>
+
                     <Button className="bg-warm-500 hover:bg-warm-600" onClick={handleRequestRedrawClick}>
                         <Download className="mr-2 h-4 w-4" /> Request Redraw
                     </Button>
 
                     <RequestRedrawModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-                </div>
+                </CardHeader>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Total Donations
-                            </CardTitle>
-                            <DollarSign className="h-4 w-4 text-warm-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">
-                                ${totalDonations.toFixed(2)}
-                            </div>
-                            <p className="text-xs text-warm-500">
-                                {filteredDonations.length} donations
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Total Payments
-                            </CardTitle>
-                            <DollarSign className="h-4 w-4 text-warm-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">
-                                ${totalPayments.toFixed(2)}
-                            </div>
-                            <p className="text-xs text-warm-500">
-                                {filteredPayments.length} payments
-                            </p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">
-                                Available For Withdrawal
-                            </CardTitle>
-                            <DollarSign className="h-4 w-4 text-warm-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">
-                                ${totalDonations.toFixed(2)}
-                            </div>
-                            <p className="text-xs text-warm-500">
-                                From {filteredDonations.length} donations
-                            </p>
-                        </CardContent>
-                    </Card>
-                </div>
 
-                <Card className="mb-8">
-                    <CardContent className="pt-6">
-                        <div className="mb-4 flex items-center">
-                            <Search className="mr-2 h-4 w-4 text-warm-400" />
-                            <Input
-                                type="text"
-                                placeholder="Search by name or email..."
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                                className="flex-grow"
-                            />
-                        </div>
 
-                        {isLoading && (
-                            <div className="text-center py-10">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-warm-500 mx-auto"></div>
-                                <p className="mt-4 text-warm-600">Loading data...</p>
+                <CardContent className="p-0">
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">
+                                    Total Donations
+                                </CardTitle>
+                                <DollarSign className="h-4 w-4 text-warm-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">
+                                    ${totalDonations.toFixed(2)}
+                                </div>
+                                <p className="text-xs text-warm-500">
+                                    {filteredDonations.length} donations
+                                </p>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">
+                                    Total Payments
+                                </CardTitle>
+                                <DollarSign className="h-4 w-4 text-warm-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">
+                                    ${totalPayments.toFixed(2)}
+                                </div>
+                                <p className="text-xs text-warm-500">
+                                    {filteredPayments.length} payments
+                                </p>
+                            </CardContent>
+                        </Card>
+                        <Card>
+                            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                <CardTitle className="text-sm font-medium">
+                                    Available For Withdrawal
+                                </CardTitle>
+                                <DollarSign className="h-4 w-4 text-warm-500" />
+                            </CardHeader>
+                            <CardContent>
+                                <div className="text-2xl font-bold">
+                                    ${totalDonations.toFixed(2)}
+                                </div>
+                                <p className="text-xs text-warm-500">
+                                    From {filteredDonations.length} donations
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <Card className="mb-8">
+                        <CardContent className="pt-6">
+                            <div className="mb-4 flex items-center">
+                                <Search className="mr-2 h-4 w-4 text-warm-400" />
+                                <Input
+                                    type="text"
+                                    placeholder="Search by name or email..."
+                                    value={searchTerm}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                    className="flex-grow"
+                                />
                             </div>
-                        )}
 
-                        {error && (
-                            <div className="text-center py-10">
-                                <p className="text-red-500">{error}</p>
-                                <Button
-                                    onClick={fetchData}
-                                    className="mt-4 bg-warm-500 hover:bg-warm-600 text-white"
-                                >
-                                    Try Again
-                                </Button>
-                            </div>
-                        )}
+                            {isLoading && (
+                                <div className="text-center py-10">
+                                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-warm-500 mx-auto"></div>
+                                    <p className="mt-4 text-warm-600">Loading data...</p>
+                                </div>
+                            )}
 
-                        {!isLoading && !error && (
-                            <>
-                                <h2 className="text-xl font-bold mb-4">Donations</h2>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Email</TableHead>
-                                            <TableHead>Amount</TableHead>
-                                            <TableHead>Date</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {filteredDonations.map(donation => (
-                                            <TableRow key={donation.id}>
-                                                <TableCell className="font-medium">
-                                                    {donation.name}
-                                                </TableCell>
-                                                <TableCell>{donation.email}</TableCell>
-                                                <TableCell>${Number(donation.amount).toFixed(2)}</TableCell>
-                                                <TableCell>
-                                                    {format(new Date(donation.created_at), "MMM d, yyyy")}
-                                                </TableCell>
+                            {error && (
+                                <div className="text-center py-10">
+                                    <p className="text-red-500">{error}</p>
+                                    <Button
+                                        onClick={fetchData}
+                                        className="mt-4 bg-warm-500 hover:bg-warm-600 text-white"
+                                    >
+                                        Try Again
+                                    </Button>
+                                </div>
+                            )}
+
+                            {!isLoading && !error && (
+                                <>
+                                    <h2 className="text-xl font-bold mb-4">Donations</h2>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Name</TableHead>
+                                                <TableHead>Email</TableHead>
+                                                <TableHead>Amount</TableHead>
+                                                <TableHead>Date</TableHead>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {filteredDonations.map(donation => (
+                                                <TableRow key={donation.id}>
+                                                    <TableCell className="font-medium">
+                                                        {donation.name}
+                                                    </TableCell>
+                                                    <TableCell>{donation.email}</TableCell>
+                                                    <TableCell>${Number(donation.amount).toFixed(2)}</TableCell>
+                                                    <TableCell>
+                                                        {format(new Date(donation.created_at), "MMM d, yyyy")}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
 
-                                <h2 className="text-xl font-bold mb-4 mt-8">Payments</h2>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            {/*<TableHead>Name</TableHead>*/}
-                                            <TableHead>Email</TableHead>
-                                            <TableHead>Amount</TableHead>
-                                            <TableHead>Date</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {filteredPayments.map(payment => (
-                                            <TableRow key={payment.id}>
-                                                {/*<TableCell className="font-medium">*/}
-                                                {/*    {payment.name}*/}
-                                                {/*</TableCell>*/}
-                                                <TableCell>{payment.email}</TableCell>
-                                                <TableCell>${Number(payment.amount).toFixed(2)}</TableCell>
-                                                <TableCell>
-                                                    {format(new Date(payment.created_at), "MMM d, yyyy")}
-                                                </TableCell>
+                                    <h2 className="text-xl font-bold mb-4 mt-8">Payments</h2>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                {/*<TableHead>Name</TableHead>*/}
+                                                <TableHead>Email</TableHead>
+                                                <TableHead>Amount</TableHead>
+                                                <TableHead>Date</TableHead>
                                             </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </>
-                        )}
+                                        </TableHeader>
+                                        <TableBody>
+                                            {filteredPayments.map(payment => (
+                                                <TableRow key={payment.id}>
+                                                    {/*<TableCell className="font-medium">*/}
+                                                    {/*    {payment.name}*/}
+                                                    {/*</TableCell>*/}
+                                                    <TableCell>{payment.email}</TableCell>
+                                                    <TableCell>${Number(payment.amount).toFixed(2)}</TableCell>
+                                                    <TableCell>
+                                                        {format(new Date(payment.created_at), "MMM d, yyyy")}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </>
+                            )}
 
-                        {!isLoading && !error && filteredDonations.length === 0 && filteredPayments.length === 0 && (
-                            <div className="text-center py-10">
-                                <p className="text-warm-600">No donations or payments found.</p>
-                            </div>
-                        )}
-                    </CardContent>
-                </Card>
+                            {!isLoading && !error && filteredDonations.length === 0 && filteredPayments.length === 0 && (
+                                <div className="text-center py-10">
+                                    <p className="text-warm-600">No donations or payments found.</p>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </CardContent>
             </div>
         </div>
     )

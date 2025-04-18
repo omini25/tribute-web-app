@@ -42,6 +42,7 @@ import {Donation} from "@/pages/tribute/Donation.jsx";
 import {Gallerys} from "@/pages/tribute/Gallerys.jsx";
 import {Eventing} from "@/pages/tribute/Eventing.jsx";
 import MessagesPage from "@/pages/dashboard/MessagesPage.jsx";
+import PasswordResetPage from "@/pages/auth/PasswordResetPage.jsx"
 
 
 function App() {
@@ -61,8 +62,11 @@ function App() {
                 <Route path="/pricing" element={<PricingPage />} />
                 <Route path="/features" element={<FeaturesPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/forgot-password" element={<PasswordResetPage />} />
+
                 <Route path="/mordern" element={<ModernTheme />} />
                 <Route path="/warm/:id/:title" element={<MinimalistTheme />} />
                 <Route path="/cool/:id/:title" element={<ElegantTabTheme />} />

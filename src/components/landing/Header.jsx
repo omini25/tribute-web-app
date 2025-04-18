@@ -16,6 +16,22 @@ const navigation = [
 
 export default function Header() {
     const [isScrolled, setIsScrolled] = useState(false)
+    const [isLoggedIn, setIsLoggedIn] = useState(() => {
+        // Check for user data in localStorage
+        const user = localStorage.getItem('user');
+        return !!user; // Returns true if user exists, false otherwise
+    });
+
+    useEffect(() => {
+        // Update isLoggedIn state when localStorage changes
+        const handleStorageChange = () => {
+            const user = localStorage.getItem('user');
+            setIsLoggedIn(!!user);
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        return () => window.removeEventListener('storage', handleStorageChange);
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -82,13 +98,22 @@ export default function Header() {
                                 </div>
                             </div>
                         </form>
+                        {/* Desktop navigation */}
                         <div className="hidden sm:flex sm:items-center sm:space-x-2">
-                            <Button variant="ghost" asChild>
-                                <Link to="/login" >Log in</Link>
-                            </Button>
-                            <Button asChild>
-                                <Link to="/signup" className="text-white">Get Started</Link>
-                            </Button>
+                            {isLoggedIn ? (
+                                <Button asChild>
+                                    <Link to="/dashboard/main" className="text-white">Dashboard</Link>
+                                </Button>
+                            ) : (
+                                <>
+                                    <Button variant="ghost" asChild>
+                                        <Link to="/login">Log in</Link>
+                                    </Button>
+                                    <Button asChild>
+                                        <Link to="/signup" className="text-white">Get Started</Link>
+                                    </Button>
+                                </>
+                            )}
                         </div>
                         <Sheet>
                             <SheetTrigger asChild>
@@ -115,13 +140,23 @@ export default function Header() {
                                             className="w-full"
                                         />
                                     </form>
+
+                                    {/* Mobile navigation in SheetContent */}
                                     <div className="flex flex-col space-y-2 mt-4">
-                                        <Button variant="ghost" asChild>
-                                            <Link to="/login">Log in</Link>
-                                        </Button>
-                                        <Button asChild>
-                                            <Link to="/signup" className="text-white">Get Started</Link>
-                                        </Button>
+                                        {isLoggedIn ? (
+                                            <Button asChild>
+                                                <Link to="/dashboard/main" className="text-white">Dashboard</Link>
+                                            </Button>
+                                        ) : (
+                                            <>
+                                                <Button variant="ghost" asChild>
+                                                    <Link to="/login">Log in</Link>
+                                                </Button>
+                                                <Button asChild>
+                                                    <Link to="/signup" className="text-white">Get Started</Link>
+                                                </Button>
+                                            </>
+                                        )}
                                     </div>
                                 </nav>
                             </SheetContent>

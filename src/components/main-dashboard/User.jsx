@@ -5,6 +5,7 @@ import { AddUserModal } from "@/components/main-dashboard/teams/AddUserModal.jsx
 import { Button } from "@/components/ui/button"
 import { UserPlus } from "lucide-react"
 import {server} from "@/server.js"
+import {CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.jsx";
 
 export default function UsersPage() {
     const [users, setUsers] = useState([])
@@ -41,9 +42,15 @@ export default function UsersPage() {
     }
 
     return (
-        <>
-            <div className="flex items-center justify-between mb-6 container mx-auto px-4 py-6 sm:px-6 sm:py-8">
-                <h1 className="text-2xl font-bold">Tribute Users</h1>
+        <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8">
+
+            <CardHeader className="p-0">
+                <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
+                    Members
+                </CardTitle>
+                <CardDescription className="text-warm-600">
+                    Manage your team members and their roles
+                </CardDescription>
                 <Button
                     onClick={() => setIsAddUserModalOpen(true)}
                     className="bg-primary hover:bg-primary/90"
@@ -51,15 +58,17 @@ export default function UsersPage() {
                     <UserPlus className="mr-2 h-4 w-4" />
                     Add User
                 </Button>
-            </div>
+            </CardHeader>
 
-            <UsersTable users={users} onAddUser={() => setIsAddUserModalOpen(true)} />
+            <CardContent className="p-0">
+                <UsersTable users={users} onAddUser={() => setIsAddUserModalOpen(true)} />
 
-            <AddUserModal
-                isOpen={isAddUserModalOpen}
-                onClose={() => setIsAddUserModalOpen(false)}
-                onAddUser={handleAddUser}
-            />
-        </>
+                <AddUserModal
+                    isOpen={isAddUserModalOpen}
+                    onClose={() => setIsAddUserModalOpen(false)}
+                    onAddUser={handleAddUser}
+                />
+            </CardContent>
+        </div>
     )
 }

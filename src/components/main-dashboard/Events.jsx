@@ -11,7 +11,7 @@ import {
     CardContent,
     CardHeader,
     CardTitle,
-    CardFooter
+    CardFooter, CardDescription
 } from "@/components/ui/card"
 import {
     Calendar,
@@ -178,17 +178,23 @@ export default function Events() {
     return (
         <>
 
-                <div className="container mx-auto px-4 py-8">
-                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                        <h1 className="text-3xl font-bold">Memorial Events</h1>
-                        <Button
-                            onClick={() => setIsCreateModalOpen(true)}
-                            className="bg-primary hover:bg-primary/90"
-                        >
-                            <Plus className="mr-2 h-4 w-4" /> Create Event
-                        </Button>
-                    </div>
+            <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8">
+                <CardHeader className="p-0">
+                    <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
+                        Memorial Events
+                    </CardTitle>
+                    <CardDescription className="text-warm-600">
+                        Memorial events are a way to celebrate and remember the life of a loved one. You can create, view, and manage events here.
+                    </CardDescription>
 
+                    <Button
+                        onClick={() => setIsCreateModalOpen(true)}
+                        className="bg-primary hover:bg-primary/90"
+                    >
+                        <Plus className="mr-2 h-4 w-4" /> Create Event
+                    </Button>
+                </CardHeader>
+                <CardContent className="p-0">
                     <div className="mb-8">
                         <Tabs defaultValue="all" className="w-full">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
@@ -280,8 +286,8 @@ export default function Events() {
                                     <ChevronLeft className="h-4 w-4" />
                                 </Button>
                                 <span className="text-sm">
-                Page {currentPage} of {totalPages}
-              </span>
+                                    Page {currentPage} of {totalPages}
+                                  </span>
                                 <Button
                                     variant="outline"
                                     size="icon"
@@ -315,9 +321,8 @@ export default function Events() {
                         onClose={() => setIsCreateModalOpen(false)}
                         onSubmit={handleCreateEvent}
                     />
-                </div>
-
-
+                </CardContent>
+            </div>
         </>
     )
 

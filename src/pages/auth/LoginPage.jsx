@@ -14,6 +14,8 @@ import { loginSuccess } from "@/redux/slices/authSlice"
 import { toast } from "react-hot-toast"
 import Header from "@/components/landing/Header"
 import { Footer } from "@/components/landing/Footer"
+import { AuthHeader } from "@/components/auth/AuthHeader.jsx"
+import { AuthFooter } from "@/components/auth/AuthFooter.jsx";
 
 export const LoginPage = () => {
     const [showPassword, setShowPassword] = useState(false)
@@ -64,9 +66,9 @@ export const LoginPage = () => {
 
     return (
         <div className="flex min-h-screen flex-col bg-white">
-            <Header />
+            <AuthHeader />
             <main className="flex-1">
-                <HeroSection />
+
                 <LoginSection
                     email={email}
                     setEmail={setEmail}
@@ -79,7 +81,7 @@ export const LoginPage = () => {
                 />
                 {/*<SupportSection />*/}
             </main>
-            {/*<Footer />*/}
+            <AuthFooter />
         </div>
     )
 }

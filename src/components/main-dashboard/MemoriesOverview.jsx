@@ -152,9 +152,9 @@ export default function MemoriesOverview() {
     return (
         <div>
             <div className="container mx-auto px-4 py-8 max-w-4xl">
-                <Card>
+                <Card className="p-0">
                     <CardHeader>
-                        <CardTitle className="text-3xl font-bold text-warm-800 text-center">
+                        <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
                             {title}
                         </CardTitle>
                         <p className="text-xl text-warm-600 text-center">OVERVIEW</p>

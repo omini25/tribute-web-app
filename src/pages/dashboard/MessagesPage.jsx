@@ -29,6 +29,7 @@ import {
 import { toast } from "react-hot-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import {CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card.jsx";
 
 export default function MessagesPage() {
     const [messages, setMessages] = useState([]);
@@ -188,9 +189,15 @@ export default function MessagesPage() {
     };
 
     return (
-        <div className="container mx-auto px-4 py-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                <h1 className="text-3xl font-bold">Messages</h1>
+        <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8">
+
+            <CardHeader className="p-0">
+                <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
+                    Messages
+                </CardTitle>
+                <CardDescription className="text-warm-600">
+                    Messages from your family and friends
+                </CardDescription>
                 <Button
                     onClick={fetchMessages}
                     variant="outline"
@@ -199,166 +206,169 @@ export default function MessagesPage() {
                     <RefreshCw className="h-4 w-4" />
                     Refresh
                 </Button>
-            </div>
+            </CardHeader>
 
-            {/*{error && (*/}
-            {/*    <Alert variant="destructive" className="mb-6">*/}
-            {/*        <AlertCircle className="h-4 w-4" />*/}
-            {/*        <AlertTitle>Error</AlertTitle>*/}
-            {/*        <AlertDescription>{error}</AlertDescription>*/}
-            {/*    </Alert>*/}
-            {/*)}*/}
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="lg:col-span-1 space-y-4">
-                    <div className="flex flex-col gap-4">
-                        <div className="relative">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
-                            <Input
-                                type="text"
-                                placeholder="Search messages..."
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                                className="pl-10"
-                            />
-                        </div>
+            <CardContent className="p-0">
+                {/*{error && (*/}
+                {/*    <Alert variant="destructive" className="mb-6">*/}
+                {/*        <AlertCircle className="h-4 w-4" />*/}
+                {/*        <AlertTitle>Error</AlertTitle>*/}
+                {/*        <AlertDescription>{error}</AlertDescription>*/}
+                {/*    </Alert>*/}
+                {/*)}*/}
 
-                        <div className="flex flex-col sm:flex-row gap-2">
-                            <Tabs
-                                defaultValue="all"
-                                value={filterType}
-                                onValueChange={setFilterType}
-                                className="w-full"
-                            >
-                                <TabsList className="grid w-full grid-cols-3">
-                                    <TabsTrigger value="all">All</TabsTrigger>
-                                    <TabsTrigger value="unread">Unread</TabsTrigger>
-                                    <TabsTrigger value="read">Read</TabsTrigger>
-                                </TabsList>
-                            </Tabs>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div className="lg:col-span-1 space-y-4">
+                        <div className="flex flex-col gap-4">
+                            <div className="relative">
+                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+                                <Input
+                                    type="text"
+                                    placeholder="Search messages..."
+                                    value={searchTerm}
+                                    onChange={e => setSearchTerm(e.target.value)}
+                                    className="pl-10"
+                                />
+                            </div>
 
-                            <Select value={sortBy} onValueChange={setSortBy}>
-                                <SelectTrigger className="w-full sm:w-[180px]">
-                                    <SelectValue placeholder="Sort by" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="date-desc">Newest first</SelectItem>
-                                    <SelectItem value="date-asc">Oldest first</SelectItem>
-                                    <SelectItem value="sender-asc">Sender (A-Z)</SelectItem>
-                                    <SelectItem value="sender-desc">Sender (Z-A)</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
+                            <div className="flex flex-col sm:flex-row gap-2">
+                                <Tabs
+                                    defaultValue="all"
+                                    value={filterType}
+                                    onValueChange={setFilterType}
+                                    className="w-full"
+                                >
+                                    <TabsList className="grid w-full grid-cols-3">
+                                        <TabsTrigger value="all">All</TabsTrigger>
+                                        <TabsTrigger value="unread">Unread</TabsTrigger>
+                                        <TabsTrigger value="read">Read</TabsTrigger>
+                                    </TabsList>
+                                </Tabs>
 
-                    {isLoading ? (
-                        <div className="space-y-3">
-                            {[...Array(5)].map((_, index) => (
-                                <div key={index} className="p-4 border rounded-lg">
-                                    <div className="flex justify-between items-start">
-                                        <div className="space-y-2">
-                                            <Skeleton className="h-4 w-32" />
-                                            <Skeleton className="h-3 w-24" />
-                                        </div>
-                                        <Skeleton className="h-3 w-16" />
-                                    </div>
-                                    <Skeleton className="h-3 w-full mt-3" />
-                                    <Skeleton className="h-3 w-2/3 mt-1" />
-                                </div>
-                            ))}
-                        </div>
-                    ) : (
-                        <>
-                            <MessageList
-                                messages={currentMessages}
-                                selectedMessageId={selectedMessage?.id}
-                                onSelectMessage={viewMessage}
-                                onMarkAsRead={handleMarkAsRead}
-                                onDeleteMessage={handleDeleteMessage}
-                            />
-
-                            {sortedMessages.length > 0 && (
-                                <div className="flex justify-center mt-4">
-                                    <div className="flex items-center space-x-2">
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            onClick={() =>
-                                                setCurrentPage(prev => Math.max(prev - 1, 1))
-                                            }
-                                            disabled={currentPage === 1}
-                                        >
-                                            <ChevronLeft className="h-4 w-4" />
-                                        </Button>
-                                        <span className="text-sm">
-                                            Page {currentPage} of {totalPages}
-                                        </span>
-                                        <Button
-                                            variant="outline"
-                                            size="icon"
-                                            onClick={() =>
-                                                setCurrentPage(prev => Math.min(prev + 1, totalPages))
-                                            }
-                                            disabled={currentPage === totalPages}
-                                        >
-                                            <ChevronRight className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </div>
-                            )}
-
-                            {sortedMessages.length === 0 && (
-                                <div className="text-center py-8 border rounded-lg">
-                                    <Mail className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
-                                    <h3 className="mt-4 text-lg font-medium">
-                                        No messages found
-                                    </h3>
-                                    <p className="mt-2 text-sm text-muted-foreground">
-                                        {searchTerm
-                                            ? "Try adjusting your search or filters"
-                                            : "You don't have any messages yet"}
-                                    </p>
-                                </div>
-                            )}
-                        </>
-                    )}
-                </div>
-
-                <div className="lg:col-span-2">
-                    {selectedMessage ? (
-                        <MessageView
-                            message={selectedMessage}
-                            onClose={closeMessageView}
-                            onReply={() => setIsReplyModalOpen(true)}
-                            onDelete={() => handleDeleteMessage(selectedMessage.id)}
-                            onMarkAsUnread={() =>
-                                handleMarkAsRead(selectedMessage.id, false)
-                            }
-                        />
-                    ) : (
-                        <div className="h-full flex items-center justify-center border rounded-lg p-8">
-                            <div className="text-center">
-                                <MailOpen className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
-                                <h3 className="mt-4 text-lg font-medium">
-                                    Select a message to view
-                                </h3>
-                                <p className="mt-2 text-sm text-muted-foreground">
-                                    Choose a message from the list to view its contents
-                                </p>
+                                <Select value={sortBy} onValueChange={setSortBy}>
+                                    <SelectTrigger className="w-full sm:w-[180px]">
+                                        <SelectValue placeholder="Sort by" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectItem value="date-desc">Newest first</SelectItem>
+                                        <SelectItem value="date-asc">Oldest first</SelectItem>
+                                        <SelectItem value="sender-asc">Sender (A-Z)</SelectItem>
+                                        <SelectItem value="sender-desc">Sender (Z-A)</SelectItem>
+                                    </SelectContent>
+                                </Select>
                             </div>
                         </div>
-                    )}
-                </div>
-            </div>
 
-            {selectedMessage && (
-                <ReplyModal
-                    isOpen={isReplyModalOpen}
-                    onClose={() => setIsReplyModalOpen(false)}
-                    onSend={handleSendReply}
-                    recipient={selectedMessage}
-                />
-            )}
+                        {isLoading ? (
+                            <div className="space-y-3">
+                                {[...Array(5)].map((_, index) => (
+                                    <div key={index} className="p-4 border rounded-lg">
+                                        <div className="flex justify-between items-start">
+                                            <div className="space-y-2">
+                                                <Skeleton className="h-4 w-32" />
+                                                <Skeleton className="h-3 w-24" />
+                                            </div>
+                                            <Skeleton className="h-3 w-16" />
+                                        </div>
+                                        <Skeleton className="h-3 w-full mt-3" />
+                                        <Skeleton className="h-3 w-2/3 mt-1" />
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <>
+                                <MessageList
+                                    messages={currentMessages}
+                                    selectedMessageId={selectedMessage?.id}
+                                    onSelectMessage={viewMessage}
+                                    onMarkAsRead={handleMarkAsRead}
+                                    onDeleteMessage={handleDeleteMessage}
+                                />
+
+                                {sortedMessages.length > 0 && (
+                                    <div className="flex justify-center mt-4">
+                                        <div className="flex items-center space-x-2">
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                onClick={() =>
+                                                    setCurrentPage(prev => Math.max(prev - 1, 1))
+                                                }
+                                                disabled={currentPage === 1}
+                                            >
+                                                <ChevronLeft className="h-4 w-4" />
+                                            </Button>
+                                            <span className="text-sm">
+                                            Page {currentPage} of {totalPages}
+                                        </span>
+                                            <Button
+                                                variant="outline"
+                                                size="icon"
+                                                onClick={() =>
+                                                    setCurrentPage(prev => Math.min(prev + 1, totalPages))
+                                                }
+                                                disabled={currentPage === totalPages}
+                                            >
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {sortedMessages.length === 0 && (
+                                    <div className="text-center py-8 border rounded-lg">
+                                        <Mail className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
+                                        <h3 className="mt-4 text-lg font-medium">
+                                            No messages found
+                                        </h3>
+                                        <p className="mt-2 text-sm text-muted-foreground">
+                                            {searchTerm
+                                                ? "Try adjusting your search or filters"
+                                                : "You don't have any messages yet"}
+                                        </p>
+                                    </div>
+                                )}
+                            </>
+                        )}
+                    </div>
+
+                    <div className="lg:col-span-2">
+                        {selectedMessage ? (
+                            <MessageView
+                                message={selectedMessage}
+                                onClose={closeMessageView}
+                                onReply={() => setIsReplyModalOpen(true)}
+                                onDelete={() => handleDeleteMessage(selectedMessage.id)}
+                                onMarkAsUnread={() =>
+                                    handleMarkAsRead(selectedMessage.id, false)
+                                }
+                            />
+                        ) : (
+                            <div className="h-full flex items-center justify-center border rounded-lg p-8">
+                                <div className="text-center">
+                                    <MailOpen className="mx-auto h-12 w-12 text-muted-foreground opacity-50" />
+                                    <h3 className="mt-4 text-lg font-medium">
+                                        Select a message to view
+                                    </h3>
+                                    <p className="mt-2 text-sm text-muted-foreground">
+                                        Choose a message from the list to view its contents
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {selectedMessage && (
+                    <ReplyModal
+                        isOpen={isReplyModalOpen}
+                        onClose={() => setIsReplyModalOpen(false)}
+                        onSend={handleSendReply}
+                        recipient={selectedMessage}
+                    />
+                )}
+            </CardContent>
         </div>
     );
 }
