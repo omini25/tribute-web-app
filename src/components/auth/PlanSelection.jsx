@@ -57,7 +57,7 @@ const plans = [
 const themes = [
     { id: 1, name: "Warm", color: "#FFA07A", image: Warm, title: "Warm" },
     { id: 2, name: "Cool", color: "#00BFFF", image: Cool, title: "Cool" },
-    { id: 3, name: "Autumn", color: "#FF7F50", image: Autumn, title: "Autumn" }
+    { id: 3, name: "Mordern", color: "#FF7F50", image: Autumn, title: "Mordern" }
 ]
 
 const FeatureItem = ({ included, name }) => (
@@ -74,9 +74,21 @@ const FeatureItem = ({ included, name }) => (
 )
 
 export default function PlanSelection({ onSubmit }) {
-    const [selectedPlan, setSelectedPlan] = useState(null)
+    const [selectedPlan, setSelectedPlan] = useState(() => {
+        const savedData = localStorage.getItem('signupFormData');
+        return savedData ? JSON.parse(savedData).plan : null;
+    });
     const [selectedTheme, setSelectedTheme] = useState(null)
     const [previewTheme, setPreviewTheme] = useState(null)
+
+    const handlePlanChange = (plan) => {
+        setSelectedPlan(plan);
+        const existingData = JSON.parse(localStorage.getItem('signupFormData') || '{}');
+        localStorage.setItem('signupFormData', JSON.stringify({
+            ...existingData,
+            plan
+        }));
+    };
 
     const handleSubmit = e => {
         e.preventDefault()
@@ -86,7 +98,8 @@ export default function PlanSelection({ onSubmit }) {
         }
         const selectedPlanObj = plans.find(plan => plan.id === selectedPlan);
         const amount = selectedPlanObj ? selectedPlanObj.price : 0;
-        onSubmit({ plan: selectedPlan, theme: selectedTheme, amount: amount })
+        onSubmit({ plan: selectedPlan, theme: selectedTheme, amount: amount });
+        localStorage.removeItem('signupFormData');
     }
 
     const handlePreview = theme => {

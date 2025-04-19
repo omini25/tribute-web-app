@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import PropTypes from "prop-types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -24,47 +25,69 @@ const InputField = ({ label, id, type = "text", placeholder, value, onChange, re
     </div>
 )
 
+InputField.propTypes = {
+    label: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    type: PropTypes.string,
+    placeholder: PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+    required: PropTypes.bool,
+    readOnly: PropTypes.bool,
+    className: PropTypes.string
+}
+
 export default function DeceasedInfoForm({ onSubmit }) {
+    const [formData, setFormData] = useState(() => {
+        const savedData = localStorage.getItem('signupFormData');
+        return savedData ? JSON.parse(savedData).deceased : {
+            deadFirstName: "",
+            middleName: "",
+            deadLastName: "",
+            nickname: "",
+            dateOfBirth: "",
+            dateOfDeath: "",
+            stateAndCountryLived: "",
+            countryLivedIn: "",
+            customMemorialWebsite: "",
+            relationshipWithBereaved: "",
+            notYetPassed: false
+        };
+    });
+
+    // const [formData, setFormData] = useState(() => {
+    //     const savedData = localStorage.getItem('deceasedFormData')
+    //     return savedData ? JSON.parse(savedData) : initialFormData
+    // })
+
     const [customMemorialWebsite, setCustomMemorialWebsite] = useState('')
     const [isEditingWebsite, setIsEditingWebsite] = useState(false)
 
-    const [formData, setFormData] = useState({
-        deadFirstName: "",
-        middleName: "",
-        deadLastName: "",
-        nickname: "",
-        dateOfBirth: "",
-        dateOfDeath: "",
-        stateAndCountryLived: "",
-        countryLivedIn: "",
-        customMemorialWebsite: "",
-        relationshipWithBereaved: "",
-        notYetPassed: false,
-    })
-
     const handleChange = (name, value) => {
-        setFormData(prev => ({ ...prev, [name]: value }))
-    }
+        setFormData(prev => {
+            const newData = { ...prev, [name]: value };
+            const existingData = JSON.parse(localStorage.getItem('signupFormData') || '{}');
+            localStorage.setItem('signupFormData', JSON.stringify({
+                ...existingData,
+                deceased: newData
+            }));
+            return newData;
+        });
+    };
 
     const handleSubmit = e => {
         e.preventDefault()
         onSubmit(formData)
-        console.log(formData)
+        localStorage.removeItem('deceasedFormData')
     }
 
     useEffect(() => {
-        if (!isEditingWebsite) {
-            const generateWebsiteLink = () => {
-                if (formData.deadFirstName && formData.deadLastName) {
-                    const link = `www.rememberedalways/tribute/${formData.deadFirstName.toLowerCase()}-${formData.deadLastName.toLowerCase()}`
-                    setCustomMemorialWebsite(link)
-                } else {
-                    setCustomMemorialWebsite('')
-                }
-            }
-            generateWebsiteLink()
+        if (!isEditingWebsite && formData.deadFirstName && formData.deadLastName) {
+            const link = `www.rememberedalways/tribute/${formData.deadFirstName.toLowerCase()}-${formData.deadLastName.toLowerCase()}`
+            setCustomMemorialWebsite(link)
         }
     }, [formData.deadFirstName, formData.deadLastName, isEditingWebsite])
+
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto p-4">
@@ -199,4 +222,8 @@ export default function DeceasedInfoForm({ onSubmit }) {
             </Button>
         </form>
     )
+}
+
+DeceasedInfoForm.propTypes = {
+    onSubmit: PropTypes.func.isRequired
 }

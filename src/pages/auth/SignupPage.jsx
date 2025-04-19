@@ -17,7 +17,6 @@ import { AuthFooter } from "@/components/auth/AuthFooter.jsx"
 export const SignupPage = () => {
     const [step, setStep] = useState(1)
     const [formData, setFormData] = useState(() => {
-        // Try to get saved form data from localStorage
         const savedData = localStorage.getItem('signupFormData');
         return savedData ? JSON.parse(savedData) : {
             deceased: {},
@@ -27,14 +26,15 @@ export const SignupPage = () => {
         };
     });
 
+
     const updateFormData = (section, data) => {
         setFormData(prev => {
             const newData = { ...prev, [section]: { ...prev[section], ...data } };
-            // Save to localStorage whenever form data updates
             localStorage.setItem('signupFormData', JSON.stringify(newData));
             return newData;
         });
     };
+
 
     const nextStep = () => {
         if (step === 1 && (

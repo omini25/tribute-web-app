@@ -16,6 +16,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import {Link} from "react-router-dom";
 import {AuthHeader} from "@/components/auth/AuthHeader.jsx";
 import { AuthFooter } from "@/components/auth/AuthFooter.jsx"
+import { server } from "@/server.js"
 
 
 const formSchema = z.object({
@@ -40,7 +41,7 @@ export default function PasswordResetPage() {
             setIsLoading(true)
 
             // Send the password reset request to the API
-            const response = await fetch("/api/auth/reset-password/request", {
+            const response = await fetch(`${server}/forgot-password`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

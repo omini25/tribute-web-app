@@ -44,7 +44,7 @@ export default function Gallery() {
                     </CardDescription>
                 </CardHeader>
 
-                <CardContent className="p-0">
+                <CardContent className="p-0 pt-6">
                     {/* Loading State */}
                     {loading && (
                         <div className="flex justify-center items-center h-64">

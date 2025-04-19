@@ -209,18 +209,18 @@ export function MinimalistTheme() {
             >
                 <div className="absolute inset-0 bg-black/50" />
                 <div className="absolute top-4 right-4 flex gap-2 mt-12">
-                    <Button
+                   <Button
                         variant="ghost"
                         className="text-white hover:bg-white/20"
                         onClick={() => {
-                            if (navigator.share) {
-                                navigator.share({
-                                    title: document.title,
-                                    url: window.location.href,
-                                }).catch(error => console.error('Error sharing:', error));
-                            } else {
-                                console.error('Share API not supported');
-                            }
+                            navigator.clipboard.writeText(window.location.href)
+                                .then(() => {
+                                    toast.success("Link copied to clipboard");
+                                })
+                                .catch(error => {
+                                    console.error('Failed to copy link:', error);
+                                    toast.error("Failed to copy link");
+                                });
                         }}
                     >
                         <Share className="h-4 w-4 mr-2" />
@@ -477,6 +477,8 @@ export function MinimalistTheme() {
                                 <Button className="w-full bg-gray-100 text-gray-700 hover:bg-gray-200" onClick={handleAddLink}>
                                     Add Link
                                 </Button>
+
+
                             </div>
                         </Card>
 

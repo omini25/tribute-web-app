@@ -45,19 +45,23 @@ export default function UsersPage() {
         <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8">
 
             <CardHeader className="p-0">
-                <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
-                    Members
-                </CardTitle>
-                <CardDescription className="text-warm-600">
-                    Manage your team members and their roles
-                </CardDescription>
-                <Button
-                    onClick={() => setIsAddUserModalOpen(true)}
-                    className="bg-primary hover:bg-primary/90"
-                >
-                    <UserPlus className="mr-2 h-4 w-4" />
-                    Add User
-                </Button>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
+                            Members
+                        </CardTitle>
+                        <CardDescription className="text-warm-600">
+                            Manage your team members and their roles
+                        </CardDescription>
+                    </div>
+                    <Button
+                        onClick={() => setIsAddUserModalOpen(true)}
+                        className="bg-primary hover:bg-primary/90"
+                    >
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Add User
+                    </Button>
+                </div>
             </CardHeader>
 
             <CardContent className="p-0">

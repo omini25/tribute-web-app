@@ -53,8 +53,29 @@ export default function MessagesPage() {
         setIsLoading(true);
         setError(null);
         try {
-            const response = await axios.get(`${server}/messages/${user.id}`);
-            setMessages(response.data || []);
+            const params = {
+                page: currentPage,
+                per_page: messagesPerPage,
+                sort: sortBy.includes('desc') ? 'desc' : 'asc',
+                search: searchTerm,
+                is_read: filterType !== 'all' ? (filterType === 'read') : undefined
+            };
+
+            const response = await axios.get(`${server}/messages/user/${user.id}`, { params });
+            const formattedMessages = response.data.messages.map(message => ({
+                id: message.id,
+                user_id: message.user_id,
+                sender_name: message.guest_name,
+                sender_email: message.guest_email,
+                subject: message.subject,
+                content: message.message,
+                is_read: Boolean(message.is_read),
+                date: new Date(message.created_at).toISOString(),
+                replies: message.replies || [],
+                updated_at: message.updated_at
+            }));
+
+            setMessages(formattedMessages);
         } catch (error) {
             console.error("Error fetching messages:", error);
             setError("Failed to load messages. Please try again later.");
@@ -63,6 +84,9 @@ export default function MessagesPage() {
             setIsLoading(false);
         }
     };
+
+    console.log(messages)
+
 
     const handleMarkAsRead = async (messageId, isRead = true) => {
         try {
@@ -192,24 +216,28 @@ export default function MessagesPage() {
         <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8">
 
             <CardHeader className="p-0">
-                <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
-                    Messages
-                </CardTitle>
-                <CardDescription className="text-warm-600">
-                    Messages from your family and friends
-                </CardDescription>
-                <Button
-                    onClick={fetchMessages}
-                    variant="outline"
-                    className="flex items-center gap-2"
-                >
-                    <RefreshCw className="h-4 w-4" />
-                    Refresh
-                </Button>
+                <div className="flex justify-between items-center">
+                    <div>
+                        <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
+                            Messages
+                        </CardTitle>
+                        <CardDescription className="text-warm-600">
+                            Messages from your family and friends
+                        </CardDescription>
+                    </div>
+                    <Button
+                        onClick={fetchMessages}
+                        variant="outline"
+                        className="flex items-center gap-2"
+                    >
+                        <RefreshCw className="h-4 w-4" />
+                        Refresh
+                    </Button>
+                </div>
             </CardHeader>
 
 
-            <CardContent className="p-0">
+            <CardContent className="p-0 pt-6">
                 {/*{error && (*/}
                 {/*    <Alert variant="destructive" className="mb-6">*/}
                 {/*        <AlertCircle className="h-4 w-4" />*/}

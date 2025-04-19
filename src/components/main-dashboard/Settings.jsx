@@ -141,7 +141,7 @@ export default function Settings() {
                 </CardHeader>
 
 
-                <CardContent className="p-0">
+                <CardContent className="p-0 pt-6">
                     <Tabs defaultValue="profile" className="space-y-8">
                         <TabsList className="grid w-full grid-cols-3">
                             <TabsTrigger value="profile">Profile</TabsTrigger>

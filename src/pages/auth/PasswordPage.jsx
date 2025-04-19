@@ -17,6 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import {Link} from "react-router-dom";
 import {AuthFooter} from "@/components/auth/AuthFooter.jsx";
 import {AuthHeader} from "@/components/auth/AuthHeader.jsx";
+import { useParams, useSearchParams } from 'react-router-dom';
 
 const formSchema = z
     .object({
@@ -33,9 +34,12 @@ const formSchema = z
         path: ["confirmPassword"]
     })
 
-export default function PasswordResetPage({ params }) {
+export default function PasswordPage({ params }) {
     const router = useRouter()
-    const { token } = params
+    const { token } = useParams();
+    const [searchParams] = useSearchParams();
+    const email = searchParams.get('email');
+
 
     const [password, setPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")

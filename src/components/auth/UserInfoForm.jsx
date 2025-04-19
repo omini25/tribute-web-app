@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import PropTypes from "prop-types"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -21,19 +22,41 @@ const InputField = ({ label, id, type = "text", placeholder, value, onChange, re
     </div>
 )
 
+InputField.propTypes = {
+    label: PropTypes.string.isRequired,
+    id: PropTypes.string.isRequired,
+    type: PropTypes.string,
+    placeholder: PropTypes.string,
+    value: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+    required: PropTypes.bool,
+    className: PropTypes.string
+}
+
 export default function UserInfoForm({ onSubmit }) {
-    const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        password: "",
-        confirmPassword: ""
-    })
+    const [formData, setFormData] = useState(() => {
+        const savedData = localStorage.getItem('signupFormData');
+        return savedData ? JSON.parse(savedData).user : {
+            firstName: "",
+            lastName: "",
+            email: "",
+            phone: "",
+            password: "",
+            confirmPassword: ""
+        };
+    });
 
     const handleChange = (name, value) => {
-        setFormData(prev => ({ ...prev, [name]: value }))
-    }
+        setFormData(prev => {
+            const newData = { ...prev, [name]: value };
+            const existingData = JSON.parse(localStorage.getItem('signupFormData') || '{}');
+            localStorage.setItem('signupFormData', JSON.stringify({
+                ...existingData,
+                user: newData
+            }));
+            return newData;
+        });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -42,7 +65,16 @@ export default function UserInfoForm({ onSubmit }) {
             return
         }
         onSubmit(formData)
+        localStorage.removeItem('userFormData')
     }
+
+    useEffect(() => {
+        return () => {
+            if (!document.location.pathname.includes('next-step')) {
+                localStorage.removeItem('userFormData')
+            }
+        }
+    }, [])
 
     return (
         <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto p-4">

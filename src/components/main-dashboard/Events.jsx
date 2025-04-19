@@ -180,21 +180,24 @@ export default function Events() {
 
             <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8">
                 <CardHeader className="p-0">
-                    <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
-                        Memorial Events
-                    </CardTitle>
-                    <CardDescription className="text-warm-600">
-                        Memorial events are a way to celebrate and remember the life of a loved one. You can create, view, and manage events here.
-                    </CardDescription>
-
-                    <Button
-                        onClick={() => setIsCreateModalOpen(true)}
-                        className="bg-primary hover:bg-primary/90"
-                    >
-                        <Plus className="mr-2 h-4 w-4" /> Create Event
-                    </Button>
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
+                                Memorial Events
+                            </CardTitle>
+                            <CardDescription className="text-warm-600">
+                                Memorial events are a way to celebrate and remember the life of a loved one. You can create, view, and manage events here.
+                            </CardDescription>
+                        </div>
+                        <Button
+                            onClick={() => setIsCreateModalOpen(true)}
+                            className="bg-primary hover:bg-primary/90"
+                        >
+                            <Plus className="mr-2 h-4 w-4" /> Create Event
+                        </Button>
+                    </div>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 p-6">
                     <div className="mb-8">
                         <Tabs defaultValue="all" className="w-full">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">

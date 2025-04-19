@@ -43,6 +43,7 @@ import {Gallerys} from "@/pages/tribute/Gallerys.jsx";
 import {Eventing} from "@/pages/tribute/Eventing.jsx";
 import MessagesPage from "@/pages/dashboard/MessagesPage.jsx";
 import PasswordResetPage from "@/pages/auth/PasswordResetPage.jsx"
+import PasswordPage from "@/pages/auth/PasswordPage.jsx";
 
 
 function App() {
@@ -66,8 +67,9 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/forgot-password" element={<PasswordResetPage />} />
+                <Route path="/reset-password/:token" element={<PasswordPage />} />
 
-                <Route path="/mordern" element={<ModernTheme />} />
+                <Route path="/mordern/:id/:title" element={<ModernTheme />} />
                 <Route path="/warm/:id/:title" element={<MinimalistTheme />} />
                 <Route path="/cool/:id/:title" element={<ElegantTabTheme />} />
                 <Route path="/minimal-tab" element={<MinimalistTabTheme />} />

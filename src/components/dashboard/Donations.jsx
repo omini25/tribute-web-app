@@ -86,23 +86,25 @@ export default function DonationsAndPayments() {
             <div className="container mx-auto px-4 py-6 sm:px-6 sm:py-8">
 
                 <CardHeader className="p-0">
-                    <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
-                        Donations & Payments
-                    </CardTitle>
-                    <CardDescription className="text-warm-600">
-                        Manage your donations and payments here.
-                    </CardDescription>
-
-                    <Button className="bg-warm-500 hover:bg-warm-600" onClick={handleRequestRedrawClick}>
-                        <Download className="mr-2 h-4 w-4" /> Request Redraw
-                    </Button>
-
+                    <div className="flex justify-between items-center">
+                        <div>
+                            <CardTitle className="text-2xl font-bold text-warm-800 sm:text-3xl">
+                                Donations & Payments
+                            </CardTitle>
+                            <CardDescription className="text-warm-600">
+                                Manage your donations and payments here.
+                            </CardDescription>
+                        </div>
+                        <Button className="bg-warm-500 hover:bg-warm-600" onClick={handleRequestRedrawClick}>
+                            <Download className="mr-2 h-4 w-4" /> Request Redraw
+                        </Button>
+                    </div>
                     <RequestRedrawModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
                 </CardHeader>
 
 
 
-                <CardContent className="p-0">
+                <CardContent className="p-0 pt-6">
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
                         <Card>

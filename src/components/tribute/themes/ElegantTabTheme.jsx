@@ -273,9 +273,13 @@ export function ElegantTabTheme() {
     const handleMessageSubmit = async e => {
         e.preventDefault()
         try {
+            const messagePayload = {
+                ...messageData,
+                user_id: memorial?.user_id,
+            }
             const response = await axios.post(
-                `${server}/tribute/message`,
-                messageData
+                `${server}/messages/send`,
+                messagePayload
             )
             if (response.status === 200) {
                 toast.success("Message sent successfully")
@@ -284,7 +288,7 @@ export function ElegantTabTheme() {
                     email: "",
                     subject: "",
                     message: "",
-                    tribute_id: id
+                    user_id: memorial?.user_id
                 })
                 setIsMessageModalOpen(false)
             }
@@ -485,18 +489,18 @@ export function ElegantTabTheme() {
                                                                 <div className="flex items-center">
                                                                     <MapPin className="h-4 w-4 mr-2 text-gray-400" />
                                                                     <span className="text-sm text-gray-600">
-                                    {memorial?.country_died ||
-                                        "Unknown location"}
-                                  </span>
+                                                                    {memorial?.country_died ||
+                                                                        "Unknown location"}
+                                                                  </span>
                                                                 </div>
                                                                 <div className="flex items-center">
                                                                     <Calendar className="h-4 w-4 mr-2 text-gray-400" />
                                                                     <span className="text-sm text-gray-600">
-                                    Born:{" "}
+                                                                        Born:{" "}
                                                                         {new Date(
                                                                             memorial?.date_of_birth
                                                                         ).toLocaleDateString()}
-                                  </span>
+                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -531,16 +535,27 @@ export function ElegantTabTheme() {
                                                                 variant="outline"
                                                                 size="sm"
                                                                 className="rounded-full"
+                                                                onClick={() => {
+                                                                    const subject = `Memorial Page for ${memorial?.first_name} ${memorial?.last_name}`;
+                                                                    const body = `I would like to share this memorial page with you:\n${window.location.href}`;
+                                                                    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                                                                }}
                                                             >
                                                                 <Mail className="h-4 w-4 mr-2" />
                                                                 Email
                                                             </Button>
-                                                            <Button
+                                                           <Button
                                                                 variant="outline"
                                                                 size="sm"
                                                                 className="rounded-full"
+                                                                onClick={() => {
+                                                                    navigator.clipboard.writeText(window.location.href)
+                                                                        .then(() => toast.success('Link copied to clipboard'))
+                                                                        .catch(() => toast.error('Failed to copy link'));
+                                                                }}
                                                             >
-                                                                Share
+                                                                <Link className="h-4 w-4 mr-2" />
+                                                                Copy link
                                                             </Button>
                                                         </div>
                                                     </div>
@@ -582,18 +597,18 @@ export function ElegantTabTheme() {
                                                                     <Calendar className="h-4 w-4 text-gray-600" />
                                                                 </div>
                                                                 <div>
-                                  <span className="block text-sm text-gray-500">
-                                    Born
-                                  </span>
-                                                                    <span className="font-medium">
-                                    {new Date(
-                                        memorial?.date_of_birth
-                                    ).toLocaleDateString("en-US", {
-                                        month: "long",
-                                        day: "numeric",
-                                        year: "numeric"
-                                    })}
-                                  </span>
+                                                                  <span className="block text-sm text-gray-500">
+                                                                    Born
+                                                                  </span>
+                                                                                                    <span className="font-medium">
+                                                                    {new Date(
+                                                                        memorial?.date_of_birth
+                                                                    ).toLocaleDateString("en-US", {
+                                                                        month: "long",
+                                                                        day: "numeric",
+                                                                        year: "numeric"
+                                                                    })}
+                                                                  </span>
                                                                 </div>
                                                             </li>
                                                             <li className="flex items-start">
@@ -601,18 +616,18 @@ export function ElegantTabTheme() {
                                                                     <Calendar className="h-4 w-4 text-gray-600" />
                                                                 </div>
                                                                 <div>
-                                  <span className="block text-sm text-gray-500">
-                                    Passed
-                                  </span>
-                                                                    <span className="font-medium">
-                                    {new Date(
-                                        memorial?.date_of_death
-                                    ).toLocaleDateString("en-US", {
-                                        month: "long",
-                                        day: "numeric",
-                                        year: "numeric"
-                                    })}
-                                  </span>
+                                                                  <span className="block text-sm text-gray-500">
+                                                                    Passed
+                                                                  </span>
+                                                                                                    <span className="font-medium">
+                                                                    {new Date(
+                                                                        memorial?.date_of_death
+                                                                    ).toLocaleDateString("en-US", {
+                                                                        month: "long",
+                                                                        day: "numeric",
+                                                                        year: "numeric"
+                                                                    })}
+                                                                  </span>
                                                                 </div>
                                                             </li>
                                                             <li className="flex items-start">
@@ -620,12 +635,12 @@ export function ElegantTabTheme() {
                                                                     <MapPin className="h-4 w-4 text-gray-600" />
                                                                 </div>
                                                                 <div>
-                                  <span className="block text-sm text-gray-500">
-                                    Location
-                                  </span>
-                                                                    <span className="font-medium">
-                                    {memorial?.country_died || "Unknown"}
-                                  </span>
+                                                                  <span className="block text-sm text-gray-500">
+                                                                    Location
+                                                                  </span>
+                                                                                                    <span className="font-medium">
+                                                                    {memorial?.country_died || "Unknown"}
+                                                                  </span>
                                                                 </div>
                                                             </li>
                                                         </ul>
