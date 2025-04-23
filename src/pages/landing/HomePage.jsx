@@ -19,6 +19,7 @@ import { Footer } from "@/components/landing/Footer"
 import { server } from "@/server"
 import { assetServer } from "@/assetServer"
 import logo from "../../assets/flame.png"
+import Hero from "@/components/landing/Hero"
 
 const features = [
     {
@@ -111,8 +112,8 @@ export default function HomePage() {
     return (
         <div className="flex min-h-screen flex-col bg-white">
             <Header />
-            <main className="flex-1">
-                <HeroSection />
+           <main className="flex-1 pt-16 sm:pt-0">
+                <Hero />
                 <FeaturesSection />
                 <HowItWorksSection />
                 <FeaturedMemorialsSection memorials={memorials} />
@@ -125,120 +126,6 @@ export default function HomePage() {
     )
 }
 
-function HeroSection() {
-    return (
-        <section className="relative min-h-screen bg-[#f5f0ea]">
-            {/* Animated cloud background - use multiple layers for parallax effect */}
-            <div className="absolute inset-0 overflow-hidden">
-                {/* Background cloud layer - slowest moving */}
-                <div className="absolute inset-0 bg-repeat-x animate-cloud-slow"
-                     style={{
-                         backgroundImage: "url('/images/cloud-bg-layer1.png')",
-                         backgroundPosition: "0 80%",
-                         backgroundSize: "1200px auto",
-                     }}
-                />
-
-                {/* Middle cloud layer - medium speed */}
-                <div className="absolute inset-0 bg-repeat-x animate-cloud-medium"
-                     style={{
-                         backgroundImage: "url('/images/cloud-bg-layer2.png')",
-                         backgroundPosition: "0 60%",
-                         backgroundSize: "1000px auto",
-                         opacity: 0.7,
-                     }}
-                />
-
-                {/* Foreground cloud layer - fastest moving */}
-                <div className="absolute inset-0 bg-repeat-x animate-cloud-fast"
-                     style={{
-                         backgroundImage: "url('/images/cloud-bg-layer3.png')",
-                         backgroundPosition: "0 90%",
-                         backgroundSize: "800px auto",
-                         opacity: 0.5,
-                     }}
-                />
-
-                <style jsx="true">{`
-                    @keyframes cloud-move-slow {
-                        0% { background-position: 0% 80%; }
-                        100% { background-position: 1200px 80%; }
-                    }
-                    @keyframes cloud-move-medium {
-                        0% { background-position: 0% 60%; }
-                        100% { background-position: 1000px 60%; }
-                    }
-                    @keyframes cloud-move-fast {
-                        0% { background-position: 0% 90%; }
-                        100% { background-position: 800px 90%; }
-                    }
-                    .animate-cloud-slow {
-                        animation: cloud-move-slow 60s linear infinite;
-                    }
-                    .animate-cloud-medium {
-                        animation: cloud-move-medium 40s linear infinite;
-                    }
-                    .animate-cloud-fast {
-                        animation: cloud-move-fast 30s linear infinite;
-                    }
-                `}</style>
-            </div>
-
-            <div className="absolute inset-0 bg-gradient-to-r from-[#f5f0ea]/80 to-[#f5f0ea]/60 flex flex-col items-center justify-center text-center px-4">
-                <div className="max-w-4xl mx-auto space-y-8 relative">
-                    {/* Candle flame */}
-                    <div className="mb-6 flex justify-center">
-                        <div className="w-40 h-40 flex items-center justify-center">
-                            <div className="relative">
-                                <div className="w-8 h-16 bg-gradient-to-t from-amber-500 via-yellow-300 to-white rounded-full animate-pulse"></div>
-                                <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-4 h-10 bg-gradient-to-t from-amber-400 to-white rounded-full opacity-70 animate-flame"></div>
-                            </div>
-                            <style jsx="true">{`
-                                @keyframes flame {
-                                    0%, 100% { transform: translateX(-50%) scale(1); }
-                                    50% { transform: translateX(-50%) scale(1.1); }
-                                }
-                                .animate-flame {
-                                    animation: flame 3s ease-in-out infinite;
-                                }
-                            `}</style>
-                        </div>
-                    </div>
-
-                    <h1 className="text-5xl md:text-6xl font-serif text-[#2a3342] tracking-wide">
-                        In Loving Memory
-                    </h1>
-
-                    <p className="text-lg md:text-xl text-[#4a5568] font-light max-w-2xl mx-auto leading-relaxed">
-                        A beautiful online space where you can honor and celebrate the life of your loved one.
-                        Share cherished memories, photos, and stories that will preserve their legacy forever.
-                    </p>
-
-                    <p className="text-lg md:text-xl text-[#4a5568] font-light italic">
-                        "Your simple tribute means memorable moments shared, hearts connected, and being there
-                        for each other as family and friends honor and celebrate a life."
-                    </p>
-
-                    <div className="pt-6 flex flex-col sm:flex-row justify-center gap-4">
-                        <Button
-                            size="lg"
-                            className="bg-[#786f66] hover:bg-[#645a52] text-white border-none font-medium px-8"
-                        >
-                            Create Memorial
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="border-[#786f66] text-[#786f66] hover:bg-[#f5f0ea] hover:text-[#645a52] font-medium px-8"
-                        >
-                            View Examples
-                        </Button>
-                    </div>
-                </div>
-            </div>
-        </section>
-    )
-}
 
 function FeaturesSection() {
     return (
