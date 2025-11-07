@@ -1,104 +1,48 @@
-"use client"
-
-import { useState } from "react"
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
+// src/components/main-dashboard/messages/ReplyModal.jsx
+import { useState } from "react";
+import { Dialog } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 export function ReplyModal({ isOpen, onClose, onSend, recipient }) {
-    const [subject, setSubject] = useState(`Re: ${recipient?.subject || ""}`)
-    const [message, setMessage] = useState("")
-    const [isLoading, setIsLoading] = useState(false)
+    const [message, setMessage] = useState("");
 
-    const handleSubmit = async e => {
-        e.preventDefault()
-        setIsLoading(true)
+    console.log(message)
 
-        try {
-            await onSend({
-                to: recipient.sender_email,
-                subject,
-                message
-            })
+    const handleSubmit = (e) => {
+        e.preventDefault();
 
-            // Reset form
-            setMessage("")
-            onClose()
-        } catch (error) {
-            console.error("Error sending reply:", error)
-        } finally {
-            setIsLoading(false)
+        // Validate message before sending
+        if (!message.trim()) {
+            return;
         }
-    }
+
+        onSend({ message });
+        setMessage(""); // Clear form after sending
+    };
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[525px]">
-                <DialogHeader>
-                    <DialogTitle>Reply to Message</DialogTitle>
-                    <DialogDescription>
-                        Your reply will be sent to {recipient?.sender_name} via email.
-                    </DialogDescription>
-                </DialogHeader>
-
-                <form onSubmit={handleSubmit} className="space-y-4 py-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="recipient">To</Label>
-                        <Input
-                            id="recipient"
-                            value={`${recipient?.sender_name} <${recipient?.sender_email}>`}
-                            disabled
-                            className="bg-muted/50"
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="subject">Subject</Label>
-                        <Input
-                            id="subject"
-                            value={subject}
-                            onChange={e => setSubject(e.target.value)}
-                            placeholder="Enter email subject"
-                            required
-                        />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label htmlFor="message">Message</Label>
-                        <Textarea
-                            id="message"
-                            value={message}
-                            onChange={e => setMessage(e.target.value)}
-                            placeholder="Enter your reply"
-                            rows={8}
-                            required
-                        />
-                    </div>
-
-                    <DialogFooter>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={onClose}
-                            disabled={isLoading}
-                        >
+            <div className="p-4">
+                <h2 className="text-lg font-semibold mb-4">
+                    Reply to {recipient.sender_name}
+                </h2>
+                <form onSubmit={handleSubmit}>
+                    <Textarea
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                        placeholder="Type your reply here..."
+                        className="min-h-[100px] mb-4"
+                        required
+                    />
+                    <div className="flex justify-end gap-2">
+                        <Button type="button" variant="outline" onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button type="submit" disabled={isLoading}>
-                            {isLoading ? "Sending..." : "Send Reply"}
-                        </Button>
-                    </DialogFooter>
+                        <Button type="submit">Send Reply</Button>
+                    </div>
                 </form>
-            </DialogContent>
+            </div>
         </Dialog>
-    )
+    );
 }

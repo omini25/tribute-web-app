@@ -8,15 +8,15 @@ export function AuthFooter() {
             <div className="container">
                 <div className="flex flex-col items-center justify-between gap-4 md:flex-row">
                     <p className="text-center text-sm text-muted-foreground">
-                        &copy; {currentYear} Memories. All rights reserved.
+                        &copy; {currentYear} Remembered Always. All rights reserved.
                     </p>
                     <nav className="flex flex-wrap items-center justify-center gap-4 text-sm">
-                        <Link
-                            to="/terms"
-                            className="text-muted-foreground hover:text-foreground hover:underline"
-                        >
-                            Terms of Service
-                        </Link>
+                        {/*<Link*/}
+                        {/*    to="/terms"*/}
+                        {/*    className="text-muted-foreground hover:text-foreground hover:underline"*/}
+                        {/*>*/}
+                        {/*    Terms of Service*/}
+                        {/*</Link>*/}
                         <Link
                             to="/privacy"
                             className="text-muted-foreground hover:text-foreground hover:underline"

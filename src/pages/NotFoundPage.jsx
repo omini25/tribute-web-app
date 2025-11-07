@@ -1,61 +1,52 @@
+import { Link } from 'react-router-dom'; // Recommended for SPAs
+import { ArrowLeft, AlertTriangle } from 'lucide-react';
+import {Footer} from "@/components/landing/Footer.jsx";
+import Header from "@/components/landing/Header.jsx"; // Using a popular icon library
+
+
 export const NotFoundPage = () => {
     return (
         <>
-            <div className="max-w-[50rem] flex flex-col mx-auto size-full">
-                {/* ========== HEADER ========== */}
-                <header className="mb-auto flex justify-center z-50 w-full py-4">
-                    <nav className="px-4 sm:px-6 lg:px-8">
-                        <a
-                            className="flex-none text-xl font-semibold sm:text-3xl"
-                            href="#"
-                            aria-label="Brand"
-                        >
-                            Brand
-                        </a>
-                    </nav>
-                </header>
-                {/* ========== END HEADER ========== */}
-                {/* ========== MAIN CONTENT ========== */}
-                <main id="content">
-                    <div className="text-center py-10 px-4 sm:px-6 lg:px-8">
-                        <h1 className="block text-7xl font-bold text-gray-800 sm:text-9xl">
-                            404
-                        </h1>
-                        <p className="mt-3 text-gray-600">Oops, something went wrong.</p>
-                        <p className="text-gray-600">Sorry, we couldn't find your page.</p>
-                        <div className="mt-5 flex flex-col justify-center items-center gap-2 sm:flex-row sm:gap-3">
-                            <a
-                                className="w-full sm:w-auto py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
-                                href="../examples.html"
-                            >
-                                <svg
-                                    className="shrink-0 size-4"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width={24}
-                                    height={24}
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="m15 18-6-6 6-6"/>
-                                </svg>
-                                Back to examples
-                            </a>
+            <Header />
+            <div className="flex flex-col min-h-screen bg-slate-100 dark:bg-slate-900 text-slate-900 dark:text-slate-50">
+
+                {/* Main Content */}
+                <main
+                    id="content"
+                    className="flex-grow flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+                >
+                    <div className="max-w-lg w-full text-center space-y-8">
+                        {/* Optional: A thematic icon */}
+                        <AlertTriangle
+                            className="mx-auto h-16 w-16 text-amber-500 dark:text-amber-400"
+                            aria-hidden="true"
+                        />
+
+                        <div className="space-y-3">
+                            <h1 className="text-7xl sm:text-9xl font-extrabold text-slate-800 dark:text-slate-200 tracking-tight">
+                                404
+                            </h1>
+                            <p className="text-2xl sm:text-3xl font-semibold text-slate-700 dark:text-slate-300">
+                                Page Not Found
+                            </p>
+                            <p className="text-md text-slate-600 dark:text-slate-400">
+                                Oops! The page you are looking for doesn't exist. It might have
+                                been moved, deleted, or you might have mistyped the URL.
+                            </p>
                         </div>
+
+                        <Link
+                            to="/" // Navigate to the homepage or a relevant dashboard
+                            className="inline-flex items-center justify-center px-6 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 border border-transparent rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-slate-900 transition-colors duration-150"
+                        >
+                            <ArrowLeft className="mr-2 h-5 w-5" aria-hidden="true" />
+                            Go to Homepage
+                        </Link>
                     </div>
                 </main>
-                {/* ========== END MAIN CONTENT ========== */}
-                {/* ========== FOOTER ========== */}
-                <footer className="mt-auto text-center py-5">
-                    <div className="max-w-[85rem] mx-auto px-4 sm:px-6 lg:px-8">
-                        <p className="text-sm text-gray-500">© All Rights Reserved. 2022.</p>
-                    </div>
-                </footer>
-                {/* ========== END FOOTER ========== */}
             </div>
+            {/* Footer */}
+            <Footer />
         </>
-    )
-}
+    );
+};

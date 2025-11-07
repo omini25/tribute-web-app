@@ -224,6 +224,7 @@ export default function Settings() {
                                             id="email-notifications"
                                             checked={notifications.email}
                                             onCheckedChange={() => handleNotificationToggle("email")}
+                                            className="border border-[#e5e0d9]"
                                         />
                                     </div>
                                     <div className="flex items-center justify-between">
@@ -237,6 +238,7 @@ export default function Settings() {
                                             id="sms-notifications"
                                             checked={notifications.sms}
                                             onCheckedChange={() => handleNotificationToggle("sms")}
+                                            className="border border-[#e5e0d9]"
                                         />
                                     </div>
                                     <div className="flex items-center justify-between">
@@ -250,6 +252,7 @@ export default function Settings() {
                                             id="push-notifications"
                                             checked={notifications.push}
                                             onCheckedChange={() => handleNotificationToggle("push")}
+                                            className="border border-[#e5e0d9]"
                                         />
                                     </div>
                                 </CardContent>

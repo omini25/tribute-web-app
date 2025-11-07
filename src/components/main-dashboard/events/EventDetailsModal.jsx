@@ -142,9 +142,9 @@ export function EventDetailsModal({ event, isOpen, onClose, onDelete }) {
                                     <div className="flex items-center text-muted-foreground">
                                         <Users className="mr-2 h-5 w-5 flex-shrink-0" />
                                         <span>
-                      {event.event_type?.is_private
-                          ? "Private Event"
-                          : "Public Event"}
+                      {JSON.parse(event.event_type).is_private
+                              ? "Private Event"
+                              : "Public Event"}
                     </span>
                                     </div>
                                 </div>

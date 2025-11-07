@@ -85,12 +85,10 @@ export default function MessagesPage() {
         }
     };
 
-    console.log(messages)
-
 
     const handleMarkAsRead = async (messageId, isRead = true) => {
         try {
-            await axios.put(`${server}/messages/${messageId}`, {
+            await axios.put(`${server}/messages/${messageId}/read`, {
                 is_read: isRead
             });
 
@@ -140,28 +138,37 @@ export default function MessagesPage() {
         }
     };
 
-    const handleSendReply = async replyData => {
-        try {
-            await axios.post(`${server}/messages/reply`, {
-                message_id: selectedMessage.id,
-                ...replyData
-            });
+   const handleSendReply = async replyData => {
+       try {
+           // Validate message content
+           if (!replyData?.message?.trim()) {
+               throw new Error('Message content is required');
+           }
 
-            toast({
-                title: "Reply Sent",
-                description: "Your reply has been sent successfully."
-            });
+           console.log('Sending reply:', replyData); // Debug log
 
-            setIsReplyModalOpen(false);
-        } catch (error) {
-            console.error("Error sending reply:", error);
-            toast({
-                title: "Error",
-                description: "Failed to send reply. Please try again.",
-                variant: "destructive"
-            });
-        }
-    };
+           await axios.post(`${server}/messages/reply/${selectedMessage.id}`, {
+               message: replyData.message.trim()
+           });
+
+           await fetchMessages();
+
+           toast({
+               title: "Reply Sent",
+               description: "Your reply has been sent successfully."
+           });
+
+           setIsReplyModalOpen(false);
+       } catch (error) {
+           const errorMessage = error.response?.data?.message || error.message || "Failed to send reply";
+           console.error("Error sending reply:", error);
+           toast({
+               title: "Error",
+               description: errorMessage,
+               variant: "destructive"
+           });
+       }
+   };
 
     const filteredMessages = messages.filter(message => {
         const matchesSearch =
@@ -228,7 +235,7 @@ export default function MessagesPage() {
                     <Button
                         onClick={fetchMessages}
                         variant="outline"
-                        className="flex items-center gap-2"
+                        className="flex items-center gap-2 bg-[#fcd34d] hover:bg-[#e09a39] text-white"
                     >
                         <RefreshCw className="h-4 w-4" />
                         Refresh
@@ -265,12 +272,27 @@ export default function MessagesPage() {
                                     defaultValue="all"
                                     value={filterType}
                                     onValueChange={setFilterType}
-                                    className="w-full"
+                                    className="w-full "
                                 >
                                     <TabsList className="grid w-full grid-cols-3">
-                                        <TabsTrigger value="all">All</TabsTrigger>
-                                        <TabsTrigger value="unread">Unread</TabsTrigger>
-                                        <TabsTrigger value="read">Read</TabsTrigger>
+                                        <TabsTrigger
+                                            value="all"
+                                            className={filterType === 'all' ? "bg-[#fcd34d] hover:bg-[#e09a39] text-white" : ""}
+                                        >
+                                            All
+                                        </TabsTrigger>
+                                        <TabsTrigger
+                                            value="unread"
+                                            className={filterType === 'unread' ? "bg-[#fcd34d] hover:bg-[#e09a39] text-white" : ""}
+                                        >
+                                            Unread
+                                        </TabsTrigger>
+                                        <TabsTrigger
+                                            value="read"
+                                            className={filterType === 'read' ? "bg-[#fcd34d] hover:bg-[#e09a39] text-white" : ""}
+                                        >
+                                            Read
+                                        </TabsTrigger>
                                     </TabsList>
                                 </Tabs>
 
@@ -278,7 +300,7 @@ export default function MessagesPage() {
                                     <SelectTrigger className="w-full sm:w-[180px]">
                                         <SelectValue placeholder="Sort by" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className={`bg-white`}>
                                         <SelectItem value="date-desc">Newest first</SelectItem>
                                         <SelectItem value="date-asc">Oldest first</SelectItem>
                                         <SelectItem value="sender-asc">Sender (A-Z)</SelectItem>
@@ -363,15 +385,21 @@ export default function MessagesPage() {
 
                     <div className="lg:col-span-2">
                         {selectedMessage ? (
-                            <MessageView
-                                message={selectedMessage}
-                                onClose={closeMessageView}
-                                onReply={() => setIsReplyModalOpen(true)}
-                                onDelete={() => handleDeleteMessage(selectedMessage.id)}
-                                onMarkAsUnread={() =>
-                                    handleMarkAsRead(selectedMessage.id, false)
-                                }
-                            />
+                            <>
+                                <MessageView
+                                    message={selectedMessage}
+                                    onClose={closeMessageView}
+                                    onReply={() => setIsReplyModalOpen(true)}
+                                    onDelete={() => handleDeleteMessage(selectedMessage.id)}
+                                    onMarkAsUnread={() => handleMarkAsRead(selectedMessage.id, false)}
+                                />
+                                <ReplyModal
+                                    isOpen={isReplyModalOpen}
+                                    onClose={() => setIsReplyModalOpen(false)}
+                                    onSend={handleSendReply}
+                                    recipient={selectedMessage}
+                                />
+                            </>
                         ) : (
                             <div className="h-full flex items-center justify-center border rounded-lg p-8">
                                 <div className="text-center">
@@ -388,14 +416,7 @@ export default function MessagesPage() {
                     </div>
                 </div>
 
-                {selectedMessage && (
-                    <ReplyModal
-                        isOpen={isReplyModalOpen}
-                        onClose={() => setIsReplyModalOpen(false)}
-                        onSend={handleSendReply}
-                        recipient={selectedMessage}
-                    />
-                )}
+
             </CardContent>
         </div>
     );

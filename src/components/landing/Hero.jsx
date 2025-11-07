@@ -137,8 +137,8 @@ export default function Hero() {
                         onClick={() => setCurrentSlide(index)}
                         className={`w-2.5 h-2.5 rounded-full transition-all ${
                             index === currentSlide
-                                ? "bg-[#786f66] w-8"
-                                : "bg-[#786f66]/40 hover:bg-[#786f66]/60"
+                                ? "bg-[#fcd34d] w-8"
+                                : "bg-[#fcd34d]/40 hover:bg-[#fcd34d]/60"
                         }`}
                         aria-label={`Go to slide ${index + 1}`}
                     />
@@ -162,11 +162,11 @@ export default function Hero() {
                         In Loving Memory
                     </h1>
 
-                    <p className="text-lg md:text-xl text-[#2a3342] font-light max-w-2xl mx-auto leading-relaxed drop-shadow-sm bg-[#f5f0ea]/30 backdrop-blur-sm p-4 rounded-lg">
-                        A beautiful online space where you can honor and celebrate the life
-                        of your loved one. Share cherished memories, photos, and stories
-                        that will preserve their legacy forever.
-                    </p>
+                    {/*<p className="text-lg md:text-xl text-[#2a3342] font-light max-w-2xl mx-auto leading-relaxed drop-shadow-sm bg-[#f5f0ea]/30 backdrop-blur-sm p-4 rounded-lg">*/}
+                    {/*    A beautiful online space where you can Honour and celebrate the life*/}
+                    {/*    of your loved one. Share cherished memories, photos, and stories*/}
+                    {/*    that will preserve their legacy forever.*/}
+                    {/*</p>*/}
 
                     {/* Caption from current slide */}
                     {memorialImages[currentSlide]?.caption && (
@@ -178,14 +178,14 @@ export default function Hero() {
                     <div className="pt-6 flex flex-col sm:flex-row justify-center gap-4">
                         <Button
                             size="lg"
-                            className="bg-[#786f66] hover:bg-[#645a52] text-white border-none font-medium px-8"
+                            className="bg-[#fcd34d] hover:bg-[#fcd34d] text-white border-none font-medium px-8"
                         >
                             Create Memorial
                         </Button>
                         <Button
                             size="lg"
                             variant="outline"
-                            className="hidden sm:inline-flex border-[#786f66] text-[#786f66] hover:bg-[#f5f0ea]/70 hover:text-[#645a52] font-medium px-8 backdrop-blur-sm"
+                            className="hidden sm:inline-flex border-[#fcd34d] text-[#fcd34d] hover:bg-[#f5f0ea]/70 hover:text-[#fcd34d] font-medium px-8 backdrop-blur-sm"
                         >
                             View Examples
                         </Button>

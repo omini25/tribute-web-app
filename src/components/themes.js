@@ -1,4 +1,3 @@
-// import { LandingTributePageDark } from "../../pages/landing/LandingTributePageDark";
 import {LandingTributePage} from "../pages/landing/LandingTributePage.jsx";
 
 export const themes = {
@@ -12,17 +11,15 @@ export const themes = {
         layout:  LandingTributePage, // Default Landing Page
         // ...other layout components for other routes (LifePageLight, EventsPageLight etc.)
     },
-    // dark: {
-    //     name: 'Dark',  // Add a 'name' property
-    //     styles: {
-    //         backgroundColor: '#121212',
-    //         textColor: '#ffffff',
-    //         // ... other style properties
-    //     },
-    //     layout: LandingTributePageDark, // Use this component in place of LandingTributePage
-    //     // ...other layout components (LifePageDark, EventsPageDark, etc.)
-    // },
-    // ... other themes
+    dark: {
+        name: 'Dark',
+        styles: {
+            backgroundColor: '#121212',
+            textColor: '#ffffff',
+            // ... other style properties
+        },
+        layout: LandingTributePage, // For now, we can reuse the light layout
+    },
 };
 
 export const themeNames = Object.keys(themes);

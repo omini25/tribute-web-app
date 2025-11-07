@@ -1,6 +1,7 @@
-"use client"
+"use client" // This directive is for Next.js App Router, but might not cause issues here if not strictly enforced.
+             // However, since you're using react-router-dom, it's generally not needed for this file.
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+// import { useRouter } from "next/navigation" // REMOVE THIS LINE
 import { z } from "zod"
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -14,10 +15,11 @@ import {
     CardTitle
 } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import {Link} from "react-router-dom";
+import { Link, useParams, useSearchParams, useNavigate } from 'react-router-dom'; // ADD useNavigate
 import {AuthFooter} from "@/components/auth/AuthFooter.jsx";
 import {AuthHeader} from "@/components/auth/AuthHeader.jsx";
-import { useParams, useSearchParams } from 'react-router-dom';
+import {server} from "@/server.js";
+// const { useParams, useSearchParams } = require('react-router-dom'); // This line seems like a duplicate or incorrect import style, remove if present. The import above is correct.
 
 const formSchema = z
     .object({
@@ -34,10 +36,12 @@ const formSchema = z
         path: ["confirmPassword"]
     })
 
-export default function PasswordPage({ params }) {
-    const router = useRouter()
-    const { token } = useParams();
-    const [searchParams] = useSearchParams();
+// The 'params' prop here is not used because you correctly use `useParams` hook.
+// You can remove it from the function signature if it's not intended for other purposes.
+export default function PasswordPage() {
+    const navigate = useNavigate(); // USE THIS for navigation
+    const { token } = useParams(); // This is correct for getting URL parameters
+    const [searchParams] = useSearchParams(); // This is correct for getting query parameters
     const email = searchParams.get('email');
 
 
@@ -53,8 +57,12 @@ export default function PasswordPage({ params }) {
         // Validate the token when the component mounts
         const validateToken = async () => {
             try {
+                // Ensure your server is running and this endpoint is correct
+                // For a Vite/CRA setup, this would typically be a full URL to your backend
+                // or a proxied request. If your backend is also part of this Vite project
+                // and serving API routes, ensure the path is correct.
                 const response = await fetch(
-                    `/api/auth/reset-password/validate?token=${token}`
+                    `/api/auth/reset-password/validate?token=${token}` // This path implies a backend API route
                 )
                 const data = await response.json()
 
@@ -64,13 +72,19 @@ export default function PasswordPage({ params }) {
                     setError(data.message || "Invalid or expired reset link")
                 }
             } catch (err) {
-                setError("Failed to validate reset link")
+                setError("Failed to validate reset link. Please check your connection or try again.")
+                console.error("Token validation error:", err);
             } finally {
                 setIsValidatingToken(false)
             }
         }
 
-        validateToken()
+        if (token) { // Only validate if token exists
+            validateToken()
+        } else {
+            setError("No reset token provided.");
+            setIsValidatingToken(false);
+        }
     }, [token])
 
     const handleSubmit = async e => {
@@ -79,22 +93,29 @@ export default function PasswordPage({ params }) {
 
         try {
             // Validate the form data
-            const result = formSchema.parse({ password, confirmPassword })
+            formSchema.parse({ password, confirmPassword })
 
             setIsLoading(true)
 
             // Send the new password to the API
-            const response = await fetch("/api/auth/reset-password/reset", {
+            const response = await fetch(`${server}/reset-password`, { // Ensure 'server' variable is correctly defined and points to your Laravel backend URL
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Accept": "application/json" // Good practice to include Accept header
                 },
-                body: JSON.stringify({ token, password })
+                body: JSON.stringify({
+                    token,
+                    email,
+                    password,
+                    password_confirmation: confirmPassword // Send 'confirmPassword' value as 'password_confirmation'
+                })
             })
 
             const data = await response.json()
 
             if (!response.ok) {
+                // Use the specific message from Laravel if available
                 throw new Error(data.message || "Failed to reset password")
             }
 
@@ -103,7 +124,7 @@ export default function PasswordPage({ params }) {
 
             // Redirect to login page after a delay
             setTimeout(() => {
-                router.push("/login")
+                navigate("/login");
             }, 3000)
         } catch (err) {
             if (err instanceof z.ZodError) {
@@ -113,6 +134,7 @@ export default function PasswordPage({ params }) {
             } else {
                 setError("An unexpected error occurred")
             }
+            console.error("Password reset submission error:", err);
         } finally {
             setIsLoading(false)
         }
@@ -120,77 +142,81 @@ export default function PasswordPage({ params }) {
 
     if (isValidatingToken) {
         return (
-            <div className="container flex h-screen max-w-md items-center justify-center">
-                <Card className="w-full">
-                    <CardHeader>
-                        <CardTitle className="text-2xl">Reset Password</CardTitle>
-                        <CardDescription>Validating your reset link...</CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex justify-center py-6">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                    </CardContent>
-                </Card>
+            <div className="flex min-h-screen flex-col bg-white">
+                <AuthHeader />
+                <main className="flex-1 flex items-center justify-center bg-[#f8f4f0] py-16 sm:py-20 lg:py-24 px-4">
+                    <Card className="w-full max-w-md border-none shadow-lg bg-white">
+                        <CardHeader className="text-center">
+                            <CardTitle className="text-2xl font-serif font-medium text-[#2a3342]">Reset Password</CardTitle>
+                            <CardDescription className="text-sm text-muted-foreground mt-2">Validating your reset link...</CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex justify-center py-6">
+                            <Loader2 className="h-8 w-8 animate-spin text-[#fcd34d]" />
+                        </CardContent>
+                    </Card>
+                </main>
+                <AuthFooter />
             </div>
         )
     }
 
-    if (!isTokenValid) {
-        return (
-            <>
-                <AuthHeader />
-                <div className="container flex h-screen max-w-md items-center justify-center">
-                    <Card className="w-full">
-                        <CardHeader>
-                            <CardTitle className="text-2xl">Invalid Reset Link</CardTitle>
-                            <CardDescription>
-                                The password reset link is invalid or has expired.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Alert variant="destructive">
-                                <AlertCircle className="h-4 w-4" />
-                                <AlertDescription>{error}</AlertDescription>
-                            </Alert>
-                        </CardContent>
-                        <CardFooter className="flex justify-center">
-                            <Link to="/reset-password/request">
-                                <Button>Request a new reset link</Button>
-                            </Link>
-                        </CardFooter>
-                    </Card>
-                </div>
-                <AuthFooter />
-            </>
-        )
-    }
+    // if (!isTokenValid) {
+    //     return (
+    //         <div className="flex min-h-screen flex-col bg-white">
+    //             <AuthHeader />
+    //             <main className="flex-1 flex items-center justify-center bg-[#f8f4f0] py-16 sm:py-20 lg:py-24 px-4">
+    //                 <Card className="w-full max-w-md border-none shadow-lg bg-white">
+    //                     <CardHeader className="text-center">
+    //                         <CardTitle className="text-2xl font-serif font-medium text-[#2a3342]">Invalid Reset Link</CardTitle>
+    //                         <CardDescription className="text-sm text-muted-foreground mt-2">
+    //                             {error || "The password reset link is invalid or has expired."}
+    //                         </CardDescription>
+    //                     </CardHeader>
+    //                     <CardContent>
+    //                         <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-700">
+    //                             <AlertCircle className="h-4 w-4" />
+    //                             <AlertDescription>{error || "Please request a new password reset link."}</AlertDescription>
+    //                         </Alert>
+    //                     </CardContent>
+    //                     <CardFooter className="flex justify-center mt-6">
+    //                         <Button asChild className="bg-[#fcd34d] hover:bg-[#645a52] text-white">
+    //                             <Link to="/forgot-password">Request a new link</Link>
+    //                         </Button>
+    //                     </CardFooter>
+    //                 </Card>
+    //             </main>
+    //             <AuthFooter />
+    //         </div>
+    //     )
+    // }
 
     return (
-        <>
+        <div className="flex min-h-screen flex-col bg-white">
             <AuthHeader />
-            <div className="container flex h-screen max-w-md items-center justify-center">
-                <Card className="w-full">
-                    <CardHeader>
-                        <CardTitle className="text-2xl">Reset Password</CardTitle>
-                        <CardDescription>Enter your new password below.</CardDescription>
+            <main className="flex-1 flex items-center justify-center bg-[#f8f4f0] py-16 sm:py-20 lg:py-24 px-4">
+                <Card className="w-full max-w-md border-none shadow-lg bg-white">
+                    <CardHeader className="text-center">
+                        <CardTitle className="text-2xl font-serif font-medium text-[#2a3342]">Reset Password</CardTitle>
+                        <CardDescription className="text-sm text-muted-foreground mt-2">Enter your new password below.</CardDescription>
                     </CardHeader>
-                    <CardContent>
+                    <CardContent className="p-8 sm:p-10">
                         {success ? (
-                            <div className="space-y-4">
-                                <Alert className="bg-green-50 border-green-200">
+                            <div className="space-y-4 text-center">
+                                <Alert className="bg-green-50 border-green-200 text-green-700">
                                     <CheckCircle2 className="h-4 w-4 text-green-600" />
-                                    <AlertDescription className="text-green-800">
-                                        Your password has been reset successfully. You will be
-                                        redirected to the login page.
+                                    <AlertDescription>
+                                        Your password has been reset successfully.
                                     </AlertDescription>
                                 </Alert>
+                                <p className="text-sm text-muted-foreground">You will be redirected to the login page shortly.</p>
                                 <div className="flex justify-center">
-                                    <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                                    <Loader2 className="h-6 w-6 animate-spin text-[#fcd34d]" />
                                 </div>
                             </div>
                         ) : (
-                            <form onSubmit={handleSubmit} className="space-y-4">
+                            <form onSubmit={handleSubmit} className="space-y-6">
                                 <div className="space-y-2">
-                                    <label htmlFor="password" className="text-sm font-medium">
+                                    <label htmlFor="password" className="text-sm font-medium text-[#4a5568]">
                                         New Password
                                     </label>
                                     <Input
@@ -201,19 +227,19 @@ export default function PasswordPage({ params }) {
                                         onChange={e => setPassword(e.target.value)}
                                         required
                                         disabled={isLoading}
+                                        className="w-full border-gray-300 focus:border-[#fcd34d] focus:ring-[#fcd34d]"
                                     />
                                     <p className="text-xs text-muted-foreground">
-                                        Password must be at least 8 characters and include uppercase,
-                                        lowercase, and numbers.
+                                        Must be at least 8 characters and include uppercase, lowercase, and numbers.
                                     </p>
                                 </div>
 
                                 <div className="space-y-2">
                                     <label
                                         htmlFor="confirmPassword"
-                                        className="text-sm font-medium"
+                                        className="text-sm font-medium text-[#4a5568]"
                                     >
-                                        Confirm Password
+                                        Confirm New Password
                                     </label>
                                     <Input
                                         id="confirmPassword"
@@ -223,20 +249,22 @@ export default function PasswordPage({ params }) {
                                         onChange={e => setConfirmPassword(e.target.value)}
                                         required
                                         disabled={isLoading}
+                                        className="w-full border-gray-300 focus:border-[#fcd34d] focus:ring-[#fcd34d]"
                                     />
                                 </div>
 
-                                {error && (
-                                    <Alert variant="destructive">
-                                        <AlertDescription>{error}</AlertDescription>
-                                    </Alert>
-                                )}
+                                {/*{error && (*/}
+                                {/*    <Alert variant="destructive" className="bg-red-50 border-red-200 text-red-700">*/}
+                                {/*        <AlertCircle className="h-4 w-4" />*/}
+                                {/*        <AlertDescription>{error}</AlertDescription>*/}
+                                {/*    </Alert>*/}
+                                {/*)}*/}
 
-                                <Button type="submit" className="w-full" disabled={isLoading}>
+                                <Button type="submit" className="w-full bg-[#fcd34d] hover:bg-[#645a52] text-white" disabled={isLoading}>
                                     {isLoading ? (
                                         <>
                                             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Resetting...
+                                            Resetting Password...
                                         </>
                                     ) : (
                                         "Reset Password"
@@ -245,14 +273,16 @@ export default function PasswordPage({ params }) {
                             </form>
                         )}
                     </CardContent>
-                    <CardFooter className="flex justify-center">
-                        <Link to="/login" className="text-sm text-primary hover:underline">
-                            Back to Login
-                        </Link>
-                    </CardFooter>
+                    {!success && (
+                        <CardFooter className="flex justify-center pt-6">
+                            <Link to="/login" className="text-sm text-[#fcd34d] hover:text-[#645a52] font-medium">
+                                Back to Login
+                            </Link>
+                        </CardFooter>
+                    )}
                 </Card>
-            </div>
+            </main>
             <AuthFooter />
-        </>
+        </div>
     )
 }

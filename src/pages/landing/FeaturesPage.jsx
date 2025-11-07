@@ -1,5 +1,4 @@
 "use client"
-
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -15,55 +14,56 @@ import {
 } from "lucide-react"
 import Header from "@/components/landing/Header"
 import { Footer } from "@/components/landing/Footer"
+import { Link } from "react-router-dom";
 
 const features = [
     {
         icon: Heart,
         title: "Personalized Memorials",
         description:
-            "Create beautiful, customized memorial pages that truly reflect the life and legacy of your loved ones."
+            "Create beautiful, customized memorial pages that truly reflect the life and legacy of your loved ones.",
     },
     {
         icon: Users,
         title: "Collaborative Tributes",
         description:
-            "Invite family and friends to contribute their own stories, photos, and memories to create a rich, shared history."
+            "Invite family and friends to contribute their own stories, photos, and memories to create a rich, shared history.",
     },
     {
         icon: ImageIcon,
         title: "Multimedia Galleries",
         description:
-            "Upload and showcase unlimited photos and videos to create a vibrant visual history of cherished moments."
+            "Upload and showcase unlimited photos and videos to create a vibrant visual history of cherished moments.",
     },
     {
         icon: Calendar,
         title: "Interactive Timelines",
         description:
-            "Build interactive timelines to highlight key moments and milestones in your loved one's life journey."
+            "Build interactive timelines to highlight key moments and milestones in your loved one's life journey.",
     },
     {
         icon: Gift,
         title: "Virtual Candles & Gifts",
         description:
-            "Allow visitors to light virtual candles or leave symbolic gifts as gestures of remembrance and support."
+            "Allow visitors to light virtual candles or leave symbolic gifts as gestures of remembrance and support.",
     },
     {
         icon: Lock,
         title: "Privacy Controls",
         description:
-            "Manage who can view and contribute to the memorial with advanced privacy settings and moderation tools."
+            "Manage who can view and contribute to the memorial with advanced privacy settings and moderation tools.",
     },
     {
         icon: Globe,
         title: "Worldwide Accessibility",
         description:
-            "Share your memorial page with friends and family around the world, allowing global access to cherished memories."
+            "Share your memorial page with friends and family around the world, allowing global access to cherished memories.",
     },
     {
         icon: Headphones,
         title: "24/7 Support",
         description:
-            "Our dedicated support team is available around the clock to assist you with any questions or concerns."
+            "Our dedicated support team is available around the clock to assist you with any questions or concerns.",
     }
 ]
 
@@ -71,17 +71,17 @@ const howItWorks = [
     {
         icon: Gift,
         title: "Create an Account",
-        description: "Sign up for free and choose your memorial plan."
+        description: "Sign up for free and choose your memorial plan.",
     },
     {
         icon: ImageIcon,
         title: "Build Your Memorial",
-        description: "Add photos, stories, and details about your loved one's life."
+        description: "Add photos, stories, and details about your loved one's life.",
     },
     {
         icon: Users,
         title: "Share and Collaborate",
-        description: "Invite others to view and contribute to the memorial."
+        description: "Invite others to view and contribute to the memorial.",
     }
 ]
 
@@ -102,89 +102,30 @@ export default function FeaturesPage() {
 
 function HeroSection() {
     return (
-        <section className="relative min-h-[50vh] bg-[#f5f0ea]">
-            {/* Animated cloud background - use multiple layers for parallax effect */}
-            <div className="absolute inset-0 overflow-hidden">
-                {/* Background cloud layer - slowest moving */}
-                <div className="absolute inset-0 bg-repeat-x animate-cloud-slow"
-                     style={{
-                         backgroundImage: "url('/images/cloud-bg-layer1.png')",
-                         backgroundPosition: "0 80%",
-                         backgroundSize: "1200px auto",
-                     }}
+        <section className="relative bg-gradient-to-b from-gray-900 to-gray-800 text-white py-24 overflow-hidden">
+            {/* Background pattern */}
+            <div className="absolute inset-0 opacity-5">
+                <div
+                    className="absolute inset-0 bg-repeat"
+                    style={{
+                        backgroundImage: "url('/images/pattern.svg')",
+                        backgroundSize: "200px auto",
+                    }}
                 />
-
-                {/* Middle cloud layer - medium speed */}
-                <div className="absolute inset-0 bg-repeat-x animate-cloud-medium"
-                     style={{
-                         backgroundImage: "url('/images/cloud-bg-layer2.png')",
-                         backgroundPosition: "0 60%",
-                         backgroundSize: "1000px auto",
-                         opacity: 0.7,
-                     }}
-                />
-
-                {/* Foreground cloud layer - fastest moving */}
-                <div className="absolute inset-0 bg-repeat-x animate-cloud-fast"
-                     style={{
-                         backgroundImage: "url('/images/cloud-bg-layer3.png')",
-                         backgroundPosition: "0 90%",
-                         backgroundSize: "800px auto",
-                         opacity: 0.5,
-                     }}
-                />
-
-                <style jsx="true">{`
-                    @keyframes cloud-move-slow {
-                        0% { background-position: 0% 80%; }
-                        100% { background-position: 1200px 80%; }
-                    }
-                    @keyframes cloud-move-medium {
-                        0% { background-position: 0% 60%; }
-                        100% { background-position: 1000px 60%; }
-                    }
-                    @keyframes cloud-move-fast {
-                        0% { background-position: 0% 90%; }
-                        100% { background-position: 800px 90%; }
-                    }
-                    .animate-cloud-slow {
-                        animation: cloud-move-slow 60s linear infinite;
-                    }
-                    .animate-cloud-medium {
-                        animation: cloud-move-medium 40s linear infinite;
-                    }
-                    .animate-cloud-fast {
-                        animation: cloud-move-fast 30s linear infinite;
-                    }
-                `}</style>
             </div>
 
-            <div className="absolute inset-0 bg-gradient-to-r from-[#f5f0ea]/80 to-[#f5f0ea]/60 flex flex-col items-center justify-center text-center px-4">
-                <div className="max-w-4xl mx-auto space-y-8 relative">
-                    <h1 className="text-5xl md:text-6xl font-serif text-[#2a3342] tracking-wide">
-                        Our Features
-                    </h1>
+            <div className="container max-w-5xl mx-auto px-6 relative z-10 text-center">
+                <h1 className="text-5xl md:text-6xl font-serif font-semibold mb-6 tracking-tight">Our Features</h1>
+                <p className="text-2xl md:text-3xl text-gray-200 font-light mb-8">
+                    Discover the tools and features that make our memorial pages unique and meaningful.
+                </p>
+            </div>
 
-                    <p className="text-lg md:text-xl text-[#4a5568] font-light max-w-2xl mx-auto leading-relaxed">
-                        Discover the tools and features that make our memorial pages unique and meaningful
-                    </p>
-
-                    <div className="pt-6 flex flex-col sm:flex-row justify-center gap-4">
-                        <Button
-                            size="lg"
-                            className="bg-[#786f66] hover:bg-[#645a52] text-white border-none font-medium px-8"
-                        >
-                            Get Started
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="border-[#786f66] text-[#786f66] hover:bg-[#f5f0ea] hover:text-[#645a52] font-medium px-8"
-                        >
-                            View Examples
-                        </Button>
-                    </div>
-                </div>
+            {/* Wave divider */}
+            <div className="absolute bottom-0 left-0 right-0 transform translate-y-1">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 120" fill="#f9fafb">
+                    <path d="M0,96L80,80C160,64,320,32,480,32C640,32,800,64,960,69.3C1120,75,1280,53,1360,42.7L1440,32L1440,120L1360,120C1280,120,1120,120,960,120C800,120,640,120,480,120C320,120,160,120,80,120L0,120Z"></path>
+                </svg>
             </div>
         </section>
     )
@@ -192,14 +133,12 @@ function HeroSection() {
 
 function FeaturesSection() {
     return (
-        <section id="features" className="bg-[#f8f4f0] py-24">
-            <div className="container px-4 md:px-6 max-w-7xl mx-auto">
+        <section id="features" className="py-20 bg-gray-50">
+            <div className="container px-6 mx-auto max-w-7xl">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-serif font-medium tracking-wide sm:text-4xl md:text-5xl text-[#2a3342]">
-                        Our Features
-                    </h2>
-                    <p className="mx-auto mt-4 max-w-2xl text-[#4a5568] md:text-lg">
-                        Discover the tools and features that make our memorial pages unique and meaningful
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium text-gray-900 tracking-wide">Our Features</h2>
+                    <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+                        Discover the tools and features that make our memorial pages unique and meaningful.
                     </p>
                 </div>
                 <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
@@ -214,11 +153,13 @@ function FeaturesSection() {
 
 function FeatureCard({ icon: Icon, title, description }) {
     return (
-        <Card className="border-none shadow-md hover:shadow-lg transition-shadow duration-300 bg-white">
+        <Card className="border-none shadow-md hover:shadow-xl transition-all duration-300 bg-white transform hover:-translate-y-1 rounded-lg overflow-hidden">
             <CardContent className="p-6 flex flex-col items-center text-center">
-                <Icon className="h-12 w-12 text-[#786f66] mb-4" />
-                <h3 className="text-xl font-medium mb-2 text-[#2a3342]">{title}</h3>
-                <p className="text-[#4a5568]">{description}</p>
+                <div className="rounded-full p-3 bg-yellow-100 text-yellow-500 mb-4">
+                    <Icon className="h-8 w-8" />
+                </div>
+                <h3 className="text-xl font-medium text-gray-900 mb-2">{title}</h3>
+                <p className="text-gray-600">{description}</p>
             </CardContent>
         </Card>
     )
@@ -226,13 +167,11 @@ function FeatureCard({ icon: Icon, title, description }) {
 
 function HowItWorksSection() {
     return (
-        <section id="how-it-works" className="bg-white py-24">
-            <div className="container px-4 md:px-6 max-w-7xl mx-auto">
+        <section id="how-it-works" className="py-20 bg-white">
+            <div className="container px-6 mx-auto max-w-7xl">
                 <div className="text-center mb-16">
-                    <h2 className="text-3xl font-serif font-medium tracking-wide sm:text-4xl md:text-5xl text-[#2a3342]">
-                        How It Works
-                    </h2>
-                    <p className="mx-auto mt-4 max-w-2xl text-[#4a5568] md:text-lg">
+                    <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-medium text-gray-900 tracking-wide">How It Works</h2>
+                    <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
                         Creating a memorial is simple and meaningful. Follow these steps to get started.
                     </p>
                 </div>
@@ -249,44 +188,31 @@ function HowItWorksSection() {
 function StepCard({ icon: Icon, title, description, step }) {
     return (
         <div className="text-center">
-            <div
-                className="bg-primary text-primary-foreground rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+            <div className="bg-yellow-400 text-white rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4 shadow-md">
                 {step}
             </div>
-            <h3 className="text-xl font-semibold mb-2">{title}</h3>
-            <p className="text-muted-foreground">
-                {description}
-            </p>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">{title}</h3>
+            <p className="text-gray-600">{description}</p>
         </div>
     )
 }
 
 function CallToActionSection() {
     return (
-        <section className="relative overflow-hidden py-24 bg-[#2a3342] text-white">
-            <div className="container relative z-10 px-4 md:px-6 max-w-7xl mx-auto">
-                <div className="mx-auto max-w-4xl text-center">
-                    <h2 className="text-3xl font-serif font-medium tracking-wide sm:text-4xl md:text-5xl mb-6">
-                        Ready to Create a Lasting Tribute?
-                    </h2>
-                    <p className="mx-auto mb-8 max-w-2xl text-xl opacity-90">
-                        Join thousands of families who have created beautiful online memorials with our platform.
-                    </p>
-                    <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                        <Button
-                            size="lg"
-                            className="bg-white text-[#2a3342] hover:bg-gray-100 px-8"
-                        >
-                            Get Started
-                        </Button>
-                        <Button
-                            size="lg"
-                            variant="outline"
-                            className="border-white text-white hover:bg-white/10 px-8"
-                        >
-                            Learn More
-                        </Button>
-                    </div>
+        <section className="relative py-20 bg-gray-900 text-white">
+            <div className="container px-6 mx-auto max-w-4xl text-center">
+                <h2 className="text-3xl md:text-4xl font-serif font-medium mb-6">Ready to Create a Lasting Tribute?</h2>
+                <p className="mb-8 text-lg md:text-xl text-gray-300 max-w-2xl mx-auto">
+                    Join thousands of families who have created beautiful online memorials with our platform.
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center gap-4">
+                    <Button
+                        size="lg"
+                        className="bg-white text-gray-900 hover:bg-gray-100 px-8 rounded-full"
+                        asChild
+                    >
+                        <Link to="/signup">Get Started</Link>
+                    </Button>
                 </div>
             </div>
         </section>

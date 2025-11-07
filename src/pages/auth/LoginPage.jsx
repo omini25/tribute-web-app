@@ -138,7 +138,7 @@ function LoginSection({
                             {features.map((feature) => (
                                 <div key={feature} className="flex items-start">
                                     <div className="mr-4 mt-1 flex-shrink-0">
-                                        <div className="h-8 w-8 rounded-full bg-[#786f66] flex items-center justify-center">
+                                        <div className="h-8 w-8 rounded-full bg-[#fcd34d] flex items-center justify-center">
                                             <Check className="h-5 w-5 text-white" />
                                         </div>
                                     </div>
@@ -148,7 +148,7 @@ function LoginSection({
                         </div>
                         <div className="mt-12">
                             <Link to="/signup">
-                                <Button className="bg-[#786f66] hover:bg-[#645a52] text-white px-8">
+                                <Button className="bg-[#fcd34d] hover:bg-[#645a52] text-white px-8">
                                     Create a Memorial
                                 </Button>
                             </Link>
@@ -175,7 +175,7 @@ function LoginSection({
                                             type="email"
                                             placeholder="Enter your email address"
                                             required
-                                            className="w-full border-gray-300 focus:border-[#786f66] focus:ring-[#786f66]"
+                                            className="w-full border-gray-300 focus:border-[#fcd34d] focus:ring-[#fcd34d]"
                                             value={email}
                                             onChange={(e) => setEmail(e.target.value)}
                                         />
@@ -191,7 +191,7 @@ function LoginSection({
                                             </Label>
                                             <Link
                                                 to="/forgot-password"
-                                                className="text-sm text-[#786f66] hover:text-[#645a52]"
+                                                className="text-sm text-[#fcd34d] hover:text-[#645a52]"
                                             >
                                                 Forgot your password?
                                             </Link>
@@ -202,7 +202,7 @@ function LoginSection({
                                                 type={showPassword ? "text" : "password"}
                                                 placeholder="Enter your password"
                                                 required
-                                                className="w-full border-gray-300 focus:border-[#786f66] focus:ring-[#786f66]"
+                                                className="w-full border-gray-300 focus:border-[#fcd34d] focus:ring-[#fcd34d]"
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
                                             />
@@ -222,7 +222,7 @@ function LoginSection({
 
                                     <Button
                                         type="submit"
-                                        className="w-full mt-8 bg-[#786f66] hover:bg-[#645a52] text-white"
+                                        className="w-full mt-8 bg-[#fcd34d] hover:bg-[#645a52] text-white"
                                         disabled={loading}
                                     >
                                         {loading ? "Loading..." : "Log in"}
@@ -232,7 +232,7 @@ function LoginSection({
                                 <div className="mt-8 text-center">
                                     <p className="text-[#4a5568]">
                                         Don&#39;t have an account?{" "}
-                                        <Link to="/signup" className="text-[#786f66] hover:text-[#645a52] font-medium">
+                                        <Link to="/signup" className="text-[#fcd34d] hover:text-[#645a52] font-medium">
                                             Create an account
                                         </Link>
                                     </p>

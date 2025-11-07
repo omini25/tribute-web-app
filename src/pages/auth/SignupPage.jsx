@@ -5,14 +5,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import DeceasedInfoForm from "@/components/auth/DeceasedInfoForm"
 import UserInfoForm from "@/components/auth/UserInfoForm"
 import PlanSelection from "@/components/auth/PlanSelection"
-import Header from "@/components/landing/Header"
-import { Footer } from "@/components/landing/Footer"
 import { toast } from "react-hot-toast"
 import { server } from "@/server.js"
 import axios from "axios"
 import { Check } from "lucide-react"
 import { AuthHeader } from "@/components/auth/AuthHeader.jsx";
 import { AuthFooter } from "@/components/auth/AuthFooter.jsx"
+import { Link } from "react-router-dom"
 
 export const SignupPage = () => {
     const [step, setStep] = useState(1)
@@ -26,7 +25,6 @@ export const SignupPage = () => {
         };
     });
 
-
     const updateFormData = (section, data) => {
         setFormData(prev => {
             const newData = { ...prev, [section]: { ...prev[section], ...data } };
@@ -35,24 +33,25 @@ export const SignupPage = () => {
         });
     };
 
-
     const nextStep = () => {
         if (step === 1 && (
             !formData.deceased.dateOfBirth ||
-            !formData.deceased.dateOfDeath
+            !formData.deceased.dateOfDeath ||
+            !formData.deceased.deadFirstName ||
+            !formData.deceased.deadLastName ||
+            !formData.deceased.relationshipWithBereaved
         )) {
-            // toast.error("Please fill all required fields in the Deceased Information form.")
+            toast.error("Please fill all required fields in the Deceased Information form.")
             return
         }
         if (step === 2 && (
             !formData.user.firstName ||
             !formData.user.lastName ||
             !formData.user.email ||
-            !formData.user.phone ||
             !formData.user.password ||
             !formData.user.confirmPassword
         )) {
-            // toast.error("Please fill all required fields in the User Information form.")
+            toast.error("Please fill all required fields in the User Information form.")
             return
         }
         setStep(prev => Math.min(prev + 1, 3))
@@ -62,13 +61,18 @@ export const SignupPage = () => {
 
     const handleFinalSubmit = async (data) => {
         updateFormData("plan", data);
+
+        // Prepare the payload with proper data types
         const payload = {
             ...formData.deceased,
             ...formData.user,
-            plan: data.plan,
-            theme: data.theme,
-            amount: data.amount,
+            plan: String(data.plan || ''),
+            theme: String(data.theme || ''),
+            amount: Number(data.amount || 0),
         };
+
+        // Remove confirmPassword from payload as it's not needed in backend
+        delete payload.confirmPassword;
 
         try {
             const response = await axios.post(`${server}/register`, payload, {
@@ -77,16 +81,30 @@ export const SignupPage = () => {
                 },
             });
 
-            if (response.status === 200) {
-                // Clear form data from localStorage on successful submission
+            if (response.status === 200 || response.status === 201) {
                 localStorage.removeItem('signupFormData');
-                window.location.href = response.data.redirect_url;
+                if (response.data.redirect_url) {
+                    window.location.href = response.data.redirect_url;
+                } else {
+                    toast.success("Registration successful!");
+                    window.location.href = "/login";
+                }
             } else {
                 toast.error(response.data.message || "An error occurred during signup.");
             }
         } catch (error) {
-            toast.error("An error occurred during signup.");
             console.error("Error during signup:", error);
+            if (error.response?.data?.errors) {
+                // Display specific validation errors
+                const errors = error.response.data.errors;
+                Object.keys(errors).forEach(key => {
+                    toast.error(errors[key][0]);
+                });
+            } else if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("An error occurred during signup.");
+            }
         }
     };
 
@@ -100,7 +118,6 @@ export const SignupPage = () => {
         <div className="flex min-h-screen flex-col bg-white">
             <AuthHeader />
             <main className="flex-1">
-                {/*<HeroSection />*/}
                 <FormSection
                     step={step}
                     steps={steps}
@@ -183,7 +200,7 @@ function HeroSection() {
                     </h1>
 
                     <p className="text-lg md:text-xl text-[#4a5568] font-light max-w-2xl mx-auto">
-                        Honor your loved one with a beautiful online memorial
+                        Honour your loved one with a beautiful online memorial
                     </p>
                 </div>
             </div>
@@ -194,7 +211,7 @@ function HeroSection() {
 function FormSection({ step, steps, formData, updateFormData, nextStep, prevStep, handleFinalSubmit }) {
     return (
         <section className="bg-[#f8f4f0] py-24">
-            <div className="container px-4 md:px-6 max-w-3xl mx-auto">
+            <div className="container px-4 md:px-6 max-w-6xl mx-auto">
                 <div className="mb-12">
                     <div className="flex items-center justify-center mb-8">
                         {steps.map((s, i) => (
@@ -202,8 +219,8 @@ function FormSection({ step, steps, formData, updateFormData, nextStep, prevStep
                                 <div
                                     className={`w-10 h-10 rounded-full flex items-center justify-center
                                         ${i + 1 <= step
-                                        ? "bg-[#786f66] text-white"
-                                        : "bg-white border border-[#786f66] text-[#786f66]"
+                                        ? "bg-[#fcd34d] text-white"
+                                        : "bg-white border border-[#fcd34d] text-[#fcd34d]"
                                     }
                                     `}
                                 >
@@ -212,7 +229,7 @@ function FormSection({ step, steps, formData, updateFormData, nextStep, prevStep
                                 {i < steps.length - 1 && (
                                     <div
                                         className={`h-1 w-16 mx-2
-                                            ${i + 1 < step ? "bg-[#786f66]" : "bg-gray-300"}
+                                            ${i + 1 < step ? "bg-[#fcd34d]" : "bg-gray-300"}
                                         `}
                                     />
                                 )}
@@ -232,7 +249,7 @@ function FormSection({ step, steps, formData, updateFormData, nextStep, prevStep
                     <Progress
                         value={step * 33.33}
                         className="h-2 bg-gray-200"
-                        indicatorClassName="bg-[#786f66]"
+                        indicatorClassName="bg-[#fcd34d]"
                     />
                 </div>
 
@@ -265,7 +282,7 @@ function FormSection({ step, steps, formData, updateFormData, nextStep, prevStep
                                 <Button
                                     onClick={prevStep}
                                     variant="outline"
-                                    className="border-[#786f66] text-[#786f66] hover:bg-[#f5f0ea] hover:text-[#645a52]"
+                                    className="border-[#fcd34d] text-[#fcd34d] hover:bg-[#f5f0ea] hover:text-[#645a52]"
                                 >
                                     Previous
                                 </Button>
@@ -280,7 +297,7 @@ function FormSection({ step, steps, formData, updateFormData, nextStep, prevStep
                             {/*            }*/}
                             {/*            nextStep()*/}
                             {/*        }}*/}
-                            {/*        className="ml-auto bg-[#786f66] hover:bg-[#645a52] text-white"*/}
+                            {/*        className="ml-auto bg-[#fcd34d] hover:bg-[#645a52] text-white"*/}
                             {/*    >*/}
                             {/*        Next*/}
                             {/*    </Button>*/}
@@ -299,7 +316,7 @@ function FormSection({ step, steps, formData, updateFormData, nextStep, prevStep
                             {/*            }*/}
                             {/*            nextStep()*/}
                             {/*        }}*/}
-                            {/*        className="ml-auto bg-[#786f66] hover:bg-[#645a52] text-white"*/}
+                            {/*        className="ml-auto bg-[#fcd34d] hover:bg-[#645a52] text-white"*/}
                             {/*    >*/}
                             {/*        Next*/}
                             {/*    </Button>*/}
@@ -328,14 +345,14 @@ function SupportSection() {
                             size="lg"
                             className="bg-white text-[#2a3342] hover:bg-gray-100 px-8"
                         >
-                            Contact Support
+                            <Link to="/contact">Contact Us</Link>
                         </Button>
                         <Button
                             size="lg"
                             variant="outline"
                             className="border-white text-white hover:bg-white/10 px-8"
                         >
-                            View FAQ
+                            <Link to="/faq">View FAQ</Link>
                         </Button>
                     </div>
                 </div>

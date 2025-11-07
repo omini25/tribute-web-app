@@ -52,6 +52,8 @@ export default function Events() {
     const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false)
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
 
+    console.log(events)
+
     const eventsPerPage = 9
     const user = JSON.parse(localStorage.getItem("user") || "{}")
 
@@ -138,10 +140,10 @@ export default function Events() {
             return matchesSearch && new Date(event.event_date) < new Date()
         }
         if (filterType === "private") {
-            return matchesSearch && event.event_type.is_private
+            return matchesSearch && JSON.parse(event.event_type).is_private
         }
         if (filterType === "public") {
-            return matchesSearch && !event.event_type.is_private
+            return matchesSearch && !JSON.parse(event.event_type).is_private
         }
 
         return matchesSearch
@@ -186,7 +188,12 @@ export default function Events() {
                                 Memorial Events
                             </CardTitle>
                             <CardDescription className="text-warm-600">
-                                Memorial events are a way to celebrate and remember the life of a loved one. You can create, view, and manage events here.
+                                <span className="hidden sm:inline">
+                                    Memorial events are a way to celebrate and remember the life of a loved one. You can create, view, and manage events here.
+                                </span>
+                                                            <span className="sm:hidden">
+                                    Celebrate & manage memorial events.
+                                </span>
                             </CardDescription>
                         </div>
                         <Button
@@ -202,27 +209,38 @@ export default function Events() {
                         <Tabs defaultValue="all" className="w-full">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
                                 <TabsList>
-                                    <TabsTrigger value="all" onClick={() => setFilterType("all")}>
+                                    <TabsTrigger
+                                        value="all"
+                                        onClick={() => setFilterType("all")}
+                                        className={filterType === 'all' ? "bg-[#fcd34d] hover:bg-[#e09a39] text-white" : ""}
+                                    >
                                         All Events
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="upcoming"
                                         onClick={() => setFilterType("upcoming")}
+                                        className={filterType === 'upcoming' ? "bg-[#fcd34d] hover:bg-[#e09a39] text-white" : ""}
                                     >
                                         Upcoming
                                     </TabsTrigger>
-                                    <TabsTrigger value="past" onClick={() => setFilterType("past")}>
+                                    <TabsTrigger
+                                        value="past"
+                                        onClick={() => setFilterType("past")}
+                                        className={filterType === 'past' ? "bg-[#fcd34d] hover:bg-[#e09a39] text-white" : ""}
+                                    >
                                         Past
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="private"
                                         onClick={() => setFilterType("private")}
+                                        className={filterType === 'private' ? "bg-[#fcd34d] hover:bg-[#e09a39] text-white" : ""}
                                     >
                                         Private
                                     </TabsTrigger>
                                     <TabsTrigger
                                         value="public"
                                         onClick={() => setFilterType("public")}
+                                        className={filterType === 'public' ? "bg-[#fcd34d] hover:bg-[#e09a39] text-white" : ""}
                                     >
                                         Public
                                     </TabsTrigger>
@@ -412,7 +430,14 @@ function EventCard({ event, onView, onDelete }) {
                             {event.description?.length > 60 ? "..." : ""}
                         </p>
                     </div>
-                    <Badge variant={isUpcoming ? "default" : "secondary"}>
+                    {/* Updated Badge component */}
+                    <Badge
+                        className={
+                            isUpcoming
+                                ? "bg-green-100 text-green-700 dark:bg-green-700 dark:text-green-200" // Greenish for Upcoming
+                                : "bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-100"     // Grayish for Past
+                        }
+                    >
                         {isUpcoming ? "Upcoming" : "Past"}
                     </Badge>
                 </div>
@@ -426,8 +451,8 @@ function EventCard({ event, onView, onDelete }) {
                     <div className="flex items-center text-muted-foreground">
                         <Calendar className="mr-2 h-4 w-4 flex-shrink-0" />
                         <span className="text-sm">
-              {format(new Date(event.event_date), "MMMM d, yyyy")}
-            </span>
+                          {format(new Date(event.event_date), "MMMM d, yyyy")}
+                        </span>
                     </div>
                     <div className="flex items-center text-muted-foreground">
                         <Clock className="mr-2 h-4 w-4 flex-shrink-0" />
@@ -436,8 +461,8 @@ function EventCard({ event, onView, onDelete }) {
                     <div className="flex items-center text-muted-foreground">
                         <Users className="mr-2 h-4 w-4 flex-shrink-0" />
                         <span className="text-sm">
-              {event.event_type?.is_private ? "Private Event" : "Public Event"}
-            </span>
+                            {JSON.parse(event.event_type).is_private ? "Private Event" : "Public Event"}
+                        </span>
                     </div>
                 </div>
             </CardContent>
@@ -450,7 +475,7 @@ function EventCard({ event, onView, onDelete }) {
                     variant="destructive"
                     size="sm"
                     onClick={e => {
-                        e.stopPropagation()
+                        e.stopPropagation() // Keep this to prevent card click if needed
                         onDelete()
                     }}
                 >

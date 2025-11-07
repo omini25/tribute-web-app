@@ -62,7 +62,7 @@ export function NatureTheme({ memorialData }) {
                             </CardHeader>
                             <CardContent>
                                 <p className="mb-4">
-                                    Honor {memorialData.name}'s love for nature by planting a tree
+                                    Honour {memorialData.name}'s love for nature by planting a tree
                                     through:
                                 </p>
                                 <h3 className="text-lg font-semibold mb-2">

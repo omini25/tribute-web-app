@@ -189,7 +189,15 @@ export default function DeceasedInfoForm({ onSubmit }) {
                         <SelectItem value="sibling">Sibling</SelectItem>
                         <SelectItem value="child">Child</SelectItem>
                         <SelectItem value="spouse">Spouse</SelectItem>
+                        <SelectItem value="uncle">Uncle</SelectItem>
+                        <SelectItem value="aunt">Aunt</SelectItem>
+                        <SelectItem value="nephew">Nephew</SelectItem>
+                        <SelectItem value="niece">Niece</SelectItem>
+                        <SelectItem value="in-law">In-Law</SelectItem>
+                        <SelectItem value="grandchild">Grandchild</SelectItem>
                         <SelectItem value="friend">Friend</SelectItem>
+                        <SelectItem value="college">College</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                 </Select>
             </div>

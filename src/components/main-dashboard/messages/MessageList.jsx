@@ -77,41 +77,25 @@ function MessageItem({
         </span>
             </div>
 
-            <h4
-                className={cn(
-                    "text-sm mb-1 truncate",
-                    !message.is_read && "font-medium"
-                )}
-            >
+            <h4 className="text-sm mb-1 truncate">
                 {message.subject}
             </h4>
 
             <p className="text-xs text-muted-foreground line-clamp-2">
-                {message.content}
+                {message.description}
             </p>
 
             <div className="flex justify-end mt-2 gap-1">
-                {!message.is_read && (
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7"
-                        onClick={handleMarkAsRead}
-                        title="Mark as read"
-                    >
-                        <MailOpen className="h-4 w-4" />
-                    </Button>
-                )}
                 <Button
                     variant="ghost"
                     size="icon"
                     className="h-7 w-7 text-destructive hover:text-destructive"
                     onClick={handleDelete}
-                    title="Delete message"
+                    title="Delete ticket"
                 >
                     <Trash2 className="h-4 w-4" />
                 </Button>
             </div>
         </div>
-    )
+    );
 }

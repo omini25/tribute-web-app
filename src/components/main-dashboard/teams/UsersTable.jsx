@@ -20,6 +20,8 @@ import {
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
 import { EmptyUsersState } from "@/components/main-dashboard/teams/EmptyUsersState.jsx"
+import {server} from "@/server.js"
+
 
 export function UsersTable({ onAddUser }) {
     const [users, setUsers] = useState([])
@@ -27,7 +29,7 @@ export function UsersTable({ onAddUser }) {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get("/api/users")
+                const response = await axios.get(`${server}/admin/view-teams/${id}`)
                 setUsers(response.data)
             } catch (error) {
                 console.error("Error fetching users:", error)

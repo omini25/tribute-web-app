@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
-// import { Calendar } from "@/components/ui/calendar"
+import { DayPicker } from "react-day-picker";
 import {
     Popover,
     PopoverContent,
@@ -42,7 +42,6 @@ export function CreateEventModal({ isOpen, onClose, onSubmit }) {
             [name]: value
         }))
 
-        // Clear error when user types
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,
@@ -74,49 +73,30 @@ export function CreateEventModal({ isOpen, onClose, onSubmit }) {
 
     const validateForm = () => {
         const newErrors = {}
-
-        if (!formData.title.trim()) {
-            newErrors.title = "Title is required"
-        }
-
-        if (!formData.event_location.trim()) {
-            newErrors.event_location = "Location is required"
-        }
-
-        if (!formData.event_date) {
-            newErrors.event_date = "Date is required"
-        }
-
-        if (!formData.event_time.trim()) {
-            newErrors.event_time = "Time is required"
-        }
-
+        if (!formData.title.trim()) newErrors.title = "Title is required"
+        if (!formData.event_location.trim()) newErrors.event_location = "Location is required"
+        if (!formData.event_date) newErrors.event_date = "Date is required"
+        if (!formData.event_time.trim()) newErrors.event_time = "Time is required"
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
     }
 
     const handleSubmit = e => {
         e.preventDefault()
-
         if (validateForm()) {
-            // Create event_type object to match the expected structure
             const eventData = {
                 ...formData,
-                event_type: {
-                    is_private: formData.is_private
-                }
+                event_type: { is_private: formData.is_private }
             }
-
-            // Remove the is_private from the root level
             delete eventData.is_private
-
             onSubmit(eventData)
         }
     }
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="sm:max-w-[525px] bg-white">
+            {/* Adjusted DialogContent for better responsiveness */}
+            <DialogContent className="w-full max-w-md p-4 sm:max-w-lg sm:p-6 bg-white rounded-lg">
                 <DialogHeader>
                     <DialogTitle>Create New Event</DialogTitle>
                     <DialogDescription>
@@ -124,7 +104,8 @@ export function CreateEventModal({ isOpen, onClose, onSubmit }) {
                     </DialogDescription>
                 </DialogHeader>
 
-                <form onSubmit={handleSubmit} className="space-y-4 py-4">
+                {/* Added overflow-y-auto for scrollable content on small screens */}
+                <form onSubmit={handleSubmit} className="space-y-4 py-4 max-h-[70vh] sm:max-h-[80vh] overflow-y-auto pr-2">
                     <div className="space-y-2">
                         <Label htmlFor="title">Event Title</Label>
                         <Input
@@ -151,6 +132,7 @@ export function CreateEventModal({ isOpen, onClose, onSubmit }) {
                         />
                     </div>
 
+                    {/* Date and Time fields already stack on mobile due to grid-cols-1 default */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="event_date">Date</Label>
@@ -171,13 +153,13 @@ export function CreateEventModal({ isOpen, onClose, onSubmit }) {
                                         )}
                                     </Button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-auto p-0">
-                                    {/*<Calendar*/}
-                                    {/*    mode="single"*/}
-                                    {/*    selected={formData.event_date}*/}
-                                    {/*    onSelect={handleDateChange}*/}
-                                    {/*    initialFocus*/}
-                                    {/*/>*/}
+                                <PopoverContent className="w-auto p-0 bg-white"> {/* Added bg-white for popover content */}
+                                    <DayPicker
+                                        mode="single"
+                                        selected={formData.event_date}
+                                        onSelect={handleDateChange}
+                                        initialFocus
+                                    />
                                 </PopoverContent>
                             </Popover>
                             {errors.event_date && (
@@ -230,7 +212,7 @@ export function CreateEventModal({ isOpen, onClose, onSubmit }) {
                         />
                     </div>
 
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-2 pt-2"> {/* Added pt-2 for spacing */}
                         <Switch
                             id="is_private"
                             checked={formData.is_private}
@@ -239,11 +221,22 @@ export function CreateEventModal({ isOpen, onClose, onSubmit }) {
                         <Label htmlFor="is_private">Private Event</Label>
                     </div>
 
-                    <DialogFooter>
-                        <Button type="button" variant="outline" onClick={onClose}>
+                    {/* Adjusted DialogFooter for responsive button layout */}
+                    <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-4">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={onClose}
+                            className="w-full sm:w-auto"
+                        >
                             Cancel
                         </Button>
-                        <Button type="submit">Create Event</Button>
+                        <Button
+                            type="submit"
+                            className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white" // Added project's primary button style
+                        >
+                            Create Event
+                        </Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

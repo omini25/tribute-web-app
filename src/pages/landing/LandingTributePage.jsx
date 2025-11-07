@@ -37,7 +37,7 @@ const MEMORIAL_DATA = {
         {
             date: new Date("1993-06-15"),
             title: "Graduated High School",
-            description: "Graduated with honors from Baltimore High School.",
+            description: "Graduated with Honours from Baltimore High School.",
             image: "/placeholder.svg"
         }
     ],

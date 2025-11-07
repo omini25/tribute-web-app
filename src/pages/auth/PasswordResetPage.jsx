@@ -1,30 +1,24 @@
 "use client"
 import { useState } from "react"
 import { z } from "zod"
-import { Loader2 } from "lucide-react"
+import { Loader2, ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle
-} from "@/components/ui/card"
+import { Label } from "@/components/ui/label" // Import Label
+import { Card, CardContent } from "@/components/ui/card" // Import CardContent
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import {Link} from "react-router-dom";
-import {AuthHeader} from "@/components/auth/AuthHeader.jsx";
-import { AuthFooter } from "@/components/auth/AuthFooter.jsx"
+import { Link } from "react-router-dom"
+import logo from "@/assets/images/remember-me.png" // Assuming you want to use the logo
 import { server } from "@/server.js"
-
+import { AuthHeader } from "@/components/auth/AuthHeader.jsx" // Import AuthHeader
+import { AuthFooter } from "@/components/auth/AuthFooter.jsx" // Import AuthFooter
+import {useRouter} from 'next/navigation'; // OR 'next/router' for older Next.js Pages Router
 
 const formSchema = z.object({
     email: z.string().email("Please enter a valid email address")
 })
 
 export default function PasswordResetPage() {
-    // const router = useRouter()
     const [email, setEmail] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [error, setError] = useState("")
@@ -33,19 +27,15 @@ export default function PasswordResetPage() {
     const handleSubmit = async e => {
         e.preventDefault()
         setError("")
+        setSuccess(false)
 
         try {
-            // Validate the email
-            const result = formSchema.parse({ email })
-
+            formSchema.parse({ email })
             setIsLoading(true)
 
-            // Send the password reset request to the API
             const response = await fetch(`${server}/forgot-password`, {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email })
             })
 
@@ -55,7 +45,6 @@ export default function PasswordResetPage() {
                 throw new Error(data.message || "Failed to send password reset email")
             }
 
-            // Show success message
             setSuccess(true)
         } catch (err) {
             if (err instanceof z.ZodError) {
@@ -63,7 +52,7 @@ export default function PasswordResetPage() {
             } else if (err instanceof Error) {
                 setError(err.message)
             } else {
-                setError("An unexpected error occurred")
+                setError("An unexpected error occurred. Please try again.")
             }
         } finally {
             setIsLoading(false)
@@ -71,70 +60,80 @@ export default function PasswordResetPage() {
     }
 
     return (
-        <>
+        <div className="flex min-h-screen flex-col bg-white"> {/* Matches example LoginPage root style */}
             <AuthHeader />
-            <div className="container flex h-screen max-w-md items-center justify-center">
-                <Card className="w-full">
-                    <CardHeader>
-                        <CardTitle className="text-2xl">Reset Password</CardTitle>
-                        <CardDescription>
-                            Enter your email address and we'll send you a link to reset your
-                            password.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        {success ? (
-                            <Alert className="bg-green-50 border-green-200">
-                                <AlertDescription className="text-green-800">
-                                    If an account exists with that email, we've sent password reset
-                                    instructions to {email}. Please check your inbox and spam
-                                    folder.
-                                </AlertDescription>
-                            </Alert>
-                        ) : (
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="space-y-2">
-                                    <label htmlFor="email" className="text-sm font-medium">
-                                        Email Address
-                                    </label>
-                                    <Input
-                                        id="email"
-                                        type="email"
-                                        placeholder="Enter your email address"
-                                        value={email}
-                                        onChange={e => setEmail(e.target.value)}
-                                        required
-                                        disabled={isLoading}
-                                    />
-                                </div>
+            <main className="flex-1 flex items-center justify-center bg-[#f8f4f0] py-16 sm:py-20 lg:py-24 px-4"> {/* Matches example LoginSection style */}
+                <div className="w-full max-w-md"> {/* Constrains card width */}
+                    <Card className="border-none shadow-lg bg-white"> {/* Matches example Card style */}
+                        <CardContent className="p-8 sm:p-10"> {/* Matches example CardContent padding */}
+                            <div className="text-center mb-8">
+                                <Link to="/"> {/* Link logo to homepage */}
+                                    <img src={logo} alt="Remember Me Logo" className="w-28 h-auto mx-auto mb-6" />
+                                </Link>
+                                <h2 className="text-2xl font-serif font-medium text-[#2a3342]">
+                                    Reset Your Password
+                                </h2>
+                                <p className="text-sm text-muted-foreground mt-2">
+                                    Enter your email and we&apos;ll send you a reset link.
+                                </p>
+                            </div>
 
-                                {error && (
-                                    <Alert variant="destructive">
-                                        <AlertDescription>{error}</AlertDescription>
-                                    </Alert>
-                                )}
+                            {success ? (
+                                <Alert className="bg-green-50 border-green-200 text-green-700">
+                                    <AlertDescription>
+                                        If an account with <span className="font-semibold">{email}</span> exists, a password reset email has been sent. Please check your inbox (and spam folder).
+                                    </AlertDescription>
+                                </Alert>
+                            ) : (
+                                <form onSubmit={handleSubmit} className="space-y-6">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="email" className="text-[#4a5568] font-medium">
+                                            Email Address
+                                        </Label>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            placeholder="name@example.com"
+                                            value={email}
+                                            onChange={e => setEmail(e.target.value)}
+                                            required
+                                            disabled={isLoading}
+                                            className="w-full border-gray-300 focus:border-[#fcd34d] focus:ring-[#fcd34d]"
+                                        />
+                                    </div>
 
-                                <Button type="submit" className="w-full" disabled={isLoading}>
-                                    {isLoading ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Sending...
-                                        </>
-                                    ) : (
-                                        "Send Reset Link"
+                                    {error && (
+                                        <Alert variant="destructive">
+                                            <AlertDescription>{error}</AlertDescription>
+                                        </Alert>
                                     )}
-                                </Button>
-                            </form>
-                        )}
-                    </CardContent>
-                    <CardFooter className="flex justify-center">
-                        <Link to="/login" className="text-sm text-primary hover:underline">
-                            Back to Login
-                        </Link>
-                    </CardFooter>
-                </Card>
-            </div>
+
+                                    <Button type="submit" className="w-full bg-[#fcd34d] hover:bg-[#645a52] text-white" disabled={isLoading}>
+                                        {isLoading ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Sending Link...
+                                            </>
+                                        ) : (
+                                            "Send Reset Link"
+                                        )}
+                                    </Button>
+                                </form>
+                            )}
+
+                            {!success && (
+                                <div className="mt-8 text-center">
+                                    <Link to="/login" className="text-[#fcd34d] hover:text-[#645a52] font-medium inline-flex items-center">
+                                        <ArrowLeft className="mr-1.5 h-4 w-4" />
+                                        Back to Login
+                                    </Link>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                </div>
+            </main>
             <AuthFooter />
-        </>
+        </div>
     )
 }
